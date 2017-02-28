@@ -24,12 +24,10 @@
 	<http pattern="/sessionout" security="none" />
 	<http pattern="/index" security="none" />
 	<http pattern="/" security="none" />
-	<http pattern="/*" >
-	    <intercept-url pattern="/home*" access="IS_AUTHENTICATED_FULLY" />
-	    <intercept-url pattern="/logintwice*" access="IS_AUTHENTICATED_FULLY" />
-	</http>
 	
 	<http auto-config="true">
+	    <intercept-url pattern="/home*" access="IS_AUTHENTICATED_FULLY" />
+	    <intercept-url pattern="/logintwice*" access="IS_AUTHENTICATED_FULLY" />
 		<form-login login-page='/jsp/login.jsp' default-target-url='/home'
 			always-use-default-target='true' authentication-failure-url="/login?error=true" />
 		<logout invalidate-session="true" logout-success-url="/jsp/login.jsp" delete-cookies="JSESSIONID" />
@@ -39,31 +37,31 @@
 			<concurrency-control max-sessions="1" expired-url="/logintwice" error-if-maximum-exceeded="false" />
 		</session-management>
 		<!--增加一个filter，这点与Acegi是不一样的，不能修改默认的filter了， 这个filter位于FILTER_SECURITY_INTERCEPTOR之前 -->
-		<custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="myFilterSecurityInterceptor" />
+		<custom-filter  ref="myFilterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
 	</http>
 
-	<security:authentication-manager alias="authenticationManager">
-		<security:authentication-provider user-service-ref="myUserDetailService">
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="myUserDetailService">
 			 <password-encoder hash="md5" />
-		</security:authentication-provider>
-	</security:authentication-manager>
+		</authentication-provider>
+	</authentication-manager>
 
 	<!--在这个类中，你就可以从数据库中读入用户的密码，角色信息，是否锁定，账号是否过期等 -->
-	<bean id="myUserDetailService" class="cn.edu.ecit.cl.wang.sys.security.MyUserDetailService" />
+	<beans:bean id="myUserDetailService" class="cn.edu.ecit.cl.wang.sys.security.MyUserDetailService" />
 
 	<!--一个自定义的filter，必须包含authenticationManager,accessDecisionManager,securityMetadataSource三个属性 -->
-	<bean id="myFilterSecurityInterceptor" class="cn.edu.ecit.cl.wang.sys.security.MyFilterSecurityInterceptor">
-		<!-- 拒绝公共的调用 -->
-		<property name="rejectPublicInvocations" value="true"/>
-		<property name="authenticationManager" ref="authenticationManager" />
-		<property name="accessDecisionManager" ref="myAccessDecisionManagerBean" />
-		<property name="securityMetadataSource" ref="securityMetadataSource" />
-	</bean>
+	<beans:bean id="myFilterSecurityInterceptor" class="cn.edu.ecit.cl.wang.sys.security.MyFilterSecurityInterceptor">
+		<!-- 拒绝公共的没有指定角色资源的调用 -->
+		<beans:property name="rejectPublicInvocations" value="false"/>
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="accessDecisionManager" ref="myAccessDecisionManagerBean" />
+		<beans:property name="securityMetadataSource" ref="securityMetadataSource" />
+	</beans:bean>
 
 	<!--访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
-	<bean id="myAccessDecisionManagerBean" class="cn.edu.ecit.cl.wang.sys.security.MyAccessDecisionManager" />
+	<beans:bean id="myAccessDecisionManagerBean" class="cn.edu.ecit.cl.wang.sys.security.MyAccessDecisionManager" />
 	<!--资源源数据定义，将所有的资源和权限对应关系建立起来，即定义某一资源可以被哪些角色访问 -->
-	<bean id="securityMetadataSource" class="cn.edu.ecit.cl.wang.sys.security.MyInvocationSecurityMetadataSource" />
+	<beans:bean id="securityMetadataSource" class="cn.edu.ecit.cl.wang.sys.security.MyInvocationSecurityMetadataSource" />
 
 	<beans:bean id="loggerListener" class="org.springframework.security.authentication.event.LoggerListener" />
 
