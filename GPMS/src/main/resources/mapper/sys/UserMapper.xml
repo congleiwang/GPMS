@@ -58,7 +58,7 @@
 	</select>
 	
 	<!-- 根据用户登陆名，找到用户 -->
-	<select id="getCurrentUserById" resultMap="User" parameterType="java.lang.Long">
+	<select id="getUserDetailsById" resultMap="User" parameterType="java.lang.Long">
 		SELECT
 			u.USER_ID,u.ORG_ID,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
 			u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL,

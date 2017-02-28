@@ -15,7 +15,7 @@ public interface UserDao extends BaseMapper<User>,UserDetailsService{
 	
 	public void updateLockUser(@Param("userId") Long userId);
 	
-	public User getCurrentUserById(@Param("userId")Long userId);
+	public User getUserDetailsById(@Param("userId")Long userId);
 	
 	public String isUserLocked(@Param("userId")Long userId);
 	

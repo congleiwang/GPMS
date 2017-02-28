@@ -13,7 +13,7 @@ import cn.edu.ecit.cl.wang.sys.dao.UserDao;
 import cn.edu.ecit.cl.wang.sys.po.Role;
 import cn.edu.ecit.cl.wang.sys.po.SysParam;
 import cn.edu.ecit.cl.wang.sys.po.User;
-import cn.edu.ecit.cl.wang.sys.security.CurrentUser;
+import cn.edu.ecit.cl.wang.sys.security.MyUserDetails;
 import cn.edu.ecit.cl.wang.sys.service.IUserService;
 
 @Service("userService")
@@ -54,11 +54,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 	 * 根据用户登陆名获取用户所有信息
 	 */
 	@Override
-	public CurrentUser getCurrentUserById(Long userId) {
-		User user = userDao.getCurrentUserById(userId);
-		CurrentUser cuser = null;
+	public MyUserDetails getUserDetailsById(Long userId) {
+		User user = userDao.getUserDetailsById(userId);
+		MyUserDetails cuser = null;
 		if (user != null) {
-			cuser = new CurrentUser(user);
+			cuser = new MyUserDetails(user);
 		}
 		return cuser;
 	}

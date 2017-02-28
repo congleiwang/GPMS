@@ -15,18 +15,31 @@
 		<collection  property="userIds" ofType="long"/>
 	</resultMap>
 	
-	<select id="getMenuCodesByRoleIds">
+	<resultMap type="cn.edu.ecit.cl.wang.sys.pojo.UrlAndRoleId" id="urlAndRoleId">
+		<result property="menuUrl" column="Menu_url" />
+		<result property="roleId" column="ROLE_ID" />
+	</resultMap>
+	
+	
+	<select id="getUrlsByRoleIds">
 		SELECT distinct T1.MENU_CD
 		FROM BASE_ROLE_ATUTH  T1
 		LEFT JOIN BASE_MENU T2 ON T1.MENU_CD = T2.MENU_CD
 		WHERE T2.IS_USE='1' AND T1.ROLE_ID IN
 		<foreach collection="array" item="roleId" index="index" open="(" separator="," close=")">
-			#{roleId,jdbcType=INTEGER}
+			#{roleId,jdbcType=NUMERIC}
 		</foreach>
 	</select>
 	
-	<select id="getMenuAndRoleCodeList">
-		SELECT t2.MENU_CD,t1.ROLE_ID
+	<select id="getMenuUrlsByRoleId" parameterType="java.lang.Long">
+		SELECT distinct T1.MENU_CD
+		FROM BASE_ROLE_ATUTH  T1
+		LEFT JOIN BASE_MENU T2 ON T1.MENU_CD = T2.MENU_CD
+		WHERE T2.IS_USE='1' AND T1.ROLE_ID=#{roleId,jdbcType=NUMERIC}
+	</select>
+	
+	<select id="getUrlAndRoleIdList" resultMap="urlAndRoleId">
+		SELECT t2.MENU_URL,t1.ROLE_ID
 			FROM BASE_ROLE_ATUTH t1
 				INNER JOIN BASE_MENU t2 ON t1.menu_cd=t2.menu_cd AND t2.IS_USE='1'
 				INNER JOIN BASE_ROLE t3 ON t1.role_id=t3.role_id AND t3.IS_USE='1'
