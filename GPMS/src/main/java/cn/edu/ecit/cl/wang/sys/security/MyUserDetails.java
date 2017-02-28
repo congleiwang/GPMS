@@ -8,20 +8,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import cn.edu.ecit.cl.wang.sys.po.User;
 
-public class CurrentUser extends User implements UserDetails {
+public class MyUserDetails extends User implements UserDetails {
 
 	private static final long serialVersionUID = -8456779485140979882L;
 
 	private Collection<String> menuCds;
 	private Collection<Long> roleIds;
 	private Collection<GrantedAuthority> grantedAuthorities;
-	private String instNm;
-	private String instCd;
 	private List<Long> subOrgList;
 	
-	public CurrentUser(){}
+	public MyUserDetails(){}
 	
-	public CurrentUser(User user){
+	public MyUserDetails(User user){
 		setAddress(user.getAddress());
 		setCreateAt(user.getCreateAt());
 		setCreator(user.getCreator());
@@ -68,22 +66,6 @@ public class CurrentUser extends User implements UserDetails {
 
 	public void setGrantedAuthorities(Collection<GrantedAuthority> grantedAuthorities) {
 		this.grantedAuthorities = grantedAuthorities;
-	}
-
-	public String getInstNm() {
-		return instNm;
-	}
-
-	public void setInstNm(String instNm) {
-		this.instNm = instNm;
-	}
-
-	public String getInstCd() {
-		return instCd;
-	}
-
-	public void setInstCd(String instCd) {
-		this.instCd = instCd;
 	}
 
 	public List<Long> getSubOrgList() {
