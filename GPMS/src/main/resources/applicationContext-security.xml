@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security 
+        http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<!-- 对登陆页面不拦截，加 * 是为了防止带参数。 -->
+	<http pattern="/js/**" security="none" />
+	<http pattern="/css/**" security="none" />
+	<http pattern="/images/**" security="none" />
+	<http pattern="/html/**" security="none" />
+	<http pattern="/**/*.js" security="none" />
+	<http pattern="/**/*.css" security="none" />
+	<http pattern="/**/*.gif" security="none" />
+	<http pattern="/**/*.jpg" security="none" />
+	<http pattern="/**/*.png" security="none" />
+	<http pattern="/**/*.html" security="none" />
+	<http pattern="/**/*.htm" security="none" />
+	<http pattern="/**/*.mp3" security="none" />
+	<http pattern="/login" security="none" />
+	<http pattern="/**/login" security="none" />
+	<http pattern="/login.jsp*" security="none" />
+	<http pattern="/**/login.jsp*" security="none" />
+	<http pattern="/sessionout" security="none" />
+	<http pattern="/index" security="none" />
+	<http pattern="/" security="none" />
+
+	<!-- Spring Security No CAS Start -->
+
+	<http auto-config="true">
+		<form-login login-page='/login' default-target-url='/home'
+			always-use-default-target='true' authentication-failure-handler-ref="authenticationFailureHandler" />
+		<!-- authentication-failure-url="/login?error=true" -->
+		<logout invalidate-session="true" logout-success-url="/logout" delete-cookies="JSESSIONID" />
+		<access-denied-handler error-page="/error/err403" />
+		<session-management invalid-session-url="/sessionout">
+			<concurrency-control max-sessions="1" expired-url="/logintwice" error-if-maximum-exceeded="false" />
+		</session-management>
+		<custom-filter after="LAST" ref="permissionFilterSecurityInterceptor" />
+	</http>
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="myUserDetailsService">
+			<password-encoder hash="md5" />
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean id="authenticationFailureHandler" class="cn.edu.ecit.cl.wang.sys.security.MyAuthenticationFailureHandler">
+		<beans:property name="defaultFailureUrl" value="/login?error=true"></beans:property>
+	</beans:bean>
+
+	<!-- 配置 验证过滤器, 此过滤器取代系统的XML权限过滤 , 此过滤器配置完毕之后存放到 系统缺省的过滤链中-->
+	<beans:bean id="permissionFilterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<!-- 需要认证管理器, 通过它可以获取 管理员已经拥有的角色信息  ，  由于id已经被org.springframework.security.authenticationManager默认了。不能更改，所以用别名-->
+		<beans:property name="authenticationManager" ref="authenticationManager"/> 
+		<!-- 决策器 -->
+		<beans:property name="accessDecisionManager" ref="accessDecisionManager"/>
+		<!-- 配置urlService ，security可以通过url得到角色名称 -->
+		<beans:property name="securityMetadataSource" ref="permissionFilterInvocationDefinitionSource" />
+		<beans:property name="observeOncePerRequest" value="false" />
+	</beans:bean>
+
+	<beans:bean id="myUserDetailsService" class="cn.edu.ecit.cl.wang.sys.security.MyUserDetailServiceImpl" />
+	
+	<beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<!-- false意味着当配置的投票器只投了弃权票时，不允许继续执行 -->
+        <beans:property name="allowIfAllAbstainDecisions" value="false"/> 
+        <!-- 配置该决策器所需要的投票器 --> 
+        <beans:property name="decisionVoters">  
+            <beans:list>  
+                <beans:bean class="org.springframework.security.access.vote.RoleVoter"/>  
+                <beans:bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>  
+            </beans:list>  
+        </beans:property>  
+    </beans:bean>  
+
+	<beans:bean id="permissionFilterInvocationDefinitionSource" class="cn.edu.ecit.cl.wang.sys.security.PermissionFilterInvocationDefinitionSource" />
+
+	<beans:bean id="loggerListener" class="org.springframework.security.authentication.event.LoggerListener" />
+
+	<!-- 验证码Jcaptcha相关的配置 <beans:bean id="captchaService" class="com.octo.captcha.service.image.DefaultManageableImageCaptchaService"> 
+		<beans:property name="captchaEngine"> <beans:bean class="sunyard.web.frame.jcaptcha.JcaptchaEngine" 
+		/> </beans:property> 默认生成的图片180秒过期 , 可另行设置 <property name="minGuarantedStorageDelayInSeconds" 
+		value="180" /> </beans:bean> -->
+</beans:beans>

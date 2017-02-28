@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.sys.dao.SysParamDao">
+
+	<!-- 返回类型  -->
+	<resultMap type="cn.edu.ecit.cl.wang.sys.po.SysParam" id="SysParam">
+		<result property="sysNm" column="SYS_NM" />
+		<result property="paramKey" column="PARAM_KEY" />
+		<result property="paramValue" column="PARAM_VALUE" />
+		<result property="type" column="TYPE" />
+		<result property="valueBound" column="VALUE_BOUND" />
+		<result property="paramDesc" column="PARAM_DESC" />
+		<result property="orderBy" column="ORDER_BY" />
+	</resultMap>
+	
+    <!-- 根据实体信息查询dicValue -->
+	<select id = "getParamValueByEntiry" parameterType = "cn.edu.ecit.cl.wang.sys.po.SysParam" resultType="java.lang.String">
+    	SELECT PARAM_VALUE FROM BASE_SYS_PARAM T1
+    	<if test="sysParam!=null">
+			<where>
+				<if test="sysParam.sysNm!=null">and t1.SYS_NM=#{sysParam.sysNm,jdbcType=VARCHAR}</if>
+				<if test="sysParam.paramKey!=null">and t1.PARAM_KEY=#{sysParam.paramKey,jdbcType=VARCHAR}</if>
+			</where>
+		</if>
+    </select>
+    
+</mapper>

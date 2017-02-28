@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.sys.dao.DictionaryDao">
+
+	<!-- 返回类型  -->
+	<resultMap type="cn.edu.ecit.cl.wang.sys.po.Dictionary" id="Dictionary">
+		<result property="sysNm" column="SYS_NM" />
+		<result property="keyCd" column="KEY_CD" />
+		<result property="keyValue" column="KEY_VALUE" />
+		<result property="caption" column="CAPTION" />
+		<result property="isMod" column="IS_MOD" />
+		<result property="remark" column="REMARK" />
+		<result property="isUse" column="IS_USE" />
+		<result property="english" column="ENGLISH" />
+		<result property="orderBy" column="ORDER_BY" />
+	</resultMap>
+	
+	<!-- 根据实体信息查询dicValue -->
+	<select id = "getDicValueByEntiry" parameterType = "cn.edu.ecit.cl.wang.sys.po.Dictionary" resultType="java.lang.String">
+    	SELECT KEY_VALUE FROM BASE_DICTIONARY T1
+    	<if test="dictionary!=null">
+			<where>
+				<if test="dictionary.sysNm!=null">and t1.SYS_NM=#{dictionary.sysNm,jdbcType=VARCHAR}</if>
+				<if test="dictionary.keyCd!=null">and t1.KEY_CD=#{dictionary.keyCd,jdbcType=VARCHAR}</if>
+			</where>
+		</if>
+    </select>
+    
+</mapper>

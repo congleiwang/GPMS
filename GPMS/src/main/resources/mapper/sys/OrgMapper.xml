@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.sys.dao.OrgDao">
+
+	<!-- 返回类型  -->
+	<resultMap type="cn.edu.ecit.cl.wang.sys.po.Org" id="Org">
+		<id property="orgId" column="ORG_ID" />
+		<result property="porgId" column="PORG_ID" />
+		<result property="orgType" column="ORG_TYPE" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="orgDesc" column="ORG_DESC" />
+		<result property="address" column="ADDRESS" />
+		<result property="isUse" column="IS_USE" />
+		<result property="creator" column="CREATOR" />
+		<result property="createAt" column="CREATE_AT" />
+		<result property="moder" column="MODER" />
+		<result property="modAt" column="MOD_AT" />
+		<result property="modCount" column="MOD_COUNT" />
+		<result property="isDel" column="IS_DEL" />
+	</resultMap>
+	
+	<!-- 根据机构orgId查询，该机构及子机构下orgId -->
+	<select id="getSubOrgIdList" parameterType="java.lang.Long" resultType="java.lang.Long">
+		SELECT t.ORG_ID FROM BASE_ORG t
+			START WITH t.ORG_ID=#{orgId,jdbcType=NUMERIC} AND  t.IS_USE='1'
+			CONNECT BY PRIOR t.ORG_ID = t.PORG_ID
+	</select>
+	
+</mapper>
