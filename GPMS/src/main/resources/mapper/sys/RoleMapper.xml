@@ -11,8 +11,12 @@
 		<result property="roleType" column="ROLE_TYPE" />
 		<result property="remark" column="REMARK" />
 		<result property="isUse" column="IS_USE" />
-		<collection  property="menuCds" ofType="string"/>
-		<collection  property="userIds" ofType="long"/>
+		<result property="creator" column="CREATOR" />
+		<result property="createAt" column="CREATE_AT" />
+		<result property="moder" column="MODER" />
+		<result property="modAt" column="MOD_AT" />
+		<result property="modCount" column="MOD_COUNT" />
+		<result property="isDel" column="IS_DEL" />
 	</resultMap>
 	
 	<resultMap type="cn.edu.ecit.cl.wang.sys.pojo.UrlAndRoleId" id="urlAndRoleId">
@@ -20,19 +24,8 @@
 		<result property="roleId" column="ROLE_ID" />
 	</resultMap>
 	
-	
-	<select id="getUrlsByRoleIds">
-		SELECT distinct T1.MENU_CD
-		FROM BASE_ROLE_ATUTH  T1
-		LEFT JOIN BASE_MENU T2 ON T1.MENU_CD = T2.MENU_CD
-		WHERE T2.IS_USE='1' AND T1.ROLE_ID IN
-		<foreach collection="array" item="roleId" index="index" open="(" separator="," close=")">
-			#{roleId,jdbcType=NUMERIC}
-		</foreach>
-	</select>
-	
-	<select id="getMenuUrlsByRoleId" parameterType="java.lang.Long">
-		SELECT distinct T1.MENU_CD
+	<select id="getMenuUrlsByRoleId" parameterType="java.lang.Long" resultType="java.lang.String">
+		SELECT distinct T2.MENU_URL
 		FROM BASE_ROLE_ATUTH  T1
 		LEFT JOIN BASE_MENU T2 ON T1.MENU_CD = T2.MENU_CD
 		WHERE T2.IS_USE='1' AND T1.ROLE_ID=#{roleId,jdbcType=NUMERIC}
@@ -43,5 +36,22 @@
 			FROM BASE_ROLE_ATUTH t1
 				INNER JOIN BASE_MENU t2 ON t1.menu_cd=t2.menu_cd AND t2.IS_USE='1'
 				INNER JOIN BASE_ROLE t3 ON t1.role_id=t3.role_id AND t3.IS_USE='1'
+	</select>
+	
+	<select id="getRolesByUserId" resultMap="Role" parameterType="java.lang.Long">
+		SELECT 
+			r.ROLE_ID,r.ROLE_NM,r.ROLE_TYPE,r.REMARK,r.IS_USE,
+			r.CREATOR,r.CREATE_AT,r.MODER,r.MOD_COUNT,r.MOD_AT,r.IS_DEL
+		FROM BASE_ROLE r
+		INNER JOIN base_user_role ur ON r.ROLE_ID=ur.ROLE_ID
+		where r.IS_USE='1' and ur.USER_ID=#{userId,jdbcType=NUMERIC}
+	</select>
+	
+	<select id="selectById" resultMap="Role" parameterType="java.lang.Long">
+		SELECT 
+			r.ROLE_ID,r.ROLE_NM,r.ROLE_TYPE,r.REMARK,r.IS_USE,
+			r.CREATOR,r.CREATE_AT,r.MODER,r.MOD_COUNT,r.MOD_AT,r.IS_DEL
+		FROM BASE_ROLE r
+		where u.IS_USE='1' and r.ROLE_ID=#{roleId,jdbcType=NUMERIC}
 	</select>
 </mapper>

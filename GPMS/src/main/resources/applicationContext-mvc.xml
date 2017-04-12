@@ -22,10 +22,12 @@
 	</context:component-scan>
 	
 	<!-- 资源访问处理器 -->
-	<mvc:resources mapping="/ext5/**" location="/ext5/" />
-	<mvc:resources mapping="/res/**" location="/res/" />
-	<mvc:resources mapping="/app/**" location="/app/" />
-	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/css/**/*.css" location="/css/" />
+	<mvc:resources mapping="/js/**/*.js" location="/js/" />
+	<mvc:resources mapping="/js/**/*.css" location="/js/" />
+	<mvc:resources mapping="/res/**.png" location="/res/" />
+	<mvc:resources mapping="/res/**.jpg" location="/res/" />
+	<mvc:resources mapping="/fonts/**.*" location="/fonts/" />
 
 	<!-- 定义注解驱动Controller方法处理适配器 ,注：该适配器必须声明在<mvc:annotation-driven />之前，否则不能正常处理参数类型的转换 -->
 	<bean

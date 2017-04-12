@@ -4,7 +4,7 @@
 
 <mapper namespace="cn.edu.ecit.cl.wang.sys.dao.UserDao">
 
-	<!-- 返回类型  -->
+	<!-- 返回类型 -->
 	<resultMap type="cn.edu.ecit.cl.wang.sys.po.User" id="User">
 		<id property="userId" column="USER_ID" />
 		<result property="orgId" column="ORG_ID" />
@@ -26,68 +26,56 @@
 		<result property="modAt" column="MOD_AT" />
 		<result property="modCount" column="MOD_COUNT" />
 		<result property="isDel" column="IS_DEL" />
-		<association property="org" javaType="cn.edu.ecit.cl.wang.sys.po.Org">
-			<id property="orgId" column="ORG_ID" />
-			<result property="porgId" column="PORG_ID" />
-			<result property="orgType" column="ORG_TYPE" />
-			<result property="orgNm" column="ORG_NM" />
-			<result property="orgDesc" column="ORG_DESC" />
-			<result property="address" column="org_ADDRESS" />
-			<result property="isUse" column="org_IS_USE" />
-			<result property="creator" column="org_CREATOR" />
-			<result property="createAt" column="org_CREATE_AT" />
-			<result property="moder" column="org_MODER" />
-			<result property="modAt" column="org_MOD_AT" />
-			<result property="modCount" column="org_MOD_COUNT" />
-			<result property="isDel" column="org_IS_DEL" />
-		</association>
-		<collection  property="roles" ofType="cn.edu.ecit.cl.wang.sys.po.Role">
-			<id property="roleId" column="ROLE_ID" />
-			<result property="roleNm" column="ROLE_NM" />
-			<result property="roleType" column="ROLE_TYPE" />
-			<result property="remark" column="role_REMARK" />
-			<result property="isUse" column="role_IS_USE" />
-			<collection  property="menuCds" ofType="string" column="MENU_CD"/>
-			<collection  property="userIds" ofType="long" column="user_ids"/>
-		</collection>
 	</resultMap>
-	
+
 	<!-- 根据用户LongNm得到id -->
-	<select id="getIdByLoginNm" parameterType="java.lang.String" resultType="java.lang.Long">
-		select USER_ID from base_user where login_nm=#{loginNm,jdbcType=VARCHAR}
+	<select id="getIdByLoginNm" parameterType="java.lang.String"
+		resultType="java.lang.Long">
+		select USER_ID from base_user where
+		login_nm=#{loginNm,jdbcType=VARCHAR}
 	</select>
-	
+
 	<!-- 根据用户登陆名，找到用户 -->
-	<select id="getUserDetailsById" resultMap="User" parameterType="java.lang.Long">
+	<select id="selectById" resultMap="User" parameterType="java.lang.Long">
 		SELECT
-			u.USER_ID,u.ORG_ID,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
-			u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL,
-			o.ORG_ID,o.PORG_ID,o.ORG_TYPE,o.ORG_NM,o.ORG_DESC,
-			o.ADDRESS org_ADDRESS,o.IS_USE org_IS_USE,o.CREATOR org_CREATOR,o.CREATE_AT org_CREATE_AT,
-			o.MODER org_MODER,o.MOD_AT org_MOD_AT,o.MOD_COUNT org_MOD_COUNT,o.IS_DEL org_IS_DEL,
-			r.ROLE_ID,r.ROLE_NM,r.ROLE_TYPE,r.REMARK role_REMARK,r.IS_USE role_IS_USE,m.MENU_CD,ur.USER_ID user_ids
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
 		FROM BASE_USER u
-		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID AND o.IS_USE='1'
-		LEFT JOIN BASE_USER_ROLE ur on u.USER_ID=ur.USER_ID
-		LEFT JOIN BASE_ROLE r on r.ROLE_ID = ur.ROLE_ID AND r.IS_USE='1'
-		LEFT JOIN BASE_ROLE_ATUTH ra on r.ROLE_ID = ra.ROLE_ID 
-		LEFT JOIN BASE_MENU m on m.MENU_CD=ra.MENU_CD AND m.IS_USE='1'
-		WHERE u.USER_ID=#{userId,jdbcType=NUMERIC} AND u.is_LOCK='0' AND u.IS_DEL='0'
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		WHERE
+		u.USER_ID=#{userId,jdbcType=NUMERIC} AND u.is_LOCK='0'
 	</select>
-	
+
 	<!-- 查询用户是否被锁定 -->
-	<select id="isUserLocked" parameterType="java.lang.Long" resultType="java.lang.String">
-		select is_LOCK from BASE_USER where USER_ID=#{userId,jdbcType=NUMERIC}
+	<select id="isUserLocked" parameterType="java.lang.Long"
+		resultType="java.lang.String">
+		select is_LOCK from BASE_USER where
+		USER_ID=#{userId,jdbcType=NUMERIC}
 	</select>
-	
+
 	<!-- 增加密码错误次数 -->
 	<update id="updatePassErr" parameterType="java.lang.Long">
-		update BASE_USER set PASSWD_ERR=PASSWD_ERR+1 where USER_ID=#{userId,jdbcType=NUMERIC}
+		update BASE_USER set
+		PASSWD_ERR=PASSWD_ERR+1 where USER_ID=#{userId,jdbcType=NUMERIC}
 	</update>
-	
+
 	<!-- 锁定用户 -->
 	<update id="updateLockUser" parameterType="java.lang.Long">
-		update BASE_USER set is_LOCK='1' where USER_ID=#{userId,jdbcType=NUMERIC}
+		update BASE_USER set
+		is_LOCK='1' where USER_ID=#{userId,jdbcType=NUMERIC}
 	</update>
-	
+
+	<select id="selectPage" resultMap="User">
+		SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		WHERE u.is_LOCK='0'
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				
+			</if>
+		</if>
+	</select>
 </mapper>
