@@ -1,7 +1,6 @@
 package cn.edu.ecit.cl.wang.sys.po;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -14,17 +13,21 @@ import com.baomidou.mybatisplus.enums.IdType;
  *
  */
 @TableName("BASE_USER")
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
 	private static final long serialVersionUID = -2604728209142614350L;
 
 	/** 用户ID */
-	@TableId(value = "USER_ID" , type = IdType.INPUT)
+	@TableId(value = "USER_ID", type = IdType.INPUT)
 	private Long userId;
 
 	/** 机构ID */
 	@TableField("ORG_ID")
 	private Long orgId;
+
+	/** 机构名 */
+	@TableField(exist = false)
+	private Long orgNm;
 
 	/** 用户名 */
 	@TableField("USER_NM")
@@ -37,7 +40,7 @@ public class User extends BaseEntity{
 	/** 密码 */
 	@TableField("PASSWD")
 	private String passwd;
-	
+
 	/** 密码错误次数 */
 	@TableField("PASSWD_ERR")
 	private Integer passwdErr;
@@ -49,7 +52,7 @@ public class User extends BaseEntity{
 	/** 地址 */
 	@TableField("ADDRESS")
 	private String address;
-	
+
 	/** Ip地址 */
 	@TableField("IP_ADDR")
 	private String ipAddr;
@@ -61,11 +64,11 @@ public class User extends BaseEntity{
 	/** 是否锁定 1：是，0否 */
 	@TableField("is_LOCK")
 	private String isLock;
-	
+
 	/** 注册时间 */
 	@TableField("SIGN_AT")
 	private Timestamp signAt;
-	
+
 	/** 最后一次登陆时间 */
 	@TableField("LAST_LOGIN_AT")
 	private Timestamp lastLoginAt;
@@ -73,14 +76,6 @@ public class User extends BaseEntity{
 	/** 备注 */
 	@TableField("REMARK")
 	private String remark;
-
-	/** 角色 */
-	@TableField(exist = false)
-	private List<Role> roles;
-	
-	/** 机构 */
-	@TableField(exist = false)
-	private Org org;
 
 	public Long getUserId() {
 		return userId;
@@ -96,6 +91,14 @@ public class User extends BaseEntity{
 
 	public void setOrgId(Long orgId) {
 		this.orgId = orgId;
+	}
+
+	public Long getOrgNm() {
+		return orgNm;
+	}
+
+	public void setOrgNm(Long orgNm) {
+		this.orgNm = orgNm;
 	}
 
 	public String getUserNm() {
@@ -192,22 +195,6 @@ public class User extends BaseEntity{
 
 	public void setRemark(String remark) {
 		this.remark = remark;
-	}
-
-	public List<Role> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(List<Role> roles) {
-		this.roles = roles;
-	}
-	
-	public Org getOrg() {
-		return org;
-	}
-
-	public void setOrg(Org org) {
-		this.org = org;
 	}
 
 	@Override

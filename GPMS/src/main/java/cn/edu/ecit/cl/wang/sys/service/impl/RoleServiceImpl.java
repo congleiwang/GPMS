@@ -1,5 +1,6 @@
 package cn.edu.ecit.cl.wang.sys.service.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements IRole
 	RoleDao roleDao;
 
 	@Override
-	public List<String> getUrlsByRoleIds(List<Long> roleIds) {
-		return roleDao.getUrlsByRoleIds(roleIds);
-	}
-
-	@Override
 	public List<String> getMenuUrlsByRoleId(Long roleId) {
 		return roleDao.getMenuUrlsByRoleId(roleId);
 	}
@@ -32,5 +28,14 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements IRole
 	public List<UrlAndRoleId> getUrlAndRoleIdList() {
 		return roleDao.getUrlAndRoleIdList();
 	}
+
+	@Override
+	public List<Role> getRolesByUserId(Long userId) {
+		return roleDao.getRolesByUserId(userId);
+	}
 	
+	@Override
+	public Role selectById(Serializable id) {
+		return roleDao.selectById((Long)id);
+	}
 }

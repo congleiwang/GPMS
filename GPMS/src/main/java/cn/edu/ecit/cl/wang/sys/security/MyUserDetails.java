@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import cn.edu.ecit.cl.wang.sys.po.Org;
+import cn.edu.ecit.cl.wang.sys.po.Role;
 import cn.edu.ecit.cl.wang.sys.po.User;
 
 public class MyUserDetails extends User implements UserDetails {
@@ -13,13 +15,15 @@ public class MyUserDetails extends User implements UserDetails {
 	private static final long serialVersionUID = -8456779485140979882L;
 
 	private Collection<String> menuCds;
-	private Collection<Long> roleIds;
 	private Collection<GrantedAuthority> grantedAuthorities;
 	private List<Long> subOrgList;
-	
-	public MyUserDetails(){}
-	
-	public MyUserDetails(User user){
+	private List<Role> roles;
+	private Org org;
+
+	public MyUserDetails() {
+	}
+
+	public MyUserDetails(User user) {
 		setAddress(user.getAddress());
 		setCreateAt(user.getCreateAt());
 		setCreator(user.getCreator());
@@ -32,13 +36,11 @@ public class MyUserDetails extends User implements UserDetails {
 		setModAt(user.getModAt());
 		setModCount(user.getModCount());
 		setModer(user.getModer());
-		setOrg(user.getOrg());
 		setOrgId(user.getOrgId());
 		setPasswd(user.getPasswd());
 		setPasswdErr(user.getPasswdErr());
 		setPhoneNum(user.getPhoneNum());
 		setRemark(user.getRemark());
-		setRoles(user.getRoles());
 		setSignAt(user.getSignAt());
 		setUserId(user.getUserId());
 		setUserNm(user.getUserNm());
@@ -52,12 +54,20 @@ public class MyUserDetails extends User implements UserDetails {
 		this.menuCds = menuCds;
 	}
 
-	public Collection<Long> getRoleIds() {
-		return roleIds;
+	public List<Role> getRoles() {
+		return roles;
 	}
 
-	public void setRoleIds(Collection<Long> roleIds) {
-		this.roleIds = roleIds;
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
+	public Org getOrg() {
+		return org;
+	}
+
+	public void setOrg(Org org) {
+		this.org = org;
 	}
 
 	public Collection<GrantedAuthority> getGrantedAuthorities() {

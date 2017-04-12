@@ -16,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -25,6 +26,7 @@ import cn.edu.ecit.cl.wang.sys.controller.UserController;
 import cn.edu.ecit.cl.wang.sys.po.LoginRecord;
 import cn.edu.ecit.cl.wang.sys.po.Role;
 import cn.edu.ecit.cl.wang.sys.service.ILoginRecordService;
+import cn.edu.ecit.cl.wang.sys.service.IMenuService;
 import cn.edu.ecit.cl.wang.sys.service.IOrgService;
 import cn.edu.ecit.cl.wang.sys.service.IRoleService;
 import cn.edu.ecit.cl.wang.sys.service.IUserService;
@@ -44,6 +46,9 @@ public class MyUserDetailService implements UserDetailsService {
 	
 	@Autowired
 	private IRoleService roleService;
+	
+	@Autowired
+	private IMenuService menuServcie;
 	
 	@Autowired
 	private GlobalProperties globalProperties;
@@ -71,41 +76,46 @@ public class MyUserDetailService implements UserDetailsService {
 			throw new LockedException("用户 " + loginNm + " 已被锁定!");
 		}
 		
-		MyUserDetails userDetails = userService.getUserDetailsById(usrId);
-		if (userDetails != null) {
-			userDetails.setSubOrgList(orgService.getSubOrgIdList(userDetails.getOrgId()));
-		}
-		//向CurrentUser中注入其角色和菜单列表
-		setGrantedAuthority(userDetails);
 		//保存其登陆记录
 		loginRecordService.insert(new LoginRecord(loginNm, "1", SystemUtils.getIpAddress(request)));
-		return userDetails;
+		
+		return setGrantedAuthority(usrId);
 	}
 
 	/**
+	 * 向CurrentUser中注入其角色和菜单列表
+	 * 
 	 * 从数据库读取权限信息，若没有权限，则赋予配置文件中的默认权限，并设置到MyUserDetails对象中
 	 * 
 	 * @param username
 	 * @return
 	 */
-	public void setGrantedAuthority(MyUserDetails userDetails) {
+	public MyUserDetails setGrantedAuthority(Long usrId) {
+		MyUserDetails userDetails=new MyUserDetails(userService.selectById(usrId));
+		//机构权限
+		userDetails.setSubOrgList(orgService.getSubOrgIdList(userDetails.getOrgId()));
 		//获取用户角色列表
-		List<Long> roleIds = userService.getRolesByUserid(userDetails.getUserId());
+		List<Role> roles = roleService.getRolesByUserId(userDetails.getUserId());
 		//若用户角色列表为空，加入系统设置的默认角色
-		if ((roleIds.isEmpty()) && (globalProperties.getDefaultRoleId() != null)) {
+		if ((CollectionUtils.isEmpty(roles)) && (globalProperties.getDefaultRoleId() != null)) {
 			Role role = roleService.selectById(globalProperties.getDefaultRoleId());
 			if (role != null) {
-				roleIds.add(role.getRoleId());
+				roles.add(role);
 			}
 		}
-		if (!roleIds.isEmpty()) {
-			userDetails.setRoleIds(roleIds);
+		if (!CollectionUtils.isEmpty(roles)) {
+			userDetails.setRoles(roles);
 		}
+		List<String> menuCds=menuServcie.getMenuCdsByRoles(roles);
+		
+		userDetails.setMenuCds(menuCds);
+		
 		//放入用户所有权限
 		Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
-		for(Long roleId:roleIds){
-			grantedAuthorities.add(new SimpleGrantedAuthority(roleId.toString()));
+		for(Role role:roles){
+			grantedAuthorities.add(new SimpleGrantedAuthority(role.getRoleId().toString()));
 		}
 		userDetails.setGrantedAuthorities(grantedAuthorities);
+		return userDetails;
 	}
 }

@@ -35,8 +35,8 @@ public abstract class BaseController<E> {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ReturnResult doRestList(@RequestBody E obj, int page, int limit, HttpServletRequest request) throws Exception{
-		logger.debug("doRestList->searchData=" + obj.toString());
+	public ReturnResult doRestList(String jsonObj, int page, int limit, HttpServletRequest request) throws Exception{
+		logger.debug("doRestList->searchData=" + jsonObj.toString());
 		ReturnResult ret = null;
 		if (page < 1) {
 			page = PageConstant.defCurrPageNum;
@@ -45,7 +45,7 @@ public abstract class BaseController<E> {
 			limit = PageConstant.defPageSize;
 		}
 		try {
-			Page<E> p = selectPage(obj, page, limit, request);
+			Page<E> p = selectPage(jsonObj, page, limit, request);
 			ret = ReturnResult.success(p.getTotal(), p.getRecords());
 		} catch (Exception e) {
 			ret = ReturnResult.failure(e.getMessage());
@@ -145,7 +145,7 @@ public abstract class BaseController<E> {
 
 	@ResponseBody
 	@RequestMapping(value = "/list", method = { RequestMethod.GET, RequestMethod.POST })
-	public ReturnResult doGetList(@RequestParam("entity") E entity, @RequestParam("page") Integer page,
+	public ReturnResult doGetList(String jsonObj, @RequestParam("page") Integer page,
 			@RequestParam("limit") Integer limit, HttpServletRequest request)  throws Exception{
 		ReturnResult ret = null;
 		if (page < 1) {
@@ -156,7 +156,7 @@ public abstract class BaseController<E> {
 		}
 		Page<E> p;
 		try {
-			p = selectPage(entity, page, limit, request);
+			p = selectPage(jsonObj, page, limit, request);
 			List<?> list = p.getRecords();
 			int total = 0;
 			if (list != null && list.size() > 0) {
@@ -216,10 +216,10 @@ public abstract class BaseController<E> {
 	 * @return
 	 * @throws Exception
 	 */
-	public abstract Page<E> selectPage(E obj, int pageNum, int pageSize)  throws Exception;
+	public abstract Page<E> selectPage(String jsonObj, int pageNum, int pageSize)  throws Exception;
 
-	public Page<E> selectPage(E obj, int pageNum, int pageSize, HttpServletRequest request)  throws Exception{
-		return selectPage(obj, pageNum, pageSize);
+	public Page<E> selectPage(String jsonObj, int pageNum, int pageSize, HttpServletRequest request)  throws Exception{
+		return selectPage(jsonObj, pageNum, pageSize);
 	}
 	/**
 	 * 添加数据

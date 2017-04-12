@@ -8,7 +8,7 @@ import cn.edu.ecit.cl.wang.sys.po.Role;
 import cn.edu.ecit.cl.wang.sys.pojo.UrlAndRoleId;
 
 public interface IRoleService extends IService<Role>{
-	public List<String> getUrlsByRoleIds(List<Long> roleIds);
 	public List<String> getMenuUrlsByRoleId(Long roleId);
 	public List<UrlAndRoleId> getUrlAndRoleIdList();
+	public List<Role> getRolesByUserId(Long userId);
 }

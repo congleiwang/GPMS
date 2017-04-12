@@ -11,9 +11,11 @@ import cn.edu.ecit.cl.wang.sys.pojo.UrlAndRoleId;
 
 public interface RoleDao extends BaseMapper<Role>{
 	
-	public List<String> getUrlsByRoleIds(@Param("roleIds")List<Long> roleIds);
-	
 	public List<String> getMenuUrlsByRoleId(@Param("roleId")Long roleId);
 
 	public List<UrlAndRoleId> getUrlAndRoleIdList();
+
+	public List<Role> getRolesByUserId(@Param("userId")Long userId);
+	
+	public Role selectById(@Param("roleId")Long roleId);
 }

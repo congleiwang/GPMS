@@ -1,11 +1,9 @@
-package cn.edu.ecit.cl.wang.sys.po;
+package cn.edu.ecit.cl.wang.sys.pojo;
+
+import cn.edu.ecit.cl.wang.sys.po.BaseTree;
 
 public class OrgTree extends BaseTree{
 
-	private Long orgId;
-	
-	private Long porgId;
-	
 	private String orgType;
 	
 	private String orgNm;
@@ -13,22 +11,6 @@ public class OrgTree extends BaseTree{
 	private String orgDesc;
 	
 	private String address;
-
-	public Long getOrgId() {
-		return orgId;
-	}
-
-	public void setOrgId(Long orgId) {
-		this.orgId = orgId;
-	}
-
-	public Long getPorgId() {
-		return porgId;
-	}
-
-	public void setPorgId(Long porgId) {
-		this.porgId = porgId;
-	}
 
 	public String getOrgType() {
 		return orgType;
