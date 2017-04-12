@@ -18,7 +18,7 @@ body {
 	color: #888;
 	font-size: 13px;
 	line-height: 20px;
-	background-image:url(../images/BG.jpg);
+	background-image:url(../res/images/login/BG.jpg);
 	background-repeat:no-repeat;
 	background-size:100% 100%;
 }
@@ -28,7 +28,7 @@ body {
 	width:100%;
 	height:90px;
 	background-color:#666666;
-	background-image:url(../images/logo.png);
+	background-image:url(../res/images/login/logo.png);
 	background-repeat:no-repeat;
 	background-position: 50% 10px;
 }
@@ -42,17 +42,17 @@ body {
 }
 
 #wrappertop {
-	background:url(../images/wrapper_top.png) no-repeat;
+	background:url(../res/images/login/wrapper_top.png) no-repeat;
 	height:22px;
 }
 
 #wrappermiddle {
-	background:url(../images/wrapper_middle.png) repeat-y;
+	background:url(../res/images/login/wrapper_middle.png) repeat-y;
 	height:240px;
 }
 
 #wrapperbottom {
-	background:url(../images/wrapper_bottom.png) no-repeat;
+	background:url(../res/images/login/wrapper_bottom.png) no-repeat;
 	height:22px;
 }
 
@@ -76,21 +76,21 @@ body {
 
 #username_inputleft {
 	float:left;
-	background:url(../images/input_left.png) no-repeat;
+	background:url(../res/images/login/input_left.png) no-repeat;
 	width:12px;
 	height:50px;
 }
 
 #username_inputmiddle {
 	float:left;
-	background:url(../images/input_middle.png) repeat-x;
+	background:url(../res/images/login/input_middle.png) repeat-x;
 	width:276px;
 	height:50px;
 }
 
 #username_inputright {
 	float:left;
-	background:url(../images/input_right.png) no-repeat;
+	background:url(../res/images/login/input_right.png) no-repeat;
 	width:12px;
 	height:50px;
 }
@@ -111,7 +111,7 @@ body {
 	display:block;	
 	position:absolute;
 	margin-top:-35px;
-	background:url(../images/icon_people.png) no-repeat 0px -10px ;
+	background:url(../res/images/login/icon_people.png) no-repeat 0px -10px ;
 	float:left;
 	width:20;
 	height:20;
@@ -127,21 +127,21 @@ body {
 
 #password_inputleft {
 	float:left;
-	background:url(../images/input_left.png) no-repeat;
+	background:url(../res/images/login/input_left.png) no-repeat;
 	width:12px;
 	height:50px;
 }
 
 #password_inputmiddle {
 	float:left;
-	background:url(../images/input_middle.png) repeat-x;
+	background:url(../res/images/login/input_middle.png) repeat-x;
 	width:276px;
 	height:50px;
 }
 
 #password_inputright {
 	float:left;
-	background:url(../images/input_right.png) no-repeat;
+	background:url(../res/images/login/input_right.png) no-repeat;
 	width:12px;
 	height:50px;
 }
@@ -150,7 +150,7 @@ body {
 	display:block;	
 	position:absolute;
 	margin-top:-35px;
-	background:url(../images/icon_lock.png) no-repeat 0px -10px ;
+	background:url(../res/images/login/icon_lock.png) no-repeat 0px -10px ;
 	float:left;
 	width:20;
 	height:20;
@@ -174,11 +174,11 @@ body {
 	color:white;
 	width:300px;
 	height:40px;
-	background: url(../images/submit.png) no-repeat;
+	background: url(../res/images/login/submit.png) no-repeat;
 }
 
 #submit1:HOVER{
-	background: url(../images/submit_hover.png) no-repeat;	
+	background: url(../res/images/login/submit_hover.png) no-repeat;	
 }
 
 #links_left{
