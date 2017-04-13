@@ -1,0 +1,13 @@
+@charset "utf-8";
+.fleft{
+	float: left;
+}
+.fright{
+	float: right;
+}
+.body{
+	width:100%;
+}
+.from{
+	width:100% !important;
+}

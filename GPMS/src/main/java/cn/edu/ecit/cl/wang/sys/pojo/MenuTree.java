@@ -9,6 +9,8 @@ public class MenuTree extends BaseTree{
 	private String menuNm;
 	/** 菜单类型 */
 	private String menuType;
+	/** 菜单后台路径 */
+	private String menuUrl;
 	/** 菜单描述*/
 	private String remark;
 	/** 菜单图片*/
@@ -17,10 +19,8 @@ public class MenuTree extends BaseTree{
 	private String orderBy;
 	/** 是否启用 */
 	private String isUse;
-	/** 菜单控制器 */
-	private String menuController;
 	/** 菜单URL */
-	private String menuView;
+	private String jspUrl;
 	public String getSysNm() {
 		return sysNm;
 	}
@@ -38,6 +38,12 @@ public class MenuTree extends BaseTree{
 	}
 	public void setMenuType(String menuType) {
 		this.menuType = menuType;
+	}
+	public String getMenuUrl() {
+		return menuUrl;
+	}
+	public void setMenuUrl(String menuUrl) {
+		this.menuUrl = menuUrl;
 	}
 	public String getRemark() {
 		return remark;
@@ -63,16 +69,11 @@ public class MenuTree extends BaseTree{
 	public void setIsUse(String isUse) {
 		this.isUse = isUse;
 	}
-	public String getMenuController() {
-		return menuController;
+	public String getJspUrl() {
+		return jspUrl;
 	}
-	public void setMenuController(String menuController) {
-		this.menuController = menuController;
+	public void setJspUrl(String jspUrl) {
+		this.jspUrl = jspUrl;
 	}
-	public String getMenuView() {
-		return menuView;
-	}
-	public void setMenuView(String menuView) {
-		this.menuView = menuView;
-	}
+	
 }

@@ -1,13 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-    <!-- core 为JSTL的核心库，包含循环，判断，set赋值标签 -->
-    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    <!-- fmt 为JSTL的格式化库，用于格式化字符串，日期，金额 -->
-    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-    <!-- fn 为JSTL的函数库，包含操作字符串的一些函数，一般用于判断长度 -->
-    <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:set scope="page" var="path" value="${pageContext.request.contextPath }"></c:set>
-<script type="text/javascript" src="${path }/js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="${path }/js/My97DatePicker/WdatePicker.js"></script>
+<!-- core 为JSTL的核心库，包含循环，判断，set赋值标签 -->
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!-- fmt 为JSTL的格式化库，用于格式化字符串，日期，金额 -->
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!-- fn 为JSTL的函数库，包含操作字符串的一些函数，一般用于判断长度 -->
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set scope="page" var="rootPath" value="${pageContext.request.contextPath }"></c:set>
+<link href="${rootPath }/css/font-awesome.css" rel="stylesheet" type="text/css" />
+<link href="${rootPath }/css/style.css" rel="stylesheet" type="text/css" />
+<link href="${rootPath }/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="${rootPath }/js/jquery-2.1.1.min.js"></script>
+<script type="text/JavaScript" src="${rootPath }/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${rootPath }/js/My97DatePicker/WdatePicker.js"></script>
 <c:if test="${not empty sessionScope.result && sessionScope.result == 1}">
 	<font color="red">操作成功</font>
 	<c:remove var="result" scope="session"/>

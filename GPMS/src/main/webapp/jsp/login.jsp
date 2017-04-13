@@ -4,7 +4,7 @@
 <html>
 <head>
 <title>GPMS</title>
-<link href="${path }/css/style.css" rel="stylesheet" type="text/css">
+<link href="${rootPath }/css/login.css" rel="stylesheet" type="text/css">
 <script type="text/javascript">
 	function checkForm(thisForm) {
 		if (document.getElementById('j_username').value.length < 1) {
@@ -22,11 +22,11 @@
 	}
 </script>
 </head>
-<body>
+<body id="body">
 	<div id="head"></div>
 	<div id="wrapper">
 		<div id="wrappertop"></div>
-		<form action="${path }/j_spring_security_check" method="post"
+		<form action="${rootPath }/j_spring_security_check" method="post"
 			id="LoginForm" name="LoginForm"
 			onSubmit="javascript:return checkForm(this);">
 			<div id="wrappermiddle">

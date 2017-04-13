@@ -18,6 +18,10 @@ public class Menu {
 	@TableField("MENU_NM")
 	private String menuNm;
 	
+	/** 菜单后台路径 */
+	@TableField("MENU_URL")
+	private String menuUrl;
+	
 	/** 菜单类型 */
 	@TableField("MENU_TYPE")
 	private String menuType;
@@ -40,13 +44,9 @@ public class Menu {
 	@TableField("IS_USE")
 	private String isUse;
 	
-	/** 菜单控制器 */
-	@TableField("MENU_CONTROLLER")
-	private String menuController;
-	
 	/** 菜单URL */
-	@TableField("MENU_VIEW")
-	private String menuView;
+	@TableField("JSP_URL")
+	private String jspUrl;
 
 	public String getSysNm() {
 		return sysNm;
@@ -70,6 +70,14 @@ public class Menu {
 
 	public void setMenuNm(String menuNm) {
 		this.menuNm = menuNm;
+	}
+
+	public String getMenuUrl() {
+		return menuUrl;
+	}
+
+	public void setMenuUrl(String menuUrl) {
+		this.menuUrl = menuUrl;
 	}
 
 	public String getMenuType() {
@@ -120,20 +128,12 @@ public class Menu {
 		this.isUse = isUse;
 	}
 
-	public String getMenuController() {
-		return menuController;
+	public String getJspUrl() {
+		return jspUrl;
 	}
 
-	public void setMenuController(String menuController) {
-		this.menuController = menuController;
+	public void setJspUrl(String jspUrl) {
+		this.jspUrl = jspUrl;
 	}
 
-	public String getMenuView() {
-		return menuView;
-	}
-
-	public void setMenuView(String menuView) {
-		this.menuView = menuView;
-	}
-	
 }

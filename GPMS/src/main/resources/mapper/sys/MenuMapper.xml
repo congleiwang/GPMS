@@ -10,13 +10,13 @@
 		<result property="menuCd" column="MENU_CD" />
 		<result property="menuNm" column="MENU_NM" />
 		<result property="menuType" column="MENU_TYPE" />
+		<result property="menuUrl" column="MENU_URL" />
 		<result property="pmenuCd" column="PMENU_CD" />
 		<result property="remark" column="REMARK" />
 		<result property="iconFile" column="ICON_FILE" />
 		<result property="orderBy" column="ORDER_BY" />
 		<result property="isUse" column="IS_USE" />
-		<result property="menuController" column="MENU_CONTROLLER" />
-		<result property="menuView" column="MENU_VIEW" />
+		<result property="jspUrl" column="JSP_URL" />
 	</resultMap>
 	<!-- 返回类型  -->
 	<resultMap type="cn.edu.ecit.cl.wang.sys.pojo.MenuTree" id="MenuTree">
@@ -24,13 +24,13 @@
 		<result property="id" column="MENU_CD" />
 		<result property="menuNm" column="MENU_NM" />
 		<result property="menuType" column="MENU_TYPE" />
+		<result property="menuUrl" column="MENU_URL" />
 		<result property="parentId" column="PMENU_CD" />
 		<result property="remark" column="REMARK" />
 		<result property="iconFile" column="ICON_FILE" />
 		<result property="orderBy" column="ORDER_BY" />
 		<result property="isUse" column="IS_USE" />
-		<result property="menuController" column="MENU_CONTROLLER" />
-		<result property="menuView" column="MENU_VIEW" />
+		<result property="jspUrl" column="JSP_URL" />
 	</resultMap>
 	
 	<select id="getMenuCdsByRoles" parameterType="java.util.List" resultType="String">
@@ -48,8 +48,8 @@
 	<!-- 根据登陆用户的权限查询可见的菜单(3为按钮权限) -->
 	<select id="getPermTree" parameterType="java.util.List" resultMap="MenuTree">
 		SELECT 
-			t1.SYS_NM,t1.MENU_CD,t1.MENU_NM,t1.MENU_TYPE,t1.PMENU_CD,t1.REMARK,
-			t1.ICON_FILE,t1.ORDER_BY,t1.IS_USE,t1.MENU_CONTROLLER,t1.MENU_VIEW
+			t1.SYS_NM,t1.MENU_CD,t1.MENU_NM,t1.MENU_TYPE,t1.MENU_URL,t1.PMENU_CD,t1.REMARK,
+			t1.ICON_FILE,t1.ORDER_BY,t1.IS_USE,t1.JSP_URL
 		FROM BASE_MENU t1
 		where t1.IS_USE='1' and MENU_TYPE!='3'
 		<if test="menuCds!=null and menuCds.size!=0">
@@ -62,8 +62,8 @@
 	
 	<select id="getFirstMenu" resultMap="MenuTree">
 		SELECT 
-			t1.SYS_NM,t1.MENU_CD,t1.MENU_NM,t1.MENU_TYPE,t1.PMENU_CD,t1.REMARK,
-			t1.ICON_FILE,t1.ORDER_BY,t1.IS_USE,t1.MENU_CONTROLLER,t1.MENU_VIEW
+			t1.SYS_NM,t1.MENU_CD,t1.MENU_NM,t1.MENU_TYPE,t1.MENU_URL,t1.PMENU_CD,t1.REMARK,
+			t1.ICON_FILE,t1.ORDER_BY,t1.IS_USE,t1.JSP_URL
 		FROM BASE_MENU t1
 		where t1.IS_USE='1' and MENU_TYPE!='3' and t1.PMENU_CD is null
 	</select>
