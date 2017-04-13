@@ -71,7 +71,7 @@
 		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
 		FROM BASE_USER u
 		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
-		WHERE u.is_LOCK='0'
+		WHERE u.IS_DEL='0'
 		<if test="ew!=null">
 			<if test="ew.entity!=null">
 				
