@@ -6,12 +6,6 @@
 <!-- fn 为JSTL的函数库，包含操作字符串的一些函数，一般用于判断长度 -->
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set scope="page" var="rootPath" value="${pageContext.request.contextPath }"></c:set>
-<link href="${rootPath }/css/font-awesome.css" rel="stylesheet" type="text/css" />
-<link href="${rootPath }/css/style.css" rel="stylesheet" type="text/css" />
-<link href="${rootPath }/css/bootstrap.min.css" rel="stylesheet">
-<script type="text/javascript" src="${rootPath }/js/jquery-2.1.1.min.js"></script>
-<script type="text/JavaScript" src="${rootPath }/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="${rootPath }/js/My97DatePicker/WdatePicker.js"></script>
 <c:if test="${not empty sessionScope.result && sessionScope.result == 1}">
 	<font color="red">操作成功</font>
 	<c:remove var="result" scope="session"/>

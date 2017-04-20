@@ -18,4 +18,6 @@ public interface RoleDao extends BaseMapper<Role>{
 	public List<Role> getRolesByUserId(@Param("userId")Long userId);
 	
 	public Role selectById(@Param("roleId")Long roleId);
+
+	public void delAtuthByRoleId(@Param("roleId")Long roleId);
 }

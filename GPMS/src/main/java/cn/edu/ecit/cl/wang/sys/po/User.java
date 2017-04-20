@@ -24,10 +24,10 @@ public class User extends BaseEntity {
 	/** 机构ID */
 	@TableField("ORG_ID")
 	private Long orgId;
-
+	
 	/** 机构名 */
-	@TableField(exist = false)
-	private Long orgNm;
+	@TableField(exist=false)
+	private String orgNm;
 
 	/** 用户名 */
 	@TableField("USER_NM")
@@ -68,6 +68,12 @@ public class User extends BaseEntity {
 	/** 注册时间 */
 	@TableField("SIGN_AT")
 	private Timestamp signAt;
+	
+	@TableField(exist=false)
+	private String signAtStart;
+	
+	@TableField(exist=false)
+	private String signAtEnd;
 
 	/** 最后一次登陆时间 */
 	@TableField("LAST_LOGIN_AT")
@@ -76,7 +82,7 @@ public class User extends BaseEntity {
 	/** 备注 */
 	@TableField("REMARK")
 	private String remark;
-
+	
 	public Long getUserId() {
 		return userId;
 	}
@@ -93,11 +99,11 @@ public class User extends BaseEntity {
 		this.orgId = orgId;
 	}
 
-	public Long getOrgNm() {
+	public String getOrgNm() {
 		return orgNm;
 	}
 
-	public void setOrgNm(Long orgNm) {
+	public void setOrgNm(String orgNm) {
 		this.orgNm = orgNm;
 	}
 
@@ -220,6 +226,22 @@ public class User extends BaseEntity {
 		} else if (!loginNm.equals(other.loginNm))
 			return false;
 		return true;
+	}
+
+	public String getSignAtStart() {
+		return signAtStart;
+	}
+
+	public void setSignAtStart(String signAtStart) {
+		this.signAtStart = signAtStart;
+	}
+
+	public String getSignAtEnd() {
+		return signAtEnd;
+	}
+
+	public void setSignAtEnd(String signAtEnd) {
+		this.signAtEnd = signAtEnd;
 	}
 
 }

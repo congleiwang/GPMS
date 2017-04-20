@@ -21,6 +21,12 @@ public class LoginRecord implements Serializable{
 	@TableField("CREATE_AT")
 	private Timestamp createAt;
 	
+	@TableField(exist=false)
+	private String createAtStart;
+
+	@TableField(exist=false)
+	private String createAtEnd;
+	
 	/** 登陆名 */
 	@TableField("LOGIN_NM")
 	private String loginNm;
@@ -56,6 +62,22 @@ public class LoginRecord implements Serializable{
 
 	public void setCreateAt(Timestamp createAt) {
 		this.createAt = createAt;
+	}
+
+	public String getCreateAtStart() {
+		return createAtStart;
+	}
+
+	public void setCreateAtStart(String createAtStart) {
+		this.createAtStart = createAtStart;
+	}
+
+	public String getCreateAtEnd() {
+		return createAtEnd;
+	}
+
+	public void setCreateAtEnd(String createAtEnd) {
+		this.createAtEnd = createAtEnd;
 	}
 
 	public String getLoginNm() {

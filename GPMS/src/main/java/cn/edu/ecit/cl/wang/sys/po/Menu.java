@@ -1,17 +1,22 @@
 package cn.edu.ecit.cl.wang.sys.po;
 
+import java.io.Serializable;
+
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 @TableName("BASE_MENU")
-public class Menu {
+public class Menu implements Serializable{
 	
+	private static final long serialVersionUID = 6273070602827621234L;
+
 	/** 系统名称 */
 	@TableField("SYS_NM")
 	private String sysNm;
 	
 	/** 菜单编号 */
-	@TableField("MENU_CD")
+	@TableId("MENU_CD")
 	private String menuCd;
 	
 	/** 菜单名称 */
@@ -33,9 +38,11 @@ public class Menu {
 	/** 菜单描述*/
 	@TableField("REMARK")
 	private String remark;
+	
 	/** 菜单图片*/
 	@TableField("ICON_FILE")
 	private String iconFile;
+	
 	/** 排序 */
 	@TableField("ORDER_BY")
 	private String orderBy;

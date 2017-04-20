@@ -1,5 +1,7 @@
 package cn.edu.ecit.cl.wang.sys.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,11 @@ public class DictionaryServiceImpl extends ServiceImpl<DictionaryDao, Dictionary
 	
 	public String getDicValueByEntiry(Dictionary dictionary) {
 		return dictionaryDao.getDicValueByEntiry(dictionary);
+	}
+
+	@Override
+	public List<Dictionary> getDictionaryByKey(Dictionary dictionary) {
+		return dictionaryDao.getDictionaryByKey(dictionary);
 	}
 
 }

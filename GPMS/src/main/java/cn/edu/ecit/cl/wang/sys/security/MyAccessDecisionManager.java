@@ -11,6 +11,7 @@ import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.util.CollectionUtils;
 
 public class MyAccessDecisionManager implements AccessDecisionManager {
 
@@ -27,7 +28,7 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
 	public void decide(Authentication authentication, Object object,Collection<ConfigAttribute> configAttributes)
 			throws AccessDeniedException, InsufficientAuthenticationException {
 		//如果对应资源没有找到角色 则放行  
-		if (configAttributes == null) {
+		if (CollectionUtils.isEmpty(configAttributes)) {
 			return;
 		}
 		log.info("请求待匹配的URL:"+object.toString()); // object is a URL.

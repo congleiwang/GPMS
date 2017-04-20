@@ -52,6 +52,10 @@
 			r.ROLE_ID,r.ROLE_NM,r.ROLE_TYPE,r.REMARK,r.IS_USE,
 			r.CREATOR,r.CREATE_AT,r.MODER,r.MOD_COUNT,r.MOD_AT,r.IS_DEL
 		FROM BASE_ROLE r
-		where u.IS_USE='1' and r.ROLE_ID=#{roleId,jdbcType=NUMERIC}
+		where r.IS_USE='1' and r.ROLE_ID=#{roleId,jdbcType=NUMERIC}
 	</select>
+	
+	<delete id="delAtuthByRoleId" parameterType="java.lang.Long">
+		delete from BASE_ROLE_ATUTH where role_id=#{roleId,jdbcType=NUMERIC}
+	</delete>
 </mapper>

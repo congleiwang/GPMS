@@ -6,20 +6,25 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import cn.edu.ecit.cl.wang.sys.po.Org;
 import cn.edu.ecit.cl.wang.sys.po.Role;
 import cn.edu.ecit.cl.wang.sys.po.User;
+import cn.edu.ecit.cl.wang.sys.pojo.MenuTree;
+import cn.edu.ecit.cl.wang.sys.pojo.OrgTree;
 
 public class MyUserDetails extends User implements UserDetails {
 
 	private static final long serialVersionUID = -8456779485140979882L;
-
-	private Collection<String> menuCds;
-	private Collection<GrantedAuthority> grantedAuthorities;
-	private List<Long> subOrgList;
+	
+	private List<OrgTree> orgTrees;
+	
+	private List<Long> subOrgIds;
+	
 	private List<Role> roles;
-	private Org org;
-
+	
+	private List<MenuTree> menuTrees;
+	
+	private Collection<GrantedAuthority> grantedAuthorities;
+	
 	public MyUserDetails() {
 	}
 
@@ -45,13 +50,21 @@ public class MyUserDetails extends User implements UserDetails {
 		setUserId(user.getUserId());
 		setUserNm(user.getUserNm());
 	}
-
-	public Collection<String> getMenuCds() {
-		return menuCds;
+	
+	public List<OrgTree> getOrgTrees() {
+		return orgTrees;
 	}
 
-	public void setMenuCds(Collection<String> menuCds) {
-		this.menuCds = menuCds;
+	public void setOrgTrees(List<OrgTree> orgTrees) {
+		this.orgTrees = orgTrees;
+	}
+
+	public List<Long> getSubOrgIds() {
+		return subOrgIds;
+	}
+
+	public void setSubOrgIds(List<Long> subOrgIds) {
+		this.subOrgIds = subOrgIds;
 	}
 
 	public List<Role> getRoles() {
@@ -62,12 +75,12 @@ public class MyUserDetails extends User implements UserDetails {
 		this.roles = roles;
 	}
 
-	public Org getOrg() {
-		return org;
+	public List<MenuTree> getMenuTrees() {
+		return menuTrees;
 	}
 
-	public void setOrg(Org org) {
-		this.org = org;
+	public void setMenuTrees(List<MenuTree> menuTrees) {
+		this.menuTrees = menuTrees;
 	}
 
 	public Collection<GrantedAuthority> getGrantedAuthorities() {
@@ -76,14 +89,6 @@ public class MyUserDetails extends User implements UserDetails {
 
 	public void setGrantedAuthorities(Collection<GrantedAuthority> grantedAuthorities) {
 		this.grantedAuthorities = grantedAuthorities;
-	}
-
-	public List<Long> getSubOrgList() {
-		return subOrgList;
-	}
-
-	public void setSubOrgList(List<Long> subOrgList) {
-		this.subOrgList = subOrgList;
 	}
 
 	@Override

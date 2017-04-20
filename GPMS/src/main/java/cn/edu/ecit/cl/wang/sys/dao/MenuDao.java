@@ -8,10 +8,11 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 import cn.edu.ecit.cl.wang.sys.po.Menu;
 import cn.edu.ecit.cl.wang.sys.po.Role;
-import cn.edu.ecit.cl.wang.sys.pojo.MenuTree;
 
 public interface MenuDao extends BaseMapper<Menu> {
-	public List<String> getMenuCdsByRoles(@Param("roles") List<Role> roles);
-	public List<MenuTree> getPermTree(@Param("menuCds")List<String> menuCds);
-	public List<MenuTree> getFirstMenu();
+	public List<Menu> getPermTree(@Param("roles")List<Role> roles);
+	public List<Menu> getFirstMenu();
+	public List<Menu> getMenuWithSubById(@Param("id")String id);
+	public List<Menu> getAllMenuTree();
+	public List<String> getMenuCdsByRoleId(@Param("roleId")Long roleId);
 }

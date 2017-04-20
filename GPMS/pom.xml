@@ -13,6 +13,7 @@
 		<junit.version>4.12</junit.version>
 		<druid.version>1.0.18</druid.version>
 		<fastjson.version>1.2.8</fastjson.version>
+		<fasterxml.version>2.5.2</fasterxml.version>
 		<javax.api.version>3.1.0</javax.api.version>
 		<mybaitsplus.version>2.0.1</mybaitsplus.version>
 		<oracle.version>10.2.0.2.0</oracle.version>
@@ -130,6 +131,7 @@
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
 		</dependency>
+
 		<!-- 工作流 -->
 		<dependency>
 			<groupId>org.activiti</groupId>
@@ -170,9 +172,9 @@
 			<classifier>jdk15</classifier>
 		</dependency>
 		<dependency>
-		    <groupId>net.sf.ehcache</groupId>
-		    <artifactId>ehcache</artifactId>
-		    <version>2.10.1</version>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.10.1</version>
 		</dependency>
 	</dependencies>
 

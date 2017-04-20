@@ -1,7 +1,5 @@
 package cn.edu.ecit.cl.wang.sys.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -11,7 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import cn.edu.ecit.cl.wang.sys.pojo.MenuTree;
+import cn.edu.ecit.cl.wang.sys.common.utils.SpringSecurityUtils;
+import cn.edu.ecit.cl.wang.sys.security.MyUserDetails;
 import cn.edu.ecit.cl.wang.sys.service.IMenuService;
 
 @Controller
@@ -22,9 +21,9 @@ public class PageController {
 
 	@RequestMapping({ "/home" })
 	public String home(HttpServletRequest request) {
-		List<MenuTree> menuTreeList=menuService.getPermTree();
+		MyUserDetails user=SpringSecurityUtils.getCurrentUser();
 		HttpSession session=request.getSession();
-		session.setAttribute("menuTreeList",menuTreeList);
+		session.setAttribute("user",user);
 		return "index";
 	}
 

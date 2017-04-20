@@ -8,6 +8,7 @@
 	<resultMap type="cn.edu.ecit.cl.wang.sys.po.User" id="User">
 		<id property="userId" column="USER_ID" />
 		<result property="orgId" column="ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
 		<result property="userNm" column="USER_NM" />
 		<result property="loginNm" column="LOGIN_NM" />
 		<result property="passwd" column="PASSWD" />
@@ -27,7 +28,7 @@
 		<result property="modCount" column="MOD_COUNT" />
 		<result property="isDel" column="IS_DEL" />
 	</resultMap>
-
+	
 	<!-- 根据用户LongNm得到id -->
 	<select id="getIdByLoginNm" parameterType="java.lang.String"
 		resultType="java.lang.Long">
@@ -35,8 +36,8 @@
 		login_nm=#{loginNm,jdbcType=VARCHAR}
 	</select>
 
-	<!-- 根据用户登陆名，找到用户 -->
-	<select id="selectById" resultMap="User" parameterType="java.lang.Long">
+	<!-- 根据用户id，找到用户 -->
+	<select id="getUnLockUserById" resultMap="User" parameterType="java.lang.Long">
 		SELECT
 		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
 		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
@@ -44,6 +45,29 @@
 		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
 		WHERE
 		u.USER_ID=#{userId,jdbcType=NUMERIC} AND u.is_LOCK='0'
+	</select>
+	
+	<!-- 根据角色id，找到用户 -->
+	<select id="getUsersByRoleId" resultMap="User" parameterType="java.lang.Long">
+		SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		left join BASE_USER_ROLE ur on u.USER_ID=ur.USER_ID
+		WHERE
+		ur.ROLE_ID=#{roleId,jdbcType=NUMERIC} AND u.is_LOCK='0'
+	</select>
+	
+	<!-- 根据用户id，找到用户 -->
+	<select id="selectById" resultMap="User">
+		SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		WHERE
+		u.USER_ID=#{userId,jdbcType=NUMERIC}
 	</select>
 
 	<!-- 查询用户是否被锁定 -->
@@ -58,11 +82,34 @@
 		update BASE_USER set
 		PASSWD_ERR=PASSWD_ERR+1 where USER_ID=#{userId,jdbcType=NUMERIC}
 	</update>
+	
+	<!-- 增加修改次数 -->
+	<update id="updateModCount" parameterType="java.lang.Long">
+		update BASE_USER set
+		MOD_COUNT=MOD_COUNT+1 where USER_ID=#{userId,jdbcType=NUMERIC}
+	</update>
+
+	<!-- 更新最后登陆时间 -->
+	<update id="updateLoginAt" parameterType="java.lang.Long">
+		update BASE_USER set
+		last_login_at=sysdate where USER_ID=#{userId,jdbcType=NUMERIC}
+	</update>
+	
+	<!-- 清除错误次数 -->
+	<update id="cleanPassErr" parameterType="java.lang.Long">
+		update BASE_USER set
+		PASSWD_ERR=0 where USER_ID=#{userId,jdbcType=NUMERIC}
+	</update>
 
 	<!-- 锁定用户 -->
 	<update id="updateLockUser" parameterType="java.lang.Long">
 		update BASE_USER set
 		is_LOCK='1' where USER_ID=#{userId,jdbcType=NUMERIC}
+	</update>
+	<!-- 解锁用户 -->
+	<update id="updateUnLockUser" parameterType="java.lang.Long">
+		update BASE_USER set
+		is_LOCK='0' where USER_ID=#{userId,jdbcType=NUMERIC}
 	</update>
 
 	<select id="selectPage" resultMap="User">
@@ -74,7 +121,30 @@
 		WHERE u.IS_DEL='0'
 		<if test="ew!=null">
 			<if test="ew.entity!=null">
-				
+				<if test="ew.entity.userNm!=null and ew.entity.userNm!=''">
+					and u.USER_NM like '%' || #{ew.entity.userNm,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.loginNm!=null and ew.entity.loginNm!=''">
+					and u.LOGIN_NM like '%' || #{ew.entity.loginNm,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.address!=null and ew.entity.address!=''">
+					and u.ADDRESS like '%' || #{ew.entity.address,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.isLock!=null and ew.entity.isLock!=''">
+					and u.is_LOCK = #{ew.entity.isLock,jdbcType=VARCHAR}
+				</if>
+				<if test="ew.entity.signAtStart!=null and ew.entity.signAtStart!=''">
+					and to_char(u.sign_at,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.signAtStart,jdbcType=VARCHAR}
+				</if>
+				<if test="ew.entity.signAtEnd!=null and ew.entity.signAtEnd!=''">
+					and to_char(u.sign_at,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.signAtEnd,jdbcType=VARCHAR}
+				</if>
+				<if test="ew.entity.orgId!=null and ew.entity.orgId!=0">
+					and u.ORG_ID in(
+					SELECT t.ORG_ID FROM BASE_ORG t where t.IS_USE='1'
+					START WITH t.ORG_ID= #{ew.entity.orgId,jdbcType=NUMERIC}
+					CONNECT BY PRIOR t.ORG_ID = t.PORG_ID)
+				</if>
 			</if>
 		</if>
 	</select>

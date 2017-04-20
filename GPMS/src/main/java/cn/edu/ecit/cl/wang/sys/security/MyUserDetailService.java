@@ -63,23 +63,25 @@ public class MyUserDetailService implements UserDetailsService {
 		
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		//从数据库中找到该用户
-		Long usrId=userService.getIdByLoginNm(loginNm);
-		if (usrId == null || usrId==0) {
+		Long userId=userService.getIdByLoginNm(loginNm);
+		if (userId == null || userId==0) {
 			logger.debug("loadUserByUsername->UsernameNotFoundException:" + loginNm + "= null");
 			//保存其登陆记录
 			loginRecordService.insert(new LoginRecord(loginNm, "0", SystemUtils.getIpAddress(request)));
 			throw new UsernameNotFoundException("用户 " + loginNm + " 不存在");
 		}
-		boolean isUserLocked = userService.isUserLocked(usrId);
+		boolean isUserLocked = userService.isUserLocked(userId);
 		if (isUserLocked) {
 			logger.debug("loadUserByUsername->LockedException:" + loginNm + " isUserLocked");
 			throw new LockedException("用户 " + loginNm + " 已被锁定!");
 		}
 		
+		userService.cleanPassErr(userId);
+		userService.updateLoginAt(userId);
 		//保存其登陆记录
 		loginRecordService.insert(new LoginRecord(loginNm, "1", SystemUtils.getIpAddress(request)));
 		
-		return setGrantedAuthority(usrId);
+		return setGrantedAuthority(userId);
 	}
 
 	/**
@@ -90,10 +92,11 @@ public class MyUserDetailService implements UserDetailsService {
 	 * @param username
 	 * @return
 	 */
-	public MyUserDetails setGrantedAuthority(Long usrId) {
-		MyUserDetails userDetails=new MyUserDetails(userService.selectById(usrId));
+	public MyUserDetails setGrantedAuthority(Long userId) {
+		MyUserDetails userDetails=new MyUserDetails(userService.getUnLockUserById(userId));
 		//机构权限
-		userDetails.setSubOrgList(orgService.getSubOrgIdList(userDetails.getOrgId()));
+		userDetails.setSubOrgIds(orgService.getSubOrgIdList(userDetails.getOrgId()));
+		userDetails.setOrgTrees(orgService.getPermOrgTree(userDetails.getOrgId()));
 		//获取用户角色列表
 		List<Role> roles = roleService.getRolesByUserId(userDetails.getUserId());
 		//若用户角色列表为空，加入系统设置的默认角色
@@ -106,9 +109,7 @@ public class MyUserDetailService implements UserDetailsService {
 		if (!CollectionUtils.isEmpty(roles)) {
 			userDetails.setRoles(roles);
 		}
-		List<String> menuCds=menuServcie.getMenuCdsByRoles(roles);
-		
-		userDetails.setMenuCds(menuCds);
+		userDetails.setMenuTrees(menuServcie.getPermTree(roles));
 		
 		//放入用户所有权限
 		Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();

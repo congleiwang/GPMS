@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.sys.dao.LoginRecordDao">
+
+	<!-- 返回类型  -->
+	<resultMap type="cn.edu.ecit.cl.wang.sys.po.LoginRecord" id="LoginRecord">
+		<id property="recordId" column="RECORD_ID" />
+		<result property="createAt" column="CREATE_AT" />
+		<result property="loginNm" column="LOGIN_NM" />
+		<result property="loginState" column="LOGIN_STATE" />
+		<result property="ipAddr" column="IP_ADDR" />
+	</resultMap>
+	
+    <select id="selectPage" resultMap="LoginRecord">
+    	select * from BASE_LOGIN_RECORD
+    	<where>
+    		<if test="ew.entity.loginNm!=null and ew.entity.loginNm!=''">
+    			LOGIN_NM like '%' || #{ew.entity.loginNm,jdbcType=VARCHAR} || '%'
+    		</if>
+    		<if test="ew.entity.loginState!=null and ew.entity.loginState!=''">
+    			and LOGIN_STATE=#{ew.entity.loginState,jdbcType=VARCHAR}
+    		</if>
+    		<if test="ew.entity.createAtStart!=null and ew.entity.createAtStart!=''">
+				and to_char(CREATE_AT,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.createAtStart,jdbcType=VARCHAR}
+			</if>
+			<if test="ew.entity.createAtEnd!=null and ew.entity.createAtEnd!=''">
+				and to_char(CREATE_AT,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.createAtEnd,jdbcType=VARCHAR}
+			</if>
+    	</where>
+    </select>
+    
+</mapper>

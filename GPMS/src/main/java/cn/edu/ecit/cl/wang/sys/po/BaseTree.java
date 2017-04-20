@@ -1,52 +1,51 @@
 package cn.edu.ecit.cl.wang.sys.po;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
-import com.baomidou.mybatisplus.annotations.TableField;
+public abstract class BaseTree implements Serializable {
 
-public abstract class BaseTree {
+	private static final long serialVersionUID = -2329706295668731972L;
 
-	@TableField(exist = false)
 	private String id;
 
-	@TableField(exist = false)
-	private List<? extends BaseTree> children;
+	private String text;
 
-	@TableField(exist = false)
+	private String state;
+
+	private Boolean checked;
+	
+	private String iconCls;
+	
 	private String parentId;
 
-	@TableField(exist = false)
-	private Boolean leaf;
+	private List<? extends BaseTree> children;
 
-	@TableField(exist = false)
-	private Boolean checked;
+	private Map<String, Object> attributes;
 
-	public boolean hasChildren() {
-		return (children != null) && (!children.isEmpty());
+	public String getId() {
+		return id;
 	}
 
-	public Boolean getLeaf() {
-		return (leaf == null) ? (!hasChildren()) : leaf;
+	public void setId(String id) {
+		this.id = id;
 	}
 
-	public List<? extends BaseTree> getChildren() {
-		return children;
+	public String getText() {
+		return text;
 	}
 
-	public void setChildren(List<? extends BaseTree> children) {
-		this.children = children;
+	public void setText(String text) {
+		this.text = text;
 	}
 
-	public String getParentId() {
-		return parentId;
+	public String getState() {
+		return state;
 	}
 
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
-	}
-
-	public void setLeaf(Boolean leaf) {
-		this.leaf = leaf;
+	public void setState(String state) {
+		this.state = state;
 	}
 
 	public Boolean getChecked() {
@@ -57,12 +56,35 @@ public abstract class BaseTree {
 		this.checked = checked;
 	}
 
-	public String getId() {
-		return id;
+	public List<? extends BaseTree> getChildren() {
+		return children;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setChildren(List<? extends BaseTree> children) {
+		this.children = children;
 	}
 
+	public Map<String, Object> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(Map<String, Object> attributes) {
+		this.attributes = attributes;
+	}
+
+	public String getIconCls() {
+		return iconCls;
+	}
+
+	public void setIconCls(String iconCls) {
+		this.iconCls = iconCls;
+	}
+
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
 }

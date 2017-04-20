@@ -24,6 +24,18 @@
 			<where>
 				<if test="dictionary.sysNm!=null">and t1.SYS_NM=#{dictionary.sysNm,jdbcType=VARCHAR}</if>
 				<if test="dictionary.keyCd!=null">and t1.KEY_CD=#{dictionary.keyCd,jdbcType=VARCHAR}</if>
+				<if test="dictionary.keyValue!=null">and t1.KEY_VALUE=#{dictionary.keyValue,jdbcType=VARCHAR}</if>
+			</where>
+		</if>
+    </select>
+    
+    <!-- 根据keyCd查询dicValue -->
+	<select id = "getDictionaryByKey" parameterType = "cn.edu.ecit.cl.wang.sys.po.Dictionary" resultMap="Dictionary">
+    	SELECT SYS_NM,KEY_CD,KEY_VALUE,CAPTION FROM BASE_DICTIONARY T1
+    	<if test="dictionary!=null">
+			<where>
+				<if test="dictionary.sysNm!=null">and t1.SYS_NM=#{dictionary.sysNm,jdbcType=VARCHAR}</if>
+				<if test="dictionary.keyCd!=null">and t1.KEY_CD=#{dictionary.keyCd,jdbcType=VARCHAR}</if>
 			</where>
 		</if>
     </select>

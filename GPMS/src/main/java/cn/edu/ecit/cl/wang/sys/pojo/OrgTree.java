@@ -1,47 +1,25 @@
 package cn.edu.ecit.cl.wang.sys.pojo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import cn.edu.ecit.cl.wang.sys.po.BaseTree;
+import cn.edu.ecit.cl.wang.sys.po.Org;
 
 public class OrgTree extends BaseTree{
 
-	private String orgType;
+	private static final long serialVersionUID = -5042931257302124801L;
 	
-	private String orgNm;
-	
-	private String orgDesc;
-	
-	private String address;
-
-	public String getOrgType() {
-		return orgType;
+	public OrgTree(){
+		
 	}
-
-	public void setOrgType(String orgType) {
-		this.orgType = orgType;
-	}
-
-	public String getOrgNm() {
-		return orgNm;
-	}
-
-	public void setOrgNm(String orgNm) {
-		this.orgNm = orgNm;
-	}
-
-	public String getOrgDesc() {
-		return orgDesc;
-	}
-
-	public void setOrgDesc(String orgDesc) {
-		this.orgDesc = orgDesc;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
+	public OrgTree(Org org){
+		Map<String, Object> map= new HashMap<String,Object>();
+		map.put("orgType",org.getOrgType());
+		setAttributes(map);
+		setId(org.getOrgId().toString());
+		setText(org.getOrgNm());
+		setParentId(String.valueOf(org.getPorgId()));
 	}
 
 }

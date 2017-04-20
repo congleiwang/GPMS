@@ -34,38 +34,37 @@ public class MyInvocationSecurityMetadataSource implements FilterInvocationSecur
 	 *  在Web服务器启动时，提取系统中的所有权限。  加载所有资源与权限的关系  
 	 * 
 	 */
-	private void loadResourceDefine() {
-		if(resourceMap == null) {  
-	  
+	public void loadResourceDefine() {
+		if(resourceMap == null) {
 			//应当是资源为key， 权限为value。 资源通常为url， 权限就是那些以ROLE_为前缀的角色。 一个资源可以由多个权限来访问。 
-			resourceMap = new HashMap<String, Collection<ConfigAttribute>>();  
-	        List<UrlAndRoleId> urlAndRoleIdList = roleService.getUrlAndRoleIdList();  
-	        for (UrlAndRoleId urlAndRoleId : urlAndRoleIdList) {
-	            Long roleId = urlAndRoleId.getRoleId();  
-	              
-	            ConfigAttribute ca = new SecurityConfig(String.valueOf(roleId));  
-	  
-	            List<String> urls = roleService.getMenuUrlsByRoleId(roleId);
-	            
-	            if(urls.isEmpty()){
-	            	continue;
-	            }
-	            for (String url : urls) {  
-	                //判断资源文件和权限的对应关系，如果已经存在相关的资源url，则要通过该url为key提取出权限集合，将权限增加到权限集合中。 
-	                if (resourceMap.containsKey(url)) {  
-	                    Collection<ConfigAttribute> value = resourceMap.get(url);  
-	                    value.add(ca);  
-	                    resourceMap.put(url, value);  
-	                } else {  
-	                    Collection<ConfigAttribute> atts = new ArrayList<ConfigAttribute>();  
-	                    atts.add(ca);  
-	                    resourceMap.put(url, atts);  
-	                }  
-	  
-	            }  
-	        }  
+			resourceMap = new HashMap<String, Collection<ConfigAttribute>>();
+		}
+        List<UrlAndRoleId> urlAndRoleIdList = roleService.getUrlAndRoleIdList();  
+        for (UrlAndRoleId urlAndRoleId : urlAndRoleIdList) {
+            Long roleId = urlAndRoleId.getRoleId();  
               
+            ConfigAttribute ca = new SecurityConfig(String.valueOf(roleId));  
+  
+            List<String> urls = roleService.getMenuUrlsByRoleId(roleId);
+            
+            if(urls.isEmpty()){
+            	continue;
+            }
+            for (String url : urls) {  
+                //判断资源文件和权限的对应关系，如果已经存在相关的资源url，则要通过该url为key提取出权限集合，将权限增加到权限集合中。 
+                if (resourceMap.containsKey(url)) {  
+                    Collection<ConfigAttribute> value = resourceMap.get(url);  
+                    value.add(ca);  
+                    resourceMap.put(url, value);  
+                } else {  
+                    Collection<ConfigAttribute> atts = new ArrayList<ConfigAttribute>();  
+                    atts.add(ca);  
+                    resourceMap.put(url, atts);  
+                }  
+  
+            }  
         }  
+              
 	}
 
 	
@@ -74,8 +73,26 @@ public class MyInvocationSecurityMetadataSource implements FilterInvocationSecur
 	 * 
 	 */
 	public Collection<ConfigAttribute> getAttributes(Object object)	throws IllegalArgumentException {
+		/*
+		FilterInvocation filterInvocation = ((FilterInvocation) object);
+        log.info("请求的url是 " + filterInvocation.getRequestUrl());
+        if(resourceMap == null) {
+        	loadResourceDefine(); 
+        }  
+        Iterator<String> ite=resourceMap.keySet().iterator();
+        while(ite.hasNext()){
+        	String resUrl=ite.next();
+        	RequestMatcher urlMatcher=new AntPathRequestMatcher(resUrl);
+        	if(urlMatcher.matches(filterInvocation.getHttpRequest())
+        			||StringUtils.equals(filterInvocation.getHttpRequest().getRequestURI(),resUrl)){
+        		log.info("通过资源定位到的权限："+resourceMap.get(resUrl));
+        		return resourceMap.get(resUrl);
+        	}
+        }
+        return null;*/
+		
 		String url = ((FilterInvocation) object).getRequestUrl();
-        log.info("requestUrl is " + url);
+		log.info("请求的url是 " + url);
         int firstQuestionMarkIndex = url.indexOf("?");  
         //判断请求是否带有参数 如果有参数就去掉后面的后缀和参数(/index?a=1&b=2  --> /index)  
         if(firstQuestionMarkIndex != -1){  
@@ -85,7 +102,7 @@ public class MyInvocationSecurityMetadataSource implements FilterInvocationSecur
             loadResourceDefine(); 
         }  
         log.info("通过资源定位到的权限："+resourceMap.get(url));
-        return resourceMap.get(url);  
+        return resourceMap.get(url);
 	}
 
 	public boolean supports(Class<?> clazz) {
@@ -100,6 +117,5 @@ public class MyInvocationSecurityMetadataSource implements FilterInvocationSecur
 	public void afterPropertiesSet() throws Exception {
 		loadResourceDefine();
 	}
-
 
 }

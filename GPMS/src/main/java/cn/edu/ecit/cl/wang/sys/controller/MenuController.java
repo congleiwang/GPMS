@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.baomidou.mybatisplus.plugins.Page;
 
+import cn.edu.ecit.cl.wang.sys.common.utils.SpringSecurityUtils;
 import cn.edu.ecit.cl.wang.sys.po.Menu;
+import cn.edu.ecit.cl.wang.sys.po.Role;
 import cn.edu.ecit.cl.wang.sys.pojo.MenuTree;
 import cn.edu.ecit.cl.wang.sys.service.IMenuService;
 
@@ -19,45 +21,63 @@ public class MenuController extends BaseController<Menu> {
 
 	@Autowired
 	IMenuService menuService;
-
-	@RequestMapping("/getPermTree")
+	
+	@RequestMapping("getPermTree")
 	@ResponseBody
 	public List<MenuTree> getPermTree(){
-		return menuService.getPermTree();
+		List<Role> roles =SpringSecurityUtils.getCurrentUser().getRoles();
+		return menuService.getPermTree(roles);
 	}
 	
-	@Override
-	public boolean addData(Menu obj) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+	@RequestMapping("getMenuCdsByRoleId")
+	@ResponseBody
+	public List<String> getMenuCdsByRoleId(Long roleId){
+		return menuService.getMenuCdsByRoleId(roleId);
+	}
+	
+	@RequestMapping("getAllMenuTree")
+	@ResponseBody
+	public List<MenuTree> getAllMenuTree(){
+		return menuService.getAllMenuTree();
+	}
+	
+	@RequestMapping("getSubMenuTreeById")
+	@ResponseBody
+	public List<MenuTree> getSubMenuTreeById(String id){
+		return menuService.getSubMenuTreeById(id);
 	}
 
-	@Override
-	public boolean updateData(Menu obj) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
-	public boolean delData(String id) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean delDataCompkeys(Menu obj) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<Menu> selectList(Menu obj) throws Exception {
+	public Page<Menu> selectPage(Menu obj, int pageNum, int pageSize) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Page<Menu> selectPage(String jsonObj, int pageNum, int pageSize) throws Exception {
+	public boolean addData(Menu obj) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean updateData(Menu obj) {
+		return menuService.updateById(obj);
+	}
+
+	@Override
+	public boolean delData(String id) {
+		return menuService.deleteById(id);
+	}
+
+	@Override
+	public List<Menu> selectList(Menu obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Menu selectById(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
