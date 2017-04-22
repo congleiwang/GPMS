@@ -19,4 +19,5 @@ public interface IUserService extends IService<User> {
 	public boolean lockUserBatchIds(List<Long> ids);
 	public boolean unLockUserBatchIds(List<Long> ids);
 	public List<User> getUsersByRoleId(Long roleId);
+	public List<User> getUsersExRoleId(User user, Long roleId);
 }

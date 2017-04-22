@@ -145,4 +145,15 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 		return userDao.getUsersByRoleId(roleId);
 	}
 
+	@Override
+	public List<User> getUsersExRoleId(User user, Long roleId) {
+		if(user==null){
+			user=new User();
+		}
+		if(user.getOrgId()==null || user.getOrgId()==0){
+			user.setOrgId(SpringSecurityUtils.getCurrentUser().getOrgId());
+		}
+		return userDao.getUsersExRoleId(user,roleId);
+	}
+
 }

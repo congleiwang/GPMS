@@ -155,7 +155,7 @@
 		var ids = [];
 		var rows = dg.datagrid('getSelections');
 		var msg;
-		if (rows.length == 0) {
+		if (!rows || rows.length == 0) {
 			$.messager.alert('提示', '请勾选要删除的数据！');
 			return;
 		}
@@ -304,12 +304,12 @@
 				onSubmit:function(){
 					return $(this).form('validate');
 				},
-			    url : '${pageContext.request.contextPath}/userAction!add.action',
+			    url : '${pageContext.request.contextPath}/user/add',
 			     success:function(r){
 			        obj=$.parseJSON(r);
 			        if(obj.success){
 			           searchs();
-				       $('user_addDialog').dialog('destroy');
+				       $('#user_addDialog').dialog('destroy');
 			        }
 			        $.messager.show({title:'提示',msg:obj.msg});
 			    }
@@ -321,7 +321,7 @@
 			<tr>
 				<th>所属机构</th>
 				 <td>
-					<select class="easyui-combotree" url="${pageContext.request.contextPath}/org/getPermOrgTree" name="orgId"></select>
+					<select class="easyui-combotree easyui-validatebox" data-options="required:true" url="${pageContext.request.contextPath}/org/getPermOrgTree" name="orgId"></select>
 				</td>
 				<th>登录名</th>
 				<td><input name="loginNm" class="easyui-validatebox" data-options="required:true" /></td>

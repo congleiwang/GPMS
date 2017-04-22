@@ -42,6 +42,12 @@ public class UserController extends BaseController<User> {
 		return userService.insert(obj);
 	}
 
+	@RequestMapping("/getUsersExRoleId")
+	@ResponseBody
+	public List<User> getUsersExRoleId(User user,Long roleId) {
+		return userService.getUsersExRoleId(user,roleId);
+	}
+	
 	@RequestMapping("/getUsersByRoleId")
 	@ResponseBody
 	public List<User> getUsersByRoleId(Long roleId) {

@@ -16,8 +16,6 @@
 			rownumbers:true,
 			border : false,
 			idField : 'roleId',
-			checkOnSelect : true,
-			selectOnCheck : true,
 			columns : [ [ {
 				title : '角色名称',
 				field : 'roleNm',
@@ -25,7 +23,7 @@
 			}, {
 				title : '角色类型',
 				field : 'roleType',
-				width : 100
+				width : 70
 			},{
 				title : '是否启用',
 				field : 'isUse',
@@ -39,7 +37,7 @@
 			} , {
 				title : '备注',
 				field : 'remark',
-				width : 434
+				width : 332
 			} ] ],
 			toolbar : [ {
 				text : '增加',
@@ -79,22 +77,16 @@
 					success : function(d) {
 						$(d).each(function(i,menuCd){
 							var node=$('#menuTree').tree('find',menuCd);
-							$('#menuTree').tree('check',node.target);
+							var isLeaf=$('#menuTree').tree('isLeaf', node.target);
+							if(isLeaf){
+								$('#menuTree').tree('check',node.target);
+							}
 						});
 					}
-				});/* 
-				$.ajax({
-					url : '${pageContext.request.contextPath}/user/getUsersByRoleId',
-					data :'roleId='+data.roleId,
-					type:'post',
-					dataType : 'json',
-					success : function(d) {
-						$(d).each(function(i,menuCd){
-							var node=$('#menuTree').tree('find',menuCd);
-							$('#menuTree').tree('check',node.target);
-						});
-					}
-				});  */
+				});
+				ru_datagrid.datagrid({
+					url : '${pageContext.request.contextPath}/user/getUsersByRoleId?roleId='+data.roleId
+				})
 			}
 		});
 		ru_datagrid.datagrid({
@@ -102,7 +94,6 @@
 			pageSize : 10,
 			pageList : [ 10, 20, 30, 40 ],
 			fit : true,
-			singleSelect:true,
 			nowrap : false,
 			rownumbers:true,
 			border : false,
@@ -110,18 +101,51 @@
 			frozenColumns : [ [ {
 				field : 'loginNm',
 				title : '登陆名',
-				width : 100
+				width : 90
 			}] ],
 			columns : [ [ {
-				title : '角色名称',
-				field : 'roleNm',
+				field : 'userNm',
+				title : '用户名',
 				width : 100
-			}, {}]]
+			} , {
+				field : 'orgNm',
+				title : '所属机构',
+				width : 120
+			} , {
+				field : 'phoneNum',
+				title : '电话',
+				width : 90
+			} , {
+				field : 'email',
+				title : '邮箱',
+				width : 90
+			}]],
+			toolbar : [ {
+				text : '加入',
+				iconCls : 'icon-add',
+				handler : function() {
+					putUser();
+				}
+			}, '-', {
+				text : '移除',
+				iconCls : 'icon-remove',
+				handler : function() {
+					removeUser();
+				}
+			}, '-', {
+				text : '取消选中',
+				iconCls : 'icon-undo',
+				handler : function() {
+					ru_datagrid.datagrid('unselectAll');
+				}
+			} ]
 		});
 	});
+	//删除某一角色
 	function del(){
-		var row = dg.datagrid('getSelected');
+		var row = $('#role_datagrid').datagrid('getSelected');
 		if(row){
+			var flag=false;
 			$.ajax({
 				url : '${pageContext.request.contextPath}/user/getUsersByRoleId',
 				data :'roleId='+row.roleId,
@@ -131,16 +155,19 @@
 				success : function(d) {
 					if(d.length>0){
 						$.messager.show({title : '提示',msg :'该角色含有用户，请先移除用户'});
-						return ;
+						flag=true;
 					}
 				}
 			});
+			if(flag){
+				return;
+			}
 			$.messager.confirm('请确认','确认删除？',
 					function(r) {
 						if (r) {
 							$.ajax({
 								url : '${pageContext.request.contextPath}/role/del',
-								data :'roleId='+row.roleId,
+								data :'id='+row.roleId,
 								type:'post',
 								dataType : 'json',
 								success : function(d) {
@@ -153,30 +180,35 @@
 								}
 							});
 						}
-					});
+				});
 		}else{
 			$.messager.show({title : '提示',msg :'请先选择一条数据'});
 		}
 	}
+	//打开添加角色对话框
 	function add(){
 		$('#role_updateForm').form('clear');
+		$("#role_updateDialog").dialog('setTitle','添加角色');
 		$('#role_updateDialog').dialog('open');
 	}
+	//打开修改角色对话框
 	function update(){
-		var row = dg.datagrid('getSelected');
+		var row = datagrid.datagrid('getSelected');
 		if(row){
 			$('#role_updateDialog').dialog('open');
+			$("#role_updateDialog").dialog('setTitle','修改角色');
 			$('#role_updateForm').form('load',{
-				roleId:rows.roleId,
-				roleNm:rows.roleNm,
-				roleType:rows.roleType,
-				isUse:rows.isUse,
-				remark:rows.remark
+				roleId:row.roleId,
+				roleNm:row.roleNm,
+				roleType:row.roleType,
+				isUse:row.isUse,
+				remark:row.remark
 	        });
 		}else{
 			$.messager.show({title : '提示',msg :'请先选择一条数据'});
 		}
 	}
+	//保存添加或修改对话框中信息
 	function save(){
 		var url;
 		var roleId=$("#role_updateForm [name=roleId]").val();
@@ -195,37 +227,150 @@
                  if(obj.success){
                 	$('#role_updateDialog').dialog('destroy');
                 	$('#role_datagrid').datagrid('unselectAll');
-                 	searchs();
+                	$('#role_datagrid').datagrid('load', {});
                  }
                  $.messager.alert('提示', obj.msg);
 		    }
 		});
 	}
+	//打开向角色中添加用户对话框
+	function putUser(){
+		var roleRow = datagrid.datagrid('getSelected');
+		if(roleRow){
+			var d=$('<div/>').dialog({
+				title : '为用户设置角色',
+				href : '${pageContext.request.contextPath}/jsp/sysManager/auth/authAdd.jsp',
+				width : 900,
+				height : 600,
+				modal : true,
+				resizable :true,
+				onClose : function() {
+					$(this).dialog('destroy');
+				},
+				onLoad:function(){
+					$('#user_datagrid').datagrid({
+						url : '${pageContext.request.contextPath}/user/getUsersExRoleId?roleId='+roleRow.roleId
+					})
+				},
+				buttons : [ {
+					text : "加入到 <font color='red'>"+roleRow.roleNm+"</font>",
+					handler : function() {
+						var msg;
+						var userRows = $('#user_datagrid').datagrid('getSelections');
+						if (!userRows || userRows.length == 0) {
+							$.messager.alert('提示', '请选择一条数据！');
+							return;
+						}
+						if(userRows.length==1){
+							msg='确认将该用户加入？'
+						}else{
+							msg='确认将选中的多个用户加入？'
+						}
+						$.messager.confirm('请确认',msg,
+								function(r) {
+									if (r) {
+										var userIds=[];
+										for ( var i = 0; i < userRows.length; i++) {
+											userIds.push(userRows[i].userId);
+										}
+										$.ajax({
+											url : '${pageContext.request.contextPath}/role/putUsers',
+											data : {"userIds":userIds.join(','),"roleId":roleRow.roleId},
+											type:'post',
+											dataType : 'json',
+											success : function(d) {
+												$('#user_datagrid').datagrid('load');
+												$('#role_user_datagrid').datagrid('load');
+												$('#user_datagrid').datagrid('unselectAll');
+												$.messager.show({
+													title : '提示',
+													msg : d.msg
+												});
+											}
+										});
+									}
+							});
+					}
+				} ]
+			});
+		}else{
+			$.messager.show({title : '提示',msg :'请先选择一种角色'});
+		}
+	}
+	//将角色中的某些用户移除掉
+	function removeUser(){
+		var userRows = $('#role_user_datagrid').datagrid('getSelections');
+		var roleRow = datagrid.datagrid('getSelected');
+		if (!userRows || userRows.length == 0) {
+			$.messager.alert('提示', '请选择一条数据！');
+			return;
+		}
+		if(userRows.length==1){
+			msg='确认将该用户移除？'
+		}else{
+			msg='确认将选中的多个用户移除？'
+		}
+		$.messager.confirm('请确认',msg,
+				function(r) {
+					if (r) {
+						var userIds=[];
+						for ( var i = 0; i < userRows.length; i++) {
+							userIds.push(userRows[i].userId);
+						}
+						$.ajax({
+							url : '${pageContext.request.contextPath}/role/removeUsers',
+							data : {"userIds":userIds.join(','),"roleId":roleRow.roleId},
+							type:'post',
+							dataType : 'json',
+							success : function(d) {
+								$('#role_user_datagrid').datagrid('load');
+								$('#role_user_datagrid').datagrid('unselectAll');
+								$.messager.show({
+									title : '提示',
+									msg : d.msg
+								});
+							}
+						});
+					}
+			});
+	}
+	
+	//保存角色权限
+	function saveRoleAtuth(){
+		var nodes = $('#menuTree').tree('getChecked', 'checked');
+		alert(JSON.stringify(nodes));
+		var a = $('#menuTree').tree('getChecked', 'indeterminate');
+		alert(JSON.stringify(a));
+	}
+	
 </script>
 <div class="easyui-layout" data-options="fit:true">
-	<div data-options="region:'center',border:false" style="width:600px;">
+	<div data-options="region:'center'">
 		<table id="role_datagrid"></table>
 	</div>
-	<div data-options="region:'east',border:false" style="width:400px;height: 100%">
-		<div class="easyui-tabs">
-			<div title="角色权限" style="padding:10px;">
+	<div data-options="region:'east',border:false" style="width:530px;height: 100%">
+		<div class="easyui-tabs" style="height: 546px">
+			<div title="角色权限">
+				<div class="datagrid-toolbar">
+					<a href="javascript:void(0);" class="easyui-linkbutton" style="margin-top: 3px" onclick="saveRoleAtuth();">保存权限</a>
+				</div>
 				<ul class="easyui-tree" id="menuTree"
 					data-options="
 						url:'${pageContext.request.contextPath}/menu/getAllMenuTree',
 						parentField:'parentId',
 						lines:true,
 						checkbox:true,
-						border:false"
+						border:false",
 				</ul>
 			</div>
-			<div title="角色用户" style="padding:10px;">
-				<table id="role_user_datagrid"></table>
+			<div title="角色用户" style="height: 100%">
+				<table id="role_user_datagrid" style="height: 100%"></table>
 			</div>
 		</div>
 	</div>
 </div>
 <div id="role_updateDialog" class="easyui-dialog" style="width:600px;height:300px;" align="center"
-	data-options="closed:true,modal:true,title:'添加权限',resizable :true,
+	data-options="closed:true,modal:true,title:'添加角色',resizable :true,
 	buttons:[{
 		text : '保存',
 		iconCls : 'icon-save',

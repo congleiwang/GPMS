@@ -29,6 +29,8 @@ public interface UserDao extends BaseMapper<User>{
 	public void updateModCount(@Param("userId")Long userId);
 
 	public List<User> getUsersByRoleId(@Param("roleId")Long roleId);
+
+	public List<User> getUsersExRoleId(@Param("user")User user,@Param("roleId")Long roleId);
 	
 	
 }

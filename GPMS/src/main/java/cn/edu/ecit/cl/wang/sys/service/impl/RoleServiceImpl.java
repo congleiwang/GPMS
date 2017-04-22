@@ -11,8 +11,10 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 
 import cn.edu.ecit.cl.wang.sys.dao.RoleDao;
+import cn.edu.ecit.cl.wang.sys.dao.UtilsDao;
 import cn.edu.ecit.cl.wang.sys.po.Role;
 import cn.edu.ecit.cl.wang.sys.pojo.UrlAndRoleId;
+import cn.edu.ecit.cl.wang.sys.pojo.UserRole;
 import cn.edu.ecit.cl.wang.sys.service.IRoleService;
 
 @Service("roleService")
@@ -20,6 +22,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements IRole
 
 	@Autowired
 	RoleDao roleDao;
+	@Autowired
+	UtilsDao utilsDao;
 
 	@Override
 	public List<String> getMenuUrlsByRoleId(Long roleId) {
@@ -43,7 +47,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements IRole
 	
 	@Override
 	public boolean deleteById(Serializable id) {
-		roleDao.delAtuthByRoleId((Long)id);
+		roleDao.delAtuthByRoleId(Long.valueOf(id.toString()));
 		return super.deleteById(id);
 	}
 
@@ -53,5 +57,21 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements IRole
 		Page<Role> page=new Page<Role>(currPage,pageSize);
 		page.setRecords(roleDao.selectPage(page, ew));
 		return page;
+	}
+	
+	@Override
+	public boolean insert(Role entity) {
+		entity.setRoleId(utilsDao.selectKey("seq_base_role"));
+		return super.insert(entity);
+	}
+
+	@Override
+	public boolean putUsers(List<UserRole> userRoles) {
+		return roleDao.putUsers(userRoles)==userRoles.size()?true:false;
+	}
+
+	@Override
+	public boolean removeUsers(List<UserRole> userRoles) {
+		return roleDao.removeUsers(userRoles)==userRoles.size()?true:false;
 	}
 }
