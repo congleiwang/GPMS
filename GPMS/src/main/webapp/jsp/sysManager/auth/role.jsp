@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script type="text/javascript">
-	var datagrid = $('#role_datagrid');
-	var ru_datagrid = $('#role_user_datagrid');
+	var roleDatagrid = $('#role_datagrid');
+	var ru_datagrid = $('#roleUser_datagrid');
 	$(function() {
-		datagrid.datagrid({
+		roleDatagrid.datagrid({
 			url : '${pageContext.request.contextPath}/role/list',
 			title : '',
 			iconCls : 'icon-save',
@@ -43,19 +43,19 @@
 				text : '增加',
 				iconCls : 'icon-add',
 				handler : function() {
-					add();
+					roleAdd();
 				}
 			}, '-', {
 				text : '删除',
 				iconCls : 'icon-remove',
 				handler : function() {
-					del();
+					roleDel();
 				}
 			}, '-', {
 				text : '修改',
 				iconCls : 'icon-edit',
 				handler : function() {
-					update();
+					roleUpdate();
 				}
 			}, '-', {
 				text : '取消选中',
@@ -65,9 +65,9 @@
 				}
 			} ],
 			onClickRow:function(index,data){
-				var roots=$('#menuTree').tree('getRoots');
+				var roots=$('#role_menuTree').tree('getRoots');
 				$(roots).each(function(i,root){
-				   $('#menuTree').tree('uncheck',root.target);
+				   $('#role_menuTree').tree('uncheck',root.target);
 				});
 				$.ajax({
 					url : '${pageContext.request.contextPath}/menu/getMenuCdsByRoleId',
@@ -76,10 +76,10 @@
 					dataType : 'json',
 					success : function(d) {
 						$(d).each(function(i,menuCd){
-							var node=$('#menuTree').tree('find',menuCd);
-							var isLeaf=$('#menuTree').tree('isLeaf', node.target);
+							var node=$('#role_menuTree').tree('find',menuCd);
+							var isLeaf=$('#role_menuTree').tree('isLeaf', node.target);
 							if(isLeaf){
-								$('#menuTree').tree('check',node.target);
+								$('#role_menuTree').tree('check',node.target);
 							}
 						});
 					}
@@ -124,13 +124,13 @@
 				text : '加入',
 				iconCls : 'icon-add',
 				handler : function() {
-					putUser();
+					rolePutUser();
 				}
 			}, '-', {
 				text : '移除',
 				iconCls : 'icon-remove',
 				handler : function() {
-					removeUser();
+					roleRemoveUser();
 				}
 			}, '-', {
 				text : '取消选中',
@@ -142,7 +142,7 @@
 		});
 	});
 	//删除某一角色
-	function del(){
+	function roleDel(){
 		var row = $('#role_datagrid').datagrid('getSelected');
 		if(row){
 			var flag=false;
@@ -186,14 +186,14 @@
 		}
 	}
 	//打开添加角色对话框
-	function add(){
+	function roleAdd(){
+		$('#role_updateDialog').dialog('open');
 		$('#role_updateForm').form('clear');
 		$("#role_updateDialog").dialog('setTitle','添加角色');
-		$('#role_updateDialog').dialog('open');
 	}
 	//打开修改角色对话框
-	function update(){
-		var row = datagrid.datagrid('getSelected');
+	function roleUpdate(){
+		var row = roleDatagrid.datagrid('getSelected');
 		if(row){
 			$('#role_updateDialog').dialog('open');
 			$("#role_updateDialog").dialog('setTitle','修改角色');
@@ -209,7 +209,7 @@
 		}
 	}
 	//保存添加或修改对话框中信息
-	function save(){
+	function roleSave(){
 		var url;
 		var roleId=$("#role_updateForm [name=roleId]").val();
 		if(roleId && roleId!=''){
@@ -225,7 +225,7 @@
             success:function(r){
             	obj=$.parseJSON(r);
                  if(obj.success){
-                	$('#role_updateDialog').dialog('destroy');
+                	$('#role_updateDialog').dialog('close');
                 	$('#role_datagrid').datagrid('unselectAll');
                 	$('#role_datagrid').datagrid('load', {});
                  }
@@ -234,10 +234,10 @@
 		});
 	}
 	//打开向角色中添加用户对话框
-	function putUser(){
-		var roleRow = datagrid.datagrid('getSelected');
+	function rolePutUser(){
+		var roleRow = roleDatagrid.datagrid('getSelected');
 		if(roleRow){
-			var d=$('<div/>').dialog({
+			var authAdd=$('<div/>').dialog({
 				title : '为用户设置角色',
 				href : '${pageContext.request.contextPath}/jsp/sysManager/auth/authAdd.jsp',
 				width : 900,
@@ -248,7 +248,7 @@
 					$(this).dialog('destroy');
 				},
 				onLoad:function(){
-					$('#user_datagrid').datagrid({
+					$('#roleUserAdd_datagrid').datagrid({
 						url : '${pageContext.request.contextPath}/user/getUsersExRoleId?roleId='+roleRow.roleId
 					})
 				},
@@ -256,7 +256,7 @@
 					text : "加入到 <font color='red'>"+roleRow.roleNm+"</font>",
 					handler : function() {
 						var msg;
-						var userRows = $('#user_datagrid').datagrid('getSelections');
+						var userRows = $('#roleUserAdd_datagrid').datagrid('getSelections');
 						if (!userRows || userRows.length == 0) {
 							$.messager.alert('提示', '请选择一条数据！');
 							return;
@@ -279,9 +279,9 @@
 											type:'post',
 											dataType : 'json',
 											success : function(d) {
-												$('#user_datagrid').datagrid('load');
-												$('#role_user_datagrid').datagrid('load');
-												$('#user_datagrid').datagrid('unselectAll');
+												$('#roleUserAdd_datagrid').datagrid('load');
+												$('#roleUser_datagrid').datagrid('load');
+												$('#roleUserAdd_datagrid').datagrid('unselectAll');
 												$.messager.show({
 													title : '提示',
 													msg : d.msg
@@ -298,9 +298,9 @@
 		}
 	}
 	//将角色中的某些用户移除掉
-	function removeUser(){
-		var userRows = $('#role_user_datagrid').datagrid('getSelections');
-		var roleRow = datagrid.datagrid('getSelected');
+	function roleRemoveUser(){
+		var roleRow = roleDatagrid.datagrid('getSelected');
+		var userRows = $('#roleUser_datagrid').datagrid('getSelections');
 		if (!userRows || userRows.length == 0) {
 			$.messager.alert('提示', '请选择一条数据！');
 			return;
@@ -323,8 +323,8 @@
 							type:'post',
 							dataType : 'json',
 							success : function(d) {
-								$('#role_user_datagrid').datagrid('load');
-								$('#role_user_datagrid').datagrid('unselectAll');
+								$('#roleUser_datagrid').datagrid('load');
+								$('#roleUser_datagrid').datagrid('unselectAll');
 								$.messager.show({
 									title : '提示',
 									msg : d.msg
@@ -337,10 +337,37 @@
 	
 	//保存角色权限
 	function saveRoleAtuth(){
-		var nodes = $('#menuTree').tree('getChecked', 'checked');
-		alert(JSON.stringify(nodes));
-		var a = $('#menuTree').tree('getChecked', 'indeterminate');
-		alert(JSON.stringify(a));
+		var roleRow = roleDatagrid.datagrid('getSelected');
+		var nodes = $('#role_menuTree').tree('getChecked', 'checked');
+		var a = $('#role_menuTree').tree('getChecked', 'indeterminate');
+		nodes.push(a);
+		if(!roleRow){
+			$.messager.show({title : '提示',msg :'请选择目标角色'});
+			return ;
+		}
+		$.messager.confirm('请确认','确认保存？',
+				function(r) {
+					if (r) {
+						var menuCds=[];
+						for ( var i = 0; i < nodes.length; i++) {
+							menuCds.push(nodes[i].id);
+						}
+						$.ajax({
+							url : '${pageContext.request.contextPath}/role/putAtuth',
+							data : {"menuCds":menuCds.join(','),"roleId":roleRow.roleId},
+							type:'post',
+							dataType : 'json',
+							success : function(d) {
+								$('#role_menuTree').tree("reload");
+								$('#role_datagrid').datagrid('unselectAll');
+								$.messager.show({
+									title : '提示',
+									msg : d.msg
+								});
+							}
+						});
+					}
+			});
 	}
 	
 </script>
@@ -354,7 +381,7 @@
 				<div class="datagrid-toolbar">
 					<a href="javascript:void(0);" class="easyui-linkbutton" style="margin-top: 3px" onclick="saveRoleAtuth();">保存权限</a>
 				</div>
-				<ul class="easyui-tree" id="menuTree"
+				<ul class="easyui-tree" id="role_menuTree"
 					data-options="
 						url:'${pageContext.request.contextPath}/menu/getAllMenuTree',
 						parentField:'parentId',
@@ -364,7 +391,7 @@
 				</ul>
 			</div>
 			<div title="角色用户" style="height: 100%">
-				<table id="role_user_datagrid" style="height: 100%"></table>
+				<table id="roleUser_datagrid" style="height: 100%"></table>
 			</div>
 		</div>
 	</div>
@@ -375,7 +402,7 @@
 		text : '保存',
 		iconCls : 'icon-save',
 		handler :  function() {
-			save();
+			roleSave();
 	   }
 	}]">
 	<form id="role_updateForm" method="post">

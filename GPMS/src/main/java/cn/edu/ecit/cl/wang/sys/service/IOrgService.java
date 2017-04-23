@@ -11,4 +11,6 @@ public interface IOrgService extends IService<Org>{
 	public List<Long> getSubOrgIdList(Long orgId);
 	
 	public List<OrgTree> getPermOrgTree(Long orgId);
+
+	public List<OrgTree> getAllOrgTree();
 }

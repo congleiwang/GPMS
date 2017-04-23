@@ -1,8 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%> 
 <script type="text/javascript">
-	var dg = $('#param_datagrid');
+	var paramDatagrid = $('#param_datagrid');
 	$(function() {
-		dg.datagrid({
+		paramDatagrid.datagrid({
 					fitColum : true,
 					fit : true,
 					nowarp : true,
@@ -45,41 +45,42 @@
 						text : '添加',
 						iconCls : 'icon-add',
 						handler : function() {
-							add();
+							paramAdd();
 						}
 					}, '-', {
 						text : '修改',
 						iconCls : 'icon-edit',
 						handler : function() {
-							update();
+							paramUpdate();
 						}
 					}, '-', {
 						text : '取消选中',
 						iconCls : 'icon-undo',
 						handler : function() {
-							dg.datagrid('rejectChanges');
-							dg.datagrid('unselectAll');
+							paramDatagrid.datagrid('rejectChanges');
+							paramDatagrid.datagrid('unselectAll');
 						}
 					}]
 				});
 	});
-	function searchs() {
+	function paramSearchs() {
 		var searchForm = $('#param_searchForm').form();
-		dg.datagrid('load', serializeObject(searchForm));
+		paramDatagrid.datagrid('load', serializeObject(searchForm));
 	}
-	function cleanSearch() {
-		dg.datagrid('load', {});
+	function paramCleanSearch() {
+		paramDatagrid.datagrid('load', {});
 		$('#param_searchForm').form('clear');
 	}
-	function add() {
+	function paramAdd() {
+		$('#param_updateDialog').dialog('open');
+		$("#param_updateDialog").dialog('setTitle','添加参数');
 		$('#param_updateForm').form('clear');
 		$('.sysNm').css('visibility','visible');
 		$('#param_updateForm [name=paramKey]').removeAttr('readonly');
-		$('#isAdd').val(1);
-		$('#param_updateDialog').dialog('open');
+		$('#param_isAdd').val(1);
 	}
-	function save(){
-		var isAdd=$('#isAdd').val();
+	function paramSave(){
+		var isAdd=$('#param_isAdd').val();
 		var url;
 		if(isAdd==1 || isAdd=='1'){
 			url='${pageContext.request.contextPath}/sysParam/add';
@@ -96,7 +97,7 @@
                  if(obj.success){
                 	$('#param_updateDialog').dialog('close');
                 	$('#param_datagrid').datagrid('unselectAll');
-                 	searchs();
+                	paramDatagrid.datagrid('load');
                  }
                  $.messager.alert('提示', obj.msg);
 		    }
@@ -106,7 +107,8 @@
 		var rows = dg.datagrid('getSelections');
 		if (rows.length == 1) {
 			$('#param_updateDialog').dialog('open');
-			$('#isAdd').val(0);
+			$("#param_updateDialog").dialog('setTitle','修改参数');
+			$('#param_isAdd').val(0);
 			$('#param_updateForm').form('load',{
 				sysNm:rows[0].sysNm,
 				paramKey:rows[0].paramKey,
@@ -136,8 +138,8 @@
 						<th>参数键</th>
 						<td><input name="paramKey"  /></td>
 						<td>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="searchs();">查询</a>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="cleanSearch();">重置</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="paramSearchs();">查询</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="paramCleanSearch();">重置</a>
 						</td>
 					</tr>
 				</table>
@@ -154,11 +156,11 @@
 		text : '保存',
 		iconCls : 'icon-save',
 		handler :  function() {
-			save();
+			paramSave();
 	   }
 	}]">
 	<form id="param_updateForm" method="post">
-		<input type="hidden" id="isAdd" /> 
+		<input type="hidden" id="param_isAdd" /> 
 		<table>
 			<tr>
 				<th>参数键</th>

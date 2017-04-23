@@ -8,6 +8,12 @@
 			t.tabs('add', opts);
 		}
 	}
+	function timeToString(v){
+		if(v){
+			return new Date(parseInt(v)).toLocaleString()
+		}
+		return '';
+	}
 </script>
 <div id="layout_center_centerTabs" class="easyui-tabs" data-options="border:false,fit:true">
 

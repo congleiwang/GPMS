@@ -27,6 +27,10 @@
 		<result property="roleId" column="ROLE_ID" />
 		<result property="userId" column="USER_ID" />
 	</resultMap>
+	<resultMap type="cn.edu.ecit.cl.wang.sys.pojo.RoleAtuth" id="RoleAtuth">
+		<result property="roleId" column="ROLE_ID" />
+		<result property="menuCd" column="MENU_CD" />
+	</resultMap>
 	
 	<select id="getMenuUrlsByRoleId" parameterType="java.lang.Long" resultType="java.lang.String">
 		SELECT distinct T2.MENU_URL
@@ -66,10 +70,17 @@
 		</foreach>
 	</insert>
 	
-	<insert id="removeUsers" parameterType="java.util.List">
+	<delete id="removeUsers" parameterType="java.util.List">
 		delete from BASE_USER_ROLE where
 		<foreach collection="userRoles" item="userRole" separator="or">
 			(role_id=#{userRole.roleId,jdbcType=NUMERIC} and user_id=#{userRole.userId,jdbcType=NUMERIC})
+		</foreach>
+	</delete>
+	
+	<insert id="putAtuth" parameterType="java.util.List">
+		insert into BASE_ROLE_ATUTH (role_id,menu_cd)
+		<foreach collection="roleAtuths" item="roleAtuth" separator="union">
+			select #{roleAtuth.roleId,jdbcType=NUMERIC},#{roleAtuth.menuCd,jdbcType=VARCHAR} from dual
 		</foreach>
 	</insert>
 	

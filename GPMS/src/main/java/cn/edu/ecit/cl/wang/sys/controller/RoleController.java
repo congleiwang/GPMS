@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 
 import cn.edu.ecit.cl.wang.sys.common.utils.ReturnMsg;
 import cn.edu.ecit.cl.wang.sys.po.Role;
+import cn.edu.ecit.cl.wang.sys.pojo.RoleAtuth;
 import cn.edu.ecit.cl.wang.sys.pojo.UserRole;
 import cn.edu.ecit.cl.wang.sys.service.IRoleService;
 
@@ -26,6 +27,23 @@ public class RoleController extends BaseController<Role>{
 	@Override
 	public Page<Role> selectPage(Role obj, int currPage, int pageSize) {
 		return roleService.selectPage(obj,currPage,pageSize);
+	}
+	
+	@RequestMapping("putAtuth")
+	@ResponseBody
+	public ReturnMsg putAtuth(Long roleId ,String menuCds) {
+		String[] cds=menuCds.split(",");
+		List<RoleAtuth> roleAtuths=new ArrayList<RoleAtuth>();
+		for(String menucd:cds){
+			if(StringUtils.isNotEmpty(menucd)){
+				RoleAtuth roleAtuth=new RoleAtuth(roleId,menucd);
+				roleAtuths.add(roleAtuth);
+			}
+		}
+		if(roleService.putAtuth(roleAtuths)){
+			return ReturnMsg.success("添加成功");
+		}
+		return ReturnMsg.fail("添加失败");
 	}
 	
 	@RequestMapping("putUsers")

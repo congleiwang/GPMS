@@ -27,6 +27,13 @@ public class OrgController extends BaseController<Org>{
 		return SpringSecurityUtils.getCurrentUser().getOrgTrees();
 		
 	}
+	
+	@ResponseBody
+	@RequestMapping("/getAllOrgTree")
+	public List<OrgTree> getAllOrgTree(){
+		return orgService.getAllOrgTree();
+		
+	}
 
 	@Override
 	public Page<Org> selectPage(Org obj, int pageNum, int pageSize) {
@@ -36,20 +43,17 @@ public class OrgController extends BaseController<Org>{
 
 	@Override
 	public boolean addData(Org obj) {
-		// TODO Auto-generated method stub
-		return false;
+		return orgService.insert(obj);
 	}
 
 	@Override
 	public boolean updateData(Org obj) {
-		// TODO Auto-generated method stub
-		return false;
+		return orgService.updateById(obj);
 	}
 
 	@Override
 	public boolean delData(String id) {
-		// TODO Auto-generated method stub
-		return false;
+		return orgService.deleteById(Long.valueOf(id));
 	}
 
 	@Override

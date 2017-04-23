@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <from>
 <form id="user_editForm" method="post">
-	<input type="hidden" name="userId" id="userId" />
+	<input type="hidden" name="userId"/>
 	<table>
 		<tr>
 			<th>所属机构</th>

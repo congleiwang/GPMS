@@ -1,8 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%> 
 <script type="text/javascript">
-	var dg = $('#user_datagrid');
+	var userDatagrid = $('#user_datagrid');
 	$(function() {
-		dg.datagrid({
+		userDatagrid.datagrid({
 					fitColum : true,
 					fit : true,
 					nowarp : true,
@@ -68,7 +68,7 @@
 						hidden:true
 					}] ],
 					onDblClickRow:function(){
-						var row=dg.datagrid("getSelected");
+						var row=userDatagrid.datagrid("getSelected");
 						if(row){
 							$.ajax({
 								url : '${pageContext.request.contextPath}/user/selectById',
@@ -76,7 +76,7 @@
 								type:'post',
 								dataType : 'json',
 								success : function(d) {
-									var dd=$('<div/>').dialog({
+									var userDetail=$('<div/>').dialog({
 										title : '查看用户',
 										href : '${pageContext.request.contextPath}/jsp/sysManager/user/userDetail.jsp',
 										width : 600,
@@ -86,12 +86,12 @@
 										buttons : [ {
 											text : '关闭',
 											handler : function() {
-												dg.datagrid('unselectAll');
-												dd.dialog("destroy");
+												userDatagrid.datagrid('unselectAll');
+												userDetail.dialog("destroy");
 											}
 										} ],
 										onClose : function() {
-											dg.datagrid('unselectAll');
+											userDatagrid.datagrid('unselectAll');
 											$(this).dialog('destroy');
 										},
 										onLoad : function() {
@@ -119,41 +119,41 @@
 						text : '添加',
 						iconCls : 'icon-add',
 						handler : function() {
-							add();
+							userAdd();
 						}
 					}, '-', {
 						text : '修改',
 						iconCls : 'icon-edit',
 						handler : function() {
-							update();
+							userUpdate();
 						}
 					}, '-', {
 						text : '删除',
 						iconCls : 'icon-remove',
 						handler : function() {
-							del();
+							userDel();
 						}
 					}, '-', {
 						text : '取消选中',
 						iconCls : 'icon-undo',
 						handler : function() {
-							dg.datagrid('rejectChanges');
-							dg.datagrid('unselectAll');
+							userDatagrid.datagrid('rejectChanges');
+							userDatagrid.datagrid('unselectAll');
 						}
 					}]
 				});
 	});
-	function searchs() {
+	function userSearchs() {
 		var searchForm = $('#user_searchForm').form();
-		dg.datagrid('load', serializeObject(searchForm));
+		userDatagrid.datagrid('load', serializeObject(searchForm));
 	}
-	function cleanSearch() {
-		dg.datagrid('load', {});
-		$('#user_searchForm input').val('');
+	function userCleanSearch() {
+		userDatagrid.datagrid('load', {});
+		$('#user_searchForm').form('clear');
 	}
-	function del() {
+	function userDel() {
 		var ids = [];
-		var rows = dg.datagrid('getSelections');
+		var rows = userDatagrid.datagrid('getSelections');
 		var msg;
 		if (!rows || rows.length == 0) {
 			$.messager.alert('提示', '请勾选要删除的数据！');
@@ -177,8 +177,8 @@
 							contentType:'application/json;UTF-8',
 							dataType : 'json',
 							success : function(d) {
-								dg.datagrid('load');
-								dg.datagrid('unselectAll');
+								userDatagrid.datagrid('load');
+								userDatagrid.datagrid('unselectAll');
 								$.messager.show({
 									title : '提示',
 									msg : d.msg
@@ -188,14 +188,14 @@
 					}
 				});
 	}
-	function add() {
-		$('#user_addForm').form('clear');
+	function userAdd() {
 		$('#user_addDialog').dialog('open');
+		$('#user_addForm').form('clear');
 	}
-	function update() {
-		var rows = dg.datagrid('getSelections');
+	function userUpdate() {
+		var rows = userDatagrid.datagrid('getSelections');
 		if (rows.length == 1) {
-			var d=$('<div/>').dialog({
+			var userUpdate=$('<div/>').dialog({
 				title : '修改用户',
 				href : '${pageContext.request.contextPath}/jsp/sysManager/user/userEdit.jsp',
 				width : 600,
@@ -213,9 +213,9 @@
 				            success:function(r){
 				            	obj=$.parseJSON(r);
 				                 if(obj.success){
-				                 	d.dialog('destroy');
-				                 	dg.datagrid('unselectAll');
-				                 	searchs();
+				                	userUpdate.dialog('destroy');
+				                 	userDatagrid.datagrid('unselectAll');
+				                 	userDatagrid.datagrid('load');
 				                 }
 				                 $.messager.alert('提示', obj.msg);
 						    }
@@ -244,12 +244,6 @@
 			$.messager.alert('提示', '请勾选一条要编辑的数据');
 		}
 	}
-	function timeToString(v){
-		if(v){
-			return new Date(parseInt(v)).toLocaleString()
-		}
-		return '';
-	}
 </script>
 <div class="easyui-layout" data-options="fit:true">
 	<div data-options="region:'north',border:false,title:'查询条件'"style="height: 85px;overflow: hidden;" align="left">
@@ -275,15 +269,15 @@
 						<td><input name="address" /></td>
 						<th>是否锁定</th>
 						<td>
-							<select name="isLock" id="isLock">
+							<select name="isLock">
 								<option value="" disabled="disabled" selected="selected">--请选择--</option>
 								<option value="0">否</option>
 								<option value="1">是</option>
 							</select>
 						</td>
 						<td>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="searchs();">查询</a>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="cleanSearch();">重置</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="userSearchs();">查询</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="userCleanSearch();">重置</a>
 						</td>
 					</tr>
 				</table>
@@ -308,8 +302,8 @@
 			     success:function(r){
 			        obj=$.parseJSON(r);
 			        if(obj.success){
-			           searchs();
-				       $('#user_addDialog').dialog('destroy');
+			           userDatagrid.datagrid('load');
+				       $('#user_addDialog').dialog('close');
 			        }
 			        $.messager.show({title:'提示',msg:obj.msg});
 			    }

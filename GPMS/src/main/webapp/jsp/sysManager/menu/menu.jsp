@@ -1,31 +1,31 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script type="text/javascript">
-var dg = $('#toolbar');
+var menuToolbar = $('#menu_toolbar');
 $(function() {
-	dg.datagrid({
+	menuToolbar.datagrid({
 				toolbar : [ {
 					text : '增加同级',
 					iconCls : 'icon-add',
 					handler : function() {
-						add();
+						menuAdd();
 					}
 				}, '-', {
 					text : '增加子级',
 					iconCls : 'icon-edit',
 					handler : function() {
-						addChild();
+						menuAddChild();
 					}
 				}, '-', {
 					text : '删除菜单',
 					iconCls : 'icon-remove',
 					handler : function() {
-						del();
+						menuDel();
 					}
 				}]
 			});
 });
-function save(url){
-	var flag=$("isAdd").val();
+function menuSave(){
+	var flag=$("#menu_isAdd").val();
 	var url;
 	if(flag==1||flag=='1'){
 		url='${pageContext.request.contextPath}/menu/add';
@@ -33,7 +33,7 @@ function save(url){
 	if(!url || url==''){
 		url='${pageContext.request.contextPath}/menu/update';
 	}
-	$('#menu_from').form('submit',{
+	$('#menu_menuFrom').form('submit',{
 		onSubmit:function(){
 			return $(this).form('validate');
 		},
@@ -41,24 +41,24 @@ function save(url){
         success:function(r){
         	var obj=$.parseJSON(r);
             if(obj.success){
-            	$('#menu_from').form('clear');
-            	$('#menuTree').tree("reload");
+            	$('#menu_menuFrom').form('clear');
+            	$('#menu_menuTree').tree("reload");
             }
             $.messager.alert('提示', obj.msg);
 	    }
 	});
 }
-function del(){
-	var node = $('#menuTree').tree('getSelected');
+function menuDel(){
+	var node = $('#menu_menuTree').tree('getSelected');
 	if(!node){
 		$.messager.alert('提示', '请选择要删除的菜单');
 		return ;
 	}
 	if(node.id=='new'){
-		$('#menuTree').tree('remove',node.target);
+		$('#menu_menuTree').tree('remove',node.target);
 		return;
 	}
-	if(!$('#menuTree').tree('isLeaf',node.target)){
+	if(!$('#menu_menuTree').tree('isLeaf',node.target)){
 		$.messager.alert('提示', '请先删除子菜单');
 	}else{
 		$.messager.confirm('请确认',"确认删除？",function(r) {
@@ -70,8 +70,8 @@ function del(){
 					dataType : 'json',
 					success : function(d) {
 						if(d.success){
-							$('#menu_from').form('clear');
-			            	$('#menuTree').tree("reload");
+							$('#menu_menuFrom').form('clear');
+			            	$('#menu_menuTree').tree("reload");
 						}
 						$.messager.show({
 							title : '提示',
@@ -84,67 +84,58 @@ function del(){
 	}
 }
 
-function add(){
-	var node = $('#menuTree').tree('getSelected');
+function menuAdd(){
+	var node = $('#menu_menuTree').tree('getSelected');
 	if(!node){
 		$.messager.alert('提示', '请选择目标菜单');
 		return ;
 	}
-	$('#menuTree').tree('insert', {
+	$('#menu_menuTree').tree('insert', {
 		after:node.target,
 		data:{
 			text:'name',
 			id:'new',
 		}
 	});
-	$('#pmenuCd').val(node.attributes.pmenuCd);
+	$('#menu_pmenuCd').val(node.attributes.pmenuCd);
+	$('#menu_isAdd').val('1');
 }
 
-function addChild(){
-	var node = $('#menuTree').tree('getSelected');
+function menuAddChild(){
+	var node = $('#menu_menuTree').tree('getSelected');
 	if(!node){
 		$.messager.alert('提示', '请选择目标菜单');
 		return ;
 	}
-	$('#menuTree').tree('append', {
+	$('#menu_menuTree').tree('append', {
 		parent:node.target,
 		data:[{
 			text:'name',
 			id:'new',
 		}]
 	});
-	$('#pmenuCd').val(node.id);
-	$('#isAdd').val('1');
+	$('#menu_pmenuCd').val(node.id);
+	$('#menu_isAdd').val('1');
 }
 </script>
 <div class="easyui-layout" data-options="fit:true">
 	<div region="north" style="height:36px" overflow="hidden" border="false">
-		<div id="toolbar" overflow="hidden" border="false"></div>
+		<div id="menu_toolbar" overflow="hidden" border="false"></div>
 	</div>
 	<div data-options="region:'west'" style="width:200px;">
-		<ul class="easyui-tree" id="menuTree"
+		<ul class="easyui-tree" id="menu_menuTree"
 					data-options="
 							url:'${pageContext.request.contextPath}/menu/getAllMenuTree',
 							parentField:'parentId',
 							lines:true,
-							dnd:false,
-							onDrop: function(targetNode, source, point){
-								var pmenuCd;
-								if(point=='append'){
-								    var targetId = $('#menuTree').tree('getNode', targetNode).id;
-								    pmenuCd=targetId;
-								}
-								alert(point);/*操作*/
-							    alert(targetId);/*目标id*/
-							  	alert(JSON.stringify(targetNode));
-							  	alert(JSON.stringify(source));/*被拖动的*/
-							},
 							onClick:function(node){
 								if(node.id){
-									 $('#menu_from').form('clear');
-									 $('#isAdd').val('0');
-									if(node.id!='new'){
-										 $('#menu_from').form('load',{
+									var pmenuCd=$('#menu_pmenuCd').val();
+									$('#menu_menuFrom').form('clear');
+									$('#menu_pmenuCd').val(pmenuCd);
+									if(node.id !='new'){
+										 $('#menu_isAdd').val('0');
+										 $('#menu_menuFrom').form('load',{
 							                sysNm:node.attributes.sysNm,
 						    				menuCd:node.id,
 						    				menuNm:node.text,
@@ -154,17 +145,18 @@ function addChild(){
 						    				jspUrl:node.attributes.jspUrl,
 						    				isUse:node.attributes.isUse,
 						    				remark:node.attributes.remark,
-						    				pmenuCd:node.attributes.pmenuCd
 						                });
+									}else{
+										$('#menu_isAdd').val('1');
 									}
 								}
 							}">
 				</ul>
 	</div>
 	<div region="center" border="false">
-		<form id="menu_from" method="post" >
-			<input type="hidden" name="pmenuCd" id="pmenuCd"/>
-			<input type="hidden" id="isAdd" />
+		<form id="menu_menuFrom" method="post" >
+			<input type="hidden" name="pmenuCd" id="menu_pmenuCd"/>
+			<input type="hidden" id="menu_isAdd" />
 			<table>
 				<tr>
 					<th>系统名称：</th>
@@ -212,7 +204,7 @@ function addChild(){
 				<tr>
 					<td></td>
 					<td>
-						<input type="button" value="保存" onclick="save();" />
+						<input type="button" value="保存" onclick="menuSave();" />
 						<input type="reset" value="重置" />
 					</td>
 				</tr>

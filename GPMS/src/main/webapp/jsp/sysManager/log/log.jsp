@@ -1,8 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%> 
 <script type="text/javascript">
-var dg = $('#log_datagrid');
+var logDatagrid = $('#log_datagrid');
 $(function() {
-	dg.datagrid({
+	logDatagrid.datagrid({
 				fit : true,
 				pageSize : 10,
 				rownumbers:true,
@@ -44,29 +44,29 @@ $(function() {
 					text : '删除',
 					iconCls : 'icon-remove',
 					handler : function() {
-						del();
+						logDel();
 					}
 				}, '-', {
 					text : '取消选中',
 					iconCls : 'icon-undo',
 					handler : function() {
-						dg.datagrid('rejectChanges');
-						dg.datagrid('unselectAll');
+						logDatagrid.datagrid('rejectChanges');
+						logDatagrid.datagrid('unselectAll');
 					}
 				}]
 			});
 });
-function searchs() {
+function logSearchs() {
 	var searchForm = $('#log_searchForm').form();
-	dg.datagrid('load', serializeObject(searchForm));
+	logDatagrid.datagrid('load', serializeObject(searchForm));
 }
-function cleanSearch() {
-	dg.datagrid('load', {});
+function logCleanSearch() {
+	logDatagrid.datagrid('load', {});
 	$('#log_searchForm').form('clear');
 }
-function del() {
+function logDel() {
 	var ids = [];
-	var rows = dg.datagrid('getSelections');
+	var rows = logDatagrid.datagrid('getSelections');
 	var msg;
 	if (rows.length == 0) {
 		$.messager.alert('提示', '请勾选要删除的数据！');
@@ -90,8 +90,8 @@ function del() {
 					contentType:'application/json;UTF-8',
 					dataType : 'json',
 					success : function(d) {
-						dg.datagrid('load');
-						dg.datagrid('unselectAll');
+						logDatagrid.datagrid('load');
+						logDatagrid.datagrid('unselectAll');
 						$.messager.show({
 							title : '提示',
 							msg : d.msg
@@ -102,12 +102,6 @@ function del() {
 		});
 }
 
-function timeToString(v){
-	if(v){
-		return new Date(parseInt(v)).toLocaleString()
-	}
-	return '';
-}
 </script>
 <div class="easyui-layout" data-options="fit:true">
 	<div data-options="region:'north',border:false,title:'查询条件'"style="height: 60px;overflow: hidden;" align="left">
@@ -130,8 +124,8 @@ function timeToString(v){
 							至<input name="createAtEnd" class="easyui-datetimebox" data-options="editable:false" style="width: 155px;" />
 						</td>
 						<td>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="searchs();">查询</a>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="cleanSearch();">重置</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="logSearchs();">查询</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="logCleanSearch();">重置</a>
 						</td>
 					</tr>
 				</table>

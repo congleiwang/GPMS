@@ -27,26 +27,22 @@ public class DictionaryController extends BaseController<Dictionary>{
 
 	@Override
 	public Page<Dictionary> selectPage(Dictionary obj, int pageNum, int pageSize) {
-		// TODO Auto-generated method stub
-		return null;
+		return dictionaryService.selectPage(obj,pageNum,pageSize);
 	}
 
 	@Override
 	public boolean addData(Dictionary obj) {
-		// TODO Auto-generated method stub
-		return false;
+		return dictionaryService.insert(obj);
 	}
 
 	@Override
 	public boolean updateData(Dictionary obj) {
-		// TODO Auto-generated method stub
-		return false;
+		return dictionaryService.updateById(obj);
 	}
 
 	@Override
 	public boolean delData(String id) {
-		// TODO Auto-generated method stub
-		return false;
+		return dictionaryService.deleteById(id);
 	}
 
 	@Override

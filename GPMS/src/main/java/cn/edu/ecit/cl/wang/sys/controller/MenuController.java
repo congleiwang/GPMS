@@ -56,8 +56,7 @@ public class MenuController extends BaseController<Menu> {
 
 	@Override
 	public boolean addData(Menu obj) {
-		// TODO Auto-generated method stub
-		return false;
+		return menuService.insert(obj);
 	}
 
 	@Override

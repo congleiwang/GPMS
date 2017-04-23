@@ -35,6 +35,14 @@
 		where t1.IS_USE='1' and t1.PORG_ID is null
 	</select>
 	
+	<select id="getAllOrgTree" resultMap="Org">
+		SELECT
+			t1.ORG_ID,t1.PORG_ID,t1.ORG_TYPE,t1.ORG_NM,t1.ORG_DESC,t1.ADDRESS,t1.IS_USE
+ 		FROM BASE_ORG t1 where t1.IS_DEL='0'
+		START WITH t1.PORG_ID is null
+		CONNECT BY PRIOR t1.ORG_ID = t1.PORG_ID
+	</select>
+	
 	<select id="getPermOrgTree" parameterType="java.lang.Long" resultMap="Org">
 		SELECT 
 			t1.ORG_ID,t1.PORG_ID,t1.ORG_TYPE,t1.ORG_NM,t1.ORG_DESC,t1.ADDRESS,t1.IS_USE

@@ -14,4 +14,6 @@ public interface OrgDao extends BaseMapper<Org>{
 	public List<Org> getFirstOrg();
 
 	public List<Org> getPermOrgTree(@Param("orgId") Long orgId);
+
+	public List<Org> getAllOrgTree();
 }

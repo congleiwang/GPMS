@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<from>
 <form id="user_detailForm" method="post">
 	<table>
 		<tr>

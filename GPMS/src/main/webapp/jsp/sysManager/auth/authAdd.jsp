@@ -1,8 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%> 
 <script type="text/javascript">
-	var user_dg = $('#user_datagrid');
+	var authUserAddDg = $('#roleUserAdd_datagrid');
 	$(function() {
-		user_dg.datagrid({
+		authUserAddDg.datagrid({
 					fitColum : true,
 					fit : true,
 					nowarp : true,
@@ -55,7 +55,7 @@
 						hidden:true
 					}] ],
 					onDblClickRow:function(){
-						var row=user_dg.datagrid("getSelected");
+						var row=authUserAddDg.datagrid("getSelected");
 						if(row){
 							$.ajax({
 								url : '${pageContext.request.contextPath}/user/selectById',
@@ -63,7 +63,7 @@
 								type:'post',
 								dataType : 'json',
 								success : function(d) {
-									var dd=$('<div/>').dialog({
+									var authUserDetail=$('<div/>').dialog({
 										title : '查看用户',
 										href : '${pageContext.request.contextPath}/jsp/sysManager/user/userDetail.jsp',
 										width : 600,
@@ -73,12 +73,12 @@
 										buttons : [ {
 											text : '关闭',
 											handler : function() {
-												user_dg.datagrid('unselectAll');
-												dd.dialog("destroy");
+												authUserAddDg.datagrid('unselectAll');
+												authUserDetail.dialog("destroy");
 											}
 										} ],
 										onClose : function() {
-											user_dg.datagrid('unselectAll');
+											authUserAddDg.datagrid('unselectAll');
 											$(this).dialog('destroy');
 										},
 										onLoad : function() {
@@ -106,31 +106,25 @@
 						text : '取消选中',
 						iconCls : 'icon-undo',
 						handler : function() {
-							user_dg.datagrid('rejectChanges');
-							dg.datagrid('unselectAll');
+							authUserAddDg.datagrid('rejectChanges');
+							authUserAddDg.datagrid('unselectAll');
 						}
 					}]
 				});
 	});
-	function searchs() {
-		var searchForm = $('#user_searchForm').form();
-		user_dg.datagrid('load', serializeObject(searchForm));
+	function authAddSearchs() {
+		var searchForm = $('#roleUserAdd_searchForm').form();
+		authUserAddDg.datagrid('load', serializeObject(searchForm));
 	}
-	function cleanSearch() {
-		user_dg.datagrid('load', {});
-		$('#user_searchForm input').val('');
-	}
-	function timeToString(v){
-		if(v){
-			return new Date(parseInt(v)).toLocaleString()
-		}
-		return '';
+	function authAddCleanSearch() {
+		authUserAddDg.datagrid('load', {});
+		$('#roleUserAdd_searchForm input').val('');
 	}
 </script>
 <div class="easyui-layout" data-options="fit:true" style="height: 100%">
 	<div data-options="region:'north',border:false,title:'查询条件'"style="height: 60px;overflow: hidden;" align="left">
-		<div id="user_toolbar">
-			<form id="user_searchForm">
+		<div id="roleUserAdd_toolbar">
+			<form id="roleUserAdd_searchForm">
 				<input name="isLock" value="0" type="hidden"/>
 				<table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
 					<tr>
@@ -143,8 +137,8 @@
 						<th>登陆名</th>
 						<td><input name="loginNm" type="text" /></td>
 						<td>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="searchs();">查询</a>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="cleanSearch();">重置</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="authAddSearchs();">查询</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="authAddCleanSearch();">重置</a>
 						</td>
 					</tr>
 				</table>
@@ -152,6 +146,6 @@
 		</div>
 	</div>
 	<div data-options="region:'center',border:false" style="overflow: hidden;">
-		<table id="user_datagrid"></table>
+		<table id="roleUserAdd_datagrid"></table>
 	</div>
 </div>
