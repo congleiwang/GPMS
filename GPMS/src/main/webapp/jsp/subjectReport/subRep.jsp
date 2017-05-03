@@ -42,14 +42,14 @@ $(function() {
 						return timeToString(value);
 					}
 				} ,{
-					field : 'fileUrl',
+					field : 'srFileUrl',
 					title : '附件',
 					width : 220,
 					formatter : function(value, rowData, rowIndex) {
 						return downHref(value);
 					}
 				} ,{
-					field : 'remark',
+					field : 'srRemark',
 					title : '备注',
 					width : 250
 				}] ],
@@ -127,7 +127,7 @@ $(function() {
 			                	state:row.state,
 								createAt:timeToString(row.createAt),
 								sendAt:timeToString(row.sendAt),
-								remark:row.remark
+								srRemark:row.srRemark
 			                });
 						}
 		            });
@@ -287,13 +287,13 @@ function subRepCleanSearch() {
 			<tr>
 				<th>备注：</th>
 				<td>
-					<textarea name="remark" rows="4" cols="50"></textarea>
+					<textarea name="srRemark" rows="4" cols="50"></textarea>
 				</td>
 			</tr>
 			<tr>
 				<th>附件</th>
 				<td>
-					<input type="file" name="file" class="easyui-filebox" />
+					<input type="file" name="srFile" class="easyui-filebox" />
 				</td>
 			</tr>
 		</table>

@@ -8,22 +8,26 @@
 	<resultMap type="cn.edu.ecit.cl.wang.gpms.po.SubRep" id="SubRep">
 		<id property="srId" column="SR_ID"/>
 		<result property="title" column="TITLE" />
-		<result property="remark" column="REMARK" />
-		<result property="fileUrl" column="FILE_URL" />
+		<result property="srRemark" column="SR_REMARK" />
+		<result property="srFileUrl" column="SR_FILE_URL" />
 		<result property="state" column="state" />
 		<result property="createAt" column="CREATE_AT" />
 		<result property="creator" column="creator" />
 		<result property="createNm" column="create_Nm" />
-		<result property="modAt" column="MOD_AT" />
-		<result property="moder" column="moder" />
 		<result property="sendAt" column="send_At" />
+		<result property="examor" column="EXAMOR" />
+		<result property="examorNm" column="examor_Nm" />
+		<result property="examAt" column="EXAM_AT" />
+		<result property="examRemark" column="EXAM_REMARK" />
+		<result property="examFileUrl" column="EXAM_FILE_URL" />
 	</resultMap>
 	
 	<select id="selectPage" resultMap="SubRep" >
-		SELECT sr.SR_ID,sr.TITLE,sr.REMARK,sr.FILE_URL,sr.state,sr.CREATE_AT,sr.creator,bu1.user_nm create_Nm,
-		sr.MOD_AT,sr.send_At
+		SELECT sr.SR_ID,sr.TITLE,sr.SR_REMARK,sr.SR_FILE_URL,sr.state,sr.CREATE_AT,sr.creator,bu1.user_nm create_Nm,
+		sr.send_At,sr.EXAMOR,bu2.user_nm examor_Nm,sr.EXAM_AT,sr.EXAM_REMARK,sr.EXAM_FILE_URL
     	from GPMS_SUBJECT_REPORT sr
     	left join base_user bu1 on sr.creator=bu1.user_id
+    	left join base_user bu2 on sr.EXAMOR=bu2.user_id
 		<if test="ew!=null">
 			<if test="ew.entity!=null">
 				<where>
@@ -36,6 +40,9 @@
 					<if test="ew.entity.createNm!=null and ew.entity.createNm!=''">
 						and bu1.user_nm like '%' || #{ew.entity.createNm,jdbcType=VARCHAR} || '%'
 					</if>
+					<if test="ew.entity.examorNm!=null and ew.entity.examorNm!=''">
+						and bu2.user_nm like '%' || #{ew.entity.examorNm,jdbcType=VARCHAR} || '%'
+					</if>
 					<if test="ew.entity.state!=null and ew.entity.state!=''">
 						and sr.state = #{ew.entity.state,jdbcType=VARCHAR}
 					</if>
@@ -44,6 +51,18 @@
 					</if>
 					<if test="ew.entity.createAtEnd!=null and ew.entity.createAtEnd!=''">
 						and to_char(sr.create_At,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.createAtEnd,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.sendAtStart!=null and ew.entity.sendAtStart!=''">
+						and to_char(sr.send_At,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.sendAtStart,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.sendAtEnd!=null and ew.entity.sendAtEnd!=''">
+						and to_char(sr.send_At,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.sendAtEnd,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.examAtStart!=null and ew.entity.examAtStart!=''">
+						and to_char(sr.exam_At,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.examAtStart,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.examAtEnd!=null and ew.entity.examAtEnd!=''">
+						and to_char(sr.exam_At,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.examAtEnd,jdbcType=VARCHAR}
 					</if>
 				</where>
 			</if>

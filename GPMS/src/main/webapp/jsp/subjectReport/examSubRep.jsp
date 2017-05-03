@@ -106,7 +106,7 @@ function examSubRepAllow() {
 		function(r) {
 			if (r) {
 				var row = examSubRepDg.datagrid('getSelected');
-				$('#examSubRep_examForm input[name=examTarget]').val(row.srId);
+				$('#examSubRep_examForm input[name=srId]').val(row.srId);
 				$('#examSubRep_examForm').form('submit',{
 					onSubmit:function(){
 						return $(this).form('validate');
@@ -130,7 +130,7 @@ function examSubRepReject(){
 		function(r) {
 			if (r) {
 				var row = examSubRepDg.datagrid('getSelected');
-				$('#examSubRep_examForm input[name=examTarget]').val(row.srId);
+				$('#examSubRep_examForm input[name=srId]').val(row.srId);
 				$('#examSubRep_examForm').form('submit',{
 					onSubmit:function(){
 						return $(this).form('validate');
@@ -194,18 +194,18 @@ function examSubRepReject(){
 	   }
 	}]">
 	<form id="examSubRep_examForm" method="post" enctype="multipart/form-data">
-		<input type="hidden" name="examTarget"/>
+		<input type="hidden" name="srId"/>
 		<table>
 			<tr>
 				<th>审批意见</th>
 				<td>
-					<textarea name="remark" rows="7" cols="60"></textarea>
+					<textarea name="examRemark" rows="7" cols="60"></textarea>
 				</td>
 			</tr>
 			<tr>
 				<th>附件</th>
 				<td>
-					<input type="file" name="file" class="easyui-filebox" />
+					<input type="file" name="examFile" class="easyui-filebox" />
 				</td>
 			</tr>
 		</table>

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.baomidou.mybatisplus.plugins.Page;
 
-import cn.edu.ecit.cl.wang.gpms.po.Exam;
 import cn.edu.ecit.cl.wang.gpms.po.SubRep;
 import cn.edu.ecit.cl.wang.gpms.service.ISubRepService;
 import cn.edu.ecit.cl.wang.sys.common.constant.PageConstant;
@@ -74,8 +73,8 @@ public class SubRepController extends BaseController<SubRep>{
 	
 	@RequestMapping("examSubRepAllow")
 	@ResponseBody
-	public ReturnMsg examSubRepAllow(Exam exam){
-		if(subRepService.examSubRepAllow(exam)){
+	public ReturnMsg examSubRepAllow(SubRep subRep){
+		if(subRepService.examSubRepAllow(subRep)){
 			return ReturnMsg.success("提交成功");
 		}
 		return ReturnMsg.fail("提交失败");
@@ -83,8 +82,8 @@ public class SubRepController extends BaseController<SubRep>{
 	
 	@RequestMapping("examSubRepReject")
 	@ResponseBody
-	public ReturnMsg examSubRepReject(Exam exam){
-		if(subRepService.examSubRepReject(exam)){
+	public ReturnMsg examSubRepReject(SubRep subRep){
+		if(subRepService.examSubRepReject(subRep)){
 			return ReturnMsg.success("提交成功");
 		}
 		return ReturnMsg.fail("提交失败");
@@ -92,8 +91,7 @@ public class SubRepController extends BaseController<SubRep>{
 
 	@Override
 	public Page<SubRep> selectPage(SubRep obj, int currPage, int pageSize) {
-		// TODO Auto-generated method stub
-		return null;
+		return subRepService.selectPage(obj,currPage,pageSize);
 	}
 
 	@Override

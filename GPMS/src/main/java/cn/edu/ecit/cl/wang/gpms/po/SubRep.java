@@ -19,16 +19,16 @@ public class SubRep {
 	@TableField("TITLE")
 	private String title;
 
-	/** 备注 */
-	@TableField("REMARK")
-	private String remark;
+	/** 开题报告的描述 */
+	@TableField("SR_REMARK")
+	private String srRemark;
 
-	/** 文件路径 */
-	@TableField("FILE_URL")
-	private String fileUrl;
+	/** 开题报告文件路径 */
+	@TableField("SR_FILE_URL")
+	private String srFileUrl;
 
 	@TableField(exist = false)
-	private MultipartFile file;
+	private MultipartFile srFile;
 
 	/** 状态 */
 	@TableField("STATE")
@@ -51,17 +51,43 @@ public class SubRep {
 	@TableField(exist = false)
 	private String createNm;
 
-	/** 修改时间 */
-	@TableField("MOD_AT")
-	private Timestamp modAt;
-
-	/** 修改人 */
-	@TableField("MODER")
-	private Long moder;
-
 	/** 发送提交时间 */
 	@TableField("SEND_AT")
 	private Timestamp sendAt;
+	
+	@TableField(exist = false)
+	private String sendAtStart;
+	
+	@TableField(exist = false)
+	private String sendAtEnd;
+	
+	/** 审批人 */
+	@TableField("EXAMOR")
+	private Long examor;
+	
+	@TableField(exist = false)
+	private String examorNm;
+
+	/** 审批时间 */
+	@TableField("EXAM_AT")
+	private Timestamp examAt;
+	
+	@TableField(exist = false)
+	private String examAtStart;
+	
+	@TableField(exist = false)
+	private String examAtEnd;
+
+	/** 审批备注 */
+	@TableField("EXAM_REMARK")
+	private String examRemark;
+
+	/** 审批文件路径 */
+	@TableField("EXAM_FILE_URL")
+	private String examFileUrl;
+	
+	@TableField(exist=false)
+	private MultipartFile examFile;
 
 	public Long getSrId() {
 		return srId;
@@ -79,28 +105,28 @@ public class SubRep {
 		this.title = title;
 	}
 
-	public String getRemark() {
-		return remark;
+	public String getSrRemark() {
+		return srRemark;
 	}
 
-	public void setRemark(String remark) {
-		this.remark = remark;
+	public void setSrRemark(String srRemark) {
+		this.srRemark = srRemark;
 	}
 
-	public String getFileUrl() {
-		return fileUrl;
+	public String getSrFileUrl() {
+		return srFileUrl;
 	}
 
-	public void setFileUrl(String fileUrl) {
-		this.fileUrl = fileUrl;
+	public void setSrFileUrl(String srFileUrl) {
+		this.srFileUrl = srFileUrl;
 	}
 
-	public MultipartFile getFile() {
-		return file;
+	public MultipartFile getSrFile() {
+		return srFile;
 	}
 
-	public void setFile(MultipartFile file) {
-		this.file = file;
+	public void setSrFile(MultipartFile srFile) {
+		this.srFile = srFile;
 	}
 
 	public String getState() {
@@ -151,28 +177,92 @@ public class SubRep {
 		this.createNm = createNm;
 	}
 
-	public Timestamp getModAt() {
-		return modAt;
-	}
-
-	public void setModAt(Timestamp modAt) {
-		this.modAt = modAt;
-	}
-
-	public Long getModer() {
-		return moder;
-	}
-
-	public void setModer(Long moder) {
-		this.moder = moder;
-	}
-
 	public Timestamp getSendAt() {
 		return sendAt;
 	}
 
 	public void setSendAt(Timestamp sendAt) {
 		this.sendAt = sendAt;
+	}
+
+	public Long getExamor() {
+		return examor;
+	}
+
+	public void setExamor(Long examor) {
+		this.examor = examor;
+	}
+
+	public String getExamorNm() {
+		return examorNm;
+	}
+
+	public void setExamorNm(String examorNm) {
+		this.examorNm = examorNm;
+	}
+
+	public Timestamp getExamAt() {
+		return examAt;
+	}
+
+	public void setExamAt(Timestamp examAt) {
+		this.examAt = examAt;
+	}
+
+	public String getExamRemark() {
+		return examRemark;
+	}
+
+	public void setExamRemark(String examRemark) {
+		this.examRemark = examRemark;
+	}
+
+	public String getExamFileUrl() {
+		return examFileUrl;
+	}
+
+	public void setExamFileUrl(String examFileUrl) {
+		this.examFileUrl = examFileUrl;
+	}
+
+	public MultipartFile getExamFile() {
+		return examFile;
+	}
+
+	public void setExamFile(MultipartFile examFile) {
+		this.examFile = examFile;
+	}
+
+	public String getSendAtStart() {
+		return sendAtStart;
+	}
+
+	public void setSendAtStart(String sendAtStart) {
+		this.sendAtStart = sendAtStart;
+	}
+
+	public String getSendAtEnd() {
+		return sendAtEnd;
+	}
+
+	public void setSendAtEnd(String sendAtEnd) {
+		this.sendAtEnd = sendAtEnd;
+	}
+
+	public String getExamAtStart() {
+		return examAtStart;
+	}
+
+	public void setExamAtStart(String examAtStart) {
+		this.examAtStart = examAtStart;
+	}
+
+	public String getExamAtEnd() {
+		return examAtEnd;
+	}
+
+	public void setExamAtEnd(String examAtEnd) {
+		this.examAtEnd = examAtEnd;
 	}
 
 }

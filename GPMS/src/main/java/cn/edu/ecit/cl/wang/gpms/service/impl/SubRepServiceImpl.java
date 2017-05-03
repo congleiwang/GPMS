@@ -1,6 +1,5 @@
 package cn.edu.ecit.cl.wang.gpms.service.impl;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +12,9 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 
 import cn.edu.ecit.cl.wang.gpms.dao.SubRepDao;
-import cn.edu.ecit.cl.wang.gpms.po.Exam;
 import cn.edu.ecit.cl.wang.gpms.po.SubRep;
-import cn.edu.ecit.cl.wang.gpms.service.IExamService;
 import cn.edu.ecit.cl.wang.gpms.service.ISubRepService;
+import cn.edu.ecit.cl.wang.sys.common.utils.FileUtils;
 import cn.edu.ecit.cl.wang.sys.common.utils.GlobalProperties;
 import cn.edu.ecit.cl.wang.sys.common.utils.SpringSecurityUtils;
 import cn.edu.ecit.cl.wang.sys.common.utils.TimeUtils;
@@ -39,22 +37,20 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	@Autowired
 	UtilsDao utilsDao;
 	
-	@Autowired
-	IExamService examService;
+	@Override
+	public Page<SubRep> selectPage(SubRep obj, int currPage, int pageSize) {
+		obj.setState("3");
+		EntityWrapper<SubRep> ew=new EntityWrapper<SubRep>(obj);
+		Page<SubRep> page=new Page<SubRep>(currPage,pageSize);
+		return selectPage(page, ew);
+	}
+
 	
 	@Override
 	public boolean insert(SubRep entity) {
 		try {
-			if(entity.getFile().getSize()!=0){
-				String path = System.getProperty("web.root") + gp.getUploadPath();
-				String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
-						+ entity.getFile().getOriginalFilename();
-				File file = new File(path, fileName);
-				if (!file.exists()) {
-					file.mkdirs();
-				}
-				entity.setFileUrl(fileName);
-				entity.getFile().transferTo(file);
+			if(FileUtils.saveFile(entity.getSrFile(), gp.getUploadPath())){
+				entity.setSrFileUrl(entity.getSrFile().getOriginalFilename());			
 			}
 			entity.setCreator(SpringSecurityUtils.getCurrentUser().getUserId());
 			entity.setCreateAt(TimeUtils.getNow());
@@ -69,23 +65,9 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	
 	@Override
 	public boolean updateById(SubRep entity) {
-		if(entity.getFile()!=null && entity.getFile().getSize()!=0){
-			String path = System.getProperty("web.root") + gp.getUploadPath();
-			String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
-					+ entity.getFile().getOriginalFilename();
-			File file = new File(path, fileName);
-			if (!file.exists()) {
-				file.mkdirs();
-			}
-			try {
-				entity.getFile().transferTo(file);
-				entity.setFileUrl(fileName);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		if(FileUtils.saveFile(entity.getSrFile(), gp.getUploadPath())){
+			entity.setSrFileUrl(entity.getSrFile().getOriginalFilename());			
 		}
-		entity.setModer(SpringSecurityUtils.getCurrentUser().getUserId());
-		entity.setModAt(TimeUtils.getNow());
 		return super.updateById(entity);
 	}
 
@@ -122,33 +104,25 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	}
 
 	@Override
-	public boolean examSubRepAllow(Exam exam) {
-		//插入审批信息
-		if(examService.insert(exam)){
-			SubRep subRep=new SubRep();
-			subRep.setSrId(exam.getExamTarget());
-			subRep.setState("3");
-			//更新状态
-			if(subRepDao.updateById(subRep)>0){
-				return true;
-			}
+	public boolean examSubRepAllow(SubRep subRep) {
+		subRep.setExamAt(TimeUtils.getNow());
+		subRep.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
+		if(FileUtils.saveFile(subRep.getExamFile(), gp.getUploadPath())){
+			subRep.setExamFileUrl(subRep.getExamFile().getOriginalFilename());
 		}
-		return false;
+		subRep.setState("3");
+		return subRepDao.updateById(subRep)>0;
 	}
 
 	@Override
-	public boolean examSubRepReject(Exam exam) {
-		//插入审批信息
-		if(examService.insert(exam)){
-			SubRep subRep=new SubRep();
-			subRep.setSrId(exam.getExamTarget());
-			subRep.setState("4");
-			//更新状态
-			if(subRepDao.updateById(subRep)>0){
-				return true;
-			}
+	public boolean examSubRepReject(SubRep subRep) {
+		subRep.setExamAt(TimeUtils.getNow());
+		subRep.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
+		if(FileUtils.saveFile(subRep.getExamFile(), gp.getUploadPath())){
+			subRep.setExamFileUrl(subRep.getExamFile().getOriginalFilename());
 		}
-		return false;
+		subRep.setState("4");
+		return subRepDao.updateById(subRep)>0;
 	}
 
 }
