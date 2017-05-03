@@ -83,6 +83,10 @@ public class User extends BaseEntity {
 	@TableField("REMARK")
 	private String remark;
 	
+	/** 能否被申请  0：否，：可*/
+	@TableField("CAN_APPLY")
+	private String canApply;
+	
 	public Long getUserId() {
 		return userId;
 	}
@@ -242,6 +246,14 @@ public class User extends BaseEntity {
 
 	public void setSignAtEnd(String signAtEnd) {
 		this.signAtEnd = signAtEnd;
+	}
+
+	public String getCanApply() {
+		return canApply;
+	}
+
+	public void setCanApply(String canApply) {
+		this.canApply = canApply;
 	}
 
 }

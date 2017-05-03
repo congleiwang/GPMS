@@ -61,12 +61,8 @@
 	<bean id="globalProperties" class="cn.edu.ecit.cl.wang.sys.common.utils.GlobalProperties">
 		<property name="projectName" value="${project.name}" />
 		<property name="homeUrl" value="${home.url}" />
-		<property name="defaultRoleId" value="${defaultRoleId}" />
-		<property name="extJsHomePath" value="${ext.js.home.path}" />
-		<property name="webappPath" value="${webapp.path}" />
-		<property name="storageType" value="${storageType}" />
-		<property name="storagePath" value="${storagePath}" />
-		<property name="storageMode" value="${storageMode}" />
-		<property name="runautotask" value="${runautotask}" />
+		<property name="defaultRoleId" value="${default.roleId}" />
+		<property name="teacherRoleId" value="${teacher.roleId}" />
+		<property name="uploadPath" value="${upload.path}" />
 	</bean>
 </beans>

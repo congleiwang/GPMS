@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.sys.dao.MsgDao">
+
+	<!-- 返回类型  -->
+	<resultMap type="cn.edu.ecit.cl.wang.sys.po.Msg" id="Msg">
+		<id property="msgId" column="msg_id" />
+		<result property="msgTitle" column="msg_title" />
+		<result property="msgCont" column="msg_cont" />
+		<result property="sendAt" column="send_At" />
+		<result property="sender" column="sender" />
+		<result property="receiver" column="receiver" />
+		<result property="msgState" column="msg_state" />
+	</resultMap>
+    
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.gpms.dao.SubRepDao">
+
+	<!-- 返回类型  -->
+	<resultMap type="cn.edu.ecit.cl.wang.gpms.po.SubRep" id="SubRep">
+		<id property="srId" column="SR_ID"/>
+		<result property="title" column="TITLE" />
+		<result property="remark" column="REMARK" />
+		<result property="fileUrl" column="FILE_URL" />
+		<result property="state" column="state" />
+		<result property="createAt" column="CREATE_AT" />
+		<result property="creator" column="creator" />
+		<result property="createNm" column="create_Nm" />
+		<result property="modAt" column="MOD_AT" />
+		<result property="moder" column="moder" />
+		<result property="sendAt" column="send_At" />
+	</resultMap>
+	
+	<select id="selectPage" resultMap="SubRep" >
+		SELECT sr.SR_ID,sr.TITLE,sr.REMARK,sr.FILE_URL,sr.state,sr.CREATE_AT,sr.creator,bu1.user_nm create_Nm,
+		sr.MOD_AT,sr.send_At
+    	from GPMS_SUBJECT_REPORT sr
+    	left join base_user bu1 on sr.creator=bu1.user_id
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<where>
+					<if test="ew.entity.creator!=null and ew.entity.creator!=''">
+						and sr.creator=#{ew.entity.creator,jdbcType=NUMERIC}
+					</if>
+					<if test="ew.entity.title!=null and ew.entity.title!=''">
+						and sr.TITLE like '%' || #{ew.entity.title,jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="ew.entity.createNm!=null and ew.entity.createNm!=''">
+						and bu1.user_nm like '%' || #{ew.entity.createNm,jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="ew.entity.state!=null and ew.entity.state!=''">
+						and sr.state = #{ew.entity.state,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.createAtStart!=null and ew.entity.createAtStart!=''">
+						and to_char(sr.create_At,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.createAtStart,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.createAtEnd!=null and ew.entity.createAtEnd!=''">
+						and to_char(sr.create_At,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.createAtEnd,jdbcType=VARCHAR}
+					</if>
+				</where>
+			</if>
+			<if test="ew.sqlSegment!=null">
+				${ew.sqlSegment}
+			</if>
+		</if>
+		order by sr.CREATE_AT,sr.send_At
+	</select>
+	
+</mapper>

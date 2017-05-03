@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,28 +42,24 @@ public class MyInvocationSecurityMetadataSource implements FilterInvocationSecur
 		}
         List<UrlAndRoleId> urlAndRoleIdList = roleService.getUrlAndRoleIdList();  
         for (UrlAndRoleId urlAndRoleId : urlAndRoleIdList) {
-            Long roleId = urlAndRoleId.getRoleId();  
-              
-            ConfigAttribute ca = new SecurityConfig(String.valueOf(roleId));  
-  
-            List<String> urls = roleService.getMenuUrlsByRoleId(roleId);
-            
-            if(urls.isEmpty()){
-            	continue;
-            }
-            for (String url : urls) {  
-                //判断资源文件和权限的对应关系，如果已经存在相关的资源url，则要通过该url为key提取出权限集合，将权限增加到权限集合中。 
-                if (resourceMap.containsKey(url)) {  
+        	String url=urlAndRoleId.getMenuUrl();
+        	Long roleId=urlAndRoleId.getRoleId();
+        	
+        	if(StringUtils.isNoneEmpty(url)){
+        		
+        		ConfigAttribute ca = new SecurityConfig(String.valueOf(roleId));  
+        		//判断资源文件和权限的对应关系，如果已经存在相关的资源url，则要通过该url为key提取出权限集合，将权限增加到权限集合中。 
+        		if (resourceMap.containsKey(url)) {  
                     Collection<ConfigAttribute> value = resourceMap.get(url);  
                     value.add(ca);  
                     resourceMap.put(url, value);  
-                } else {  
+                } else {
                     Collection<ConfigAttribute> atts = new ArrayList<ConfigAttribute>();  
                     atts.add(ca);  
                     resourceMap.put(url, atts);  
-                }  
-  
-            }  
+                } 
+        		
+        	}
         }  
               
 	}

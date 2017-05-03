@@ -27,7 +27,6 @@
 %>
 <link rel="stylesheet" href="js/jquery-easyui-1.3.1/themes/<%=easyuiThemeName%>/easyui.css"	type="text/css"></link>
 <link rel="stylesheet" href="js/jquery-easyui-1.3.1/themes/icon.css" type="text/css"></link>
-<script type="text/javascript" src="js/syUtil.js"></script>
 <script type="text/javascript">
 	function changeTheme(themeName) {
 		var $easyuiTheme = $('#easyuiTheme');

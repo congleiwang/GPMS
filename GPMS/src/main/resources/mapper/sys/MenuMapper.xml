@@ -30,7 +30,7 @@
 	
 	<!-- 根据登陆用户的权限查询可见的菜单(3为按钮权限) -->
 	<select id="getPermTree" parameterType="java.util.List" resultMap="Menu">
-		SELECT 
+		SELECT distinct
 			t1.SYS_NM,t1.MENU_CD,t1.MENU_NM,t1.MENU_TYPE,t1.MENU_URL,t1.PMENU_CD,t1.REMARK,
 			t1.ICON_FILE,t1.ORDER_BY,t1.IS_USE,t1.JSP_URL
 		FROM BASE_MENU t1

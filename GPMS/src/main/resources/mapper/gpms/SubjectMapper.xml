@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.gpms.dao.SubjectDao">
+
+	<!-- 返回类型  -->
+	<resultMap type="cn.edu.ecit.cl.wang.gpms.po.Subject" id="Subject">
+		<id property="subId" column="SUB_ID"/>
+		<result property="title" column="TITLE" />
+		<result property="require" column="REQUIRE" />
+		<result property="intro" column="INTRO" />
+		<result property="state" column="state" />
+		<result property="createAt" column="CREATE_AT" />
+		<result property="creator" column="creator" />
+		<result property="createNm" column="create_Nm" />
+		<result property="doer" column="doer" />
+		<result property="doerNm" column="doer_Nm" />
+		<result property="doAt" column="DO_AT" />
+		<result property="finishAT" column="finish_AT" />
+		<result property="modAt" column="MOD_AT" />
+		<result property="moder" column="moder" />
+		<result property="moderNm" column="moder_Nm" />
+		<result property="fileUrl" column="FILE_URL" />
+	</resultMap>
+	
+	<select id="selectPage" resultMap="Subject" >
+		SELECT s.SUB_ID,s.TITLE,s.REQUIRE,s.INTRO,s.state,s.CREATE_AT,s.creator,bu1.user_nm create_Nm,
+		s.doer,bu2.user_nm doer_Nm,s.MOD_AT,s.moder,bu3.user_nm moder_Nm,s.FILE_URL
+    	from GPMS_SUBJECT s
+    	left join base_user bu1 on s.creator=bu1.user_id
+    	left join base_user bu2 on s.doer=bu2.user_id
+    	left join base_user bu3 on s.moder=bu3.user_id
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<where>
+					<if test="ew.entity.creator!=null and ew.entity.creator!=''">
+						and s.creator=#{ew.entity.creator,jdbcType=NUMERIC}
+					</if>
+					<if test="ew.entity.title!=null and ew.entity.title!=''">
+						and s.TITLE like '%' || #{ew.entity.title,jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="ew.entity.createNm!=null and ew.entity.createNm!=''">
+						and bu1.user_nm like '%' || #{ew.entity.createNm,jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="ew.entity.doerNm!=null and ew.entity.doerNm!=''">
+						and bu2.user_nm like '%' || #{ew.entity.doerNm,jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="ew.entity.state!=null and ew.entity.state!=''">
+						and s.state = #{ew.entity.state,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.createAtStart!=null and ew.entity.createAtStart!=''">
+						and to_char(s.create_At,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.createAtStart,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.createAtEnd!=null and ew.entity.createAtEnd!=''">
+						and to_char(s.create_At,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.createAtEnd,jdbcType=VARCHAR}
+					</if>
+				</where>
+			</if>
+		</if>
+		order by s.CREATE_AT,s.MOD_AT
+	</select>
+	
+	<update id="updateState" parameterType="cn.edu.ecit.cl.wang.gpms.po.Subject">
+		update GPMS_SUBJECT set state=#{subject.state,jdbcType=VARCHAR}
+		where SUB_ID=#{subject.subId,jdbcType=NUMERIC}
+	</update>
+	
+	<select id="getMySub" resultMap="Subject" parameterType="java.lang.Long">
+		select s.SUB_ID,s.TITLE,s.REQUIRE,s.INTRO,s.state,s.CREATE_AT,s.creator,bu1.user_nm create_Nm,
+		s.doer,bu2.user_nm doer_Nm,s.MOD_AT,s.moder,bu3.user_nm moder_Nm,s.FILE_URL
+    	from GPMS_SUBJECT s
+    	left join base_user bu1 on s.creator=bu1.user_id
+    	left join base_user bu2 on s.doer=bu2.user_id
+    	left join base_user bu3 on s.moder=bu3.user_id
+    	where doer=#{userId,jdbcType=NUMERIC}
+	</select>
+</mapper>

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 
@@ -23,7 +22,7 @@ import cn.edu.ecit.cl.wang.sys.service.IUserService;
 
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUserService {
-
+ 
 	@Autowired
 	SysParamDao sysParamDao;
 
@@ -55,18 +54,21 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 		user.setCreator(SpringSecurityUtils.getCurrentUser().getUserId());
 		user.setIsDel("0");
 		user.setPasswd(MD5.encode(user.getPasswd()));
+		user.setCanApply("1");
 		return super.insert(user);
 	}
 	
 	@Override
-	public boolean update(User entity, Wrapper<User> wrapper) {
+	public boolean updateById(User entity) {
 		if(StringUtils.isEmpty(entity.getPasswd())){
 			entity.setPasswd(null);
+		}else{
+			entity.setPasswd(MD5.encode(entity.getPasswd()));
 		}
 		entity.setModAt(new Timestamp(System.currentTimeMillis()));
 		entity.setModer(SpringSecurityUtils.getCurrentUser().getUserId());
 		userDao.updateModCount(entity.getUserId());
-		return super.update(entity, wrapper);
+		return super.updateById(entity);
 	}
 	
 	/**
@@ -141,19 +143,51 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 	}
 
 	@Override
-	public List<User> getUsersByRoleId(Long roleId) {
-		return userDao.getUsersByRoleId(roleId);
-	}
-
-	@Override
-	public List<User> getUsersExRoleId(User user, Long roleId) {
+	public Page<User> getUsersByRoleId(User user,Long roleId, int pageNum, int pageSize) {
 		if(user==null){
 			user=new User();
 		}
 		if(user.getOrgId()==null || user.getOrgId()==0){
 			user.setOrgId(SpringSecurityUtils.getCurrentUser().getOrgId());
 		}
-		return userDao.getUsersExRoleId(user,roleId);
+		EntityWrapper<User> ew=new EntityWrapper<User>(user);
+		Page<User> page=new Page<User>(pageNum,pageSize);
+		page.setRecords(userDao.getUsersByRoleId(page,ew ,roleId));
+		return page;
+	}
+
+	@Override
+	public Page<User> getUsersExRoleId(User user, Long roleId, int pageNum, int pageSize) {
+		if(user==null){
+			user=new User();
+		}
+		if(user.getOrgId()==null || user.getOrgId()==0){
+			user.setOrgId(SpringSecurityUtils.getCurrentUser().getOrgId());
+		}
+		EntityWrapper<User> ew=new EntityWrapper<User>(user);
+		Page<User> page=new Page<User>(pageNum,pageSize);
+		page.setRecords(userDao.getUsersExRoleId(page, ew, roleId));
+		return page;
+	}
+
+	@Override
+	public List<User> getMyStuList() {
+		return userDao.getMyStuList(SpringSecurityUtils.getCurrentUser().getUserId());
+	}
+
+	@Override
+	public User getMyMentor() {
+		return userDao.getMyMentor(SpringSecurityUtils.getCurrentUser().getUserId());
+	}
+
+	@Override
+	public boolean lockApply() {
+		return userDao.lockApply(SpringSecurityUtils.getCurrentUser().getUserId());
+	}
+
+	@Override
+	public boolean unLockApply() {
+		return userDao.unLockApply(SpringSecurityUtils.getCurrentUser().getUserId());
 	}
 
 }

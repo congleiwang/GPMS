@@ -17,8 +17,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 		<property name="jobExecutorActivate" value="true" />
 	</bean>
 	
-	
-	
 	<!-- 创建流程引擎对象 -->
 	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
 		<property name="processEngineConfiguration" ref="processEngineConfiguration" />

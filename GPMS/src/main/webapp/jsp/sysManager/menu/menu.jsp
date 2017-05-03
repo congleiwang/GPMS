@@ -97,7 +97,6 @@ function menuAdd(){
 			id:'new',
 		}
 	});
-	$('#menu_pmenuCd').val(node.attributes.pmenuCd);
 	$('#menu_isAdd').val('1');
 }
 
@@ -114,7 +113,6 @@ function menuAddChild(){
 			id:'new',
 		}]
 	});
-	$('#menu_pmenuCd').val(node.id);
 	$('#menu_isAdd').val('1');
 }
 </script>
@@ -145,8 +143,15 @@ function menuAddChild(){
 						    				jspUrl:node.attributes.jspUrl,
 						    				isUse:node.attributes.isUse,
 						    				remark:node.attributes.remark,
+						    				pmenuCd:node.attributes.pmenuCd
 						                });
 									}else{
+										var pnode=$('menu_menuTree').tree('getParent',node.target);
+										if(pnode){
+											$('#menu_pmenuCd').val(pnode.id);
+										}else{
+											$('#menu_pmenuCd').val(null);
+										}
 										$('#menu_isAdd').val('1');
 									}
 								}
@@ -211,5 +216,4 @@ function menuAddChild(){
 			</table>
 		</form>
 	</div>
-
 </div>

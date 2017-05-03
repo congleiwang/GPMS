@@ -101,7 +101,7 @@ public class MyUserDetailService implements UserDetailsService {
 		List<Role> roles = roleService.getRolesByUserId(userDetails.getUserId());
 		//若用户角色列表为空，加入系统设置的默认角色
 		if ((CollectionUtils.isEmpty(roles)) && (globalProperties.getDefaultRoleId() != null)) {
-			Role role = roleService.selectById(globalProperties.getDefaultRoleId());
+			Role role = roleService.selectById(Long.valueOf(globalProperties.getDefaultRoleId()));
 			if (role != null) {
 				roles.add(role);
 			}

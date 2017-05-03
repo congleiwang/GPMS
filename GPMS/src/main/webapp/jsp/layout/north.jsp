@@ -1,7 +1,7 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript" charset="utf-8">
-	function logout(b) {
+	/* function logout(b) {
 		$('#sessionInfoDiv').html('');
 		$.post('${pageContext.request.contextPath}/userAction!doNotNeedSession_logout.action', function() {
 			if (b) {
@@ -40,7 +40,7 @@
 				}
 			} ]
 		});
-	}
+	} */
 </script>
 <div id="sessionInfoDiv" style="position: absolute;right: 5px;top:10px;">
 	<c:if test="${sessionInfo.userId != null}">[<strong>${sessionInfo.loginName}</strong>]，欢迎你！您使用[<strong>${sessionInfo.ip}</strong>]IP登录！</c:if>

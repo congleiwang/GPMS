@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.baomidou.mybatisplus.plugins.Page;
 
 import cn.edu.ecit.cl.wang.sys.common.constant.OptionConstant;
+import cn.edu.ecit.cl.wang.sys.common.constant.PageConstant;
 import cn.edu.ecit.cl.wang.sys.common.utils.ReturnMsg;
 import cn.edu.ecit.cl.wang.sys.po.User;
 import cn.edu.ecit.cl.wang.sys.service.IUserService;
@@ -41,17 +43,41 @@ public class UserController extends BaseController<User> {
 	public boolean addData(User obj) {
 		return userService.insert(obj);
 	}
-
+	
 	@RequestMapping("/getUsersExRoleId")
 	@ResponseBody
-	public List<User> getUsersExRoleId(User user,Long roleId) {
-		return userService.getUsersExRoleId(user,roleId);
+	public ReturnMsg getUsersExRoleId(User user,Long roleId,
+			@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "rows", required = false) Integer pageSize) {
+		if (page == null || page < 1) {
+			page = PageConstant.defCurrPageNum;
+		}
+		if (pageSize == null || pageSize < 1) {
+			pageSize = PageConstant.defPageSize;
+		}
+		Page<User> p= userService.getUsersExRoleId(user,roleId, page, pageSize);
+		ReturnMsg returnMsg=new ReturnMsg();
+		returnMsg.setTotal(p.getTotal());
+		returnMsg.setRows(p.getRecords());
+		return returnMsg;
 	}
 	
 	@RequestMapping("/getUsersByRoleId")
 	@ResponseBody
-	public List<User> getUsersByRoleId(Long roleId) {
-		return userService.getUsersByRoleId(roleId);
+	public ReturnMsg getUsersByRoleId(User user,Long roleId,
+			@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "rows", required = false) Integer pageSize) {
+		if (page == null || page < 1) {
+			page = PageConstant.defCurrPageNum;
+		}
+		if (pageSize == null || pageSize < 1) {
+			pageSize = PageConstant.defPageSize;
+		}
+		Page<User> p= userService.getUsersByRoleId(user,roleId, page, pageSize);
+		ReturnMsg returnMsg=new ReturnMsg();
+		returnMsg.setTotal(p.getTotal());
+		returnMsg.setRows(p.getRecords());
+		return returnMsg;
 	}
 	
 	@RequestMapping("/deleteBatchIds")
@@ -97,6 +123,24 @@ public class UserController extends BaseController<User> {
 			return ReturnMsg.fail(OptionConstant.unLockFail);
 		}
 		return ReturnMsg.fail(OptionConstant.unLockBatchFail);
+	}
+	
+	@RequestMapping("/lockApply")
+	@ResponseBody
+	public ReturnMsg lockApply() {
+		if(userService.lockApply()){
+			return ReturnMsg.success(OptionConstant.lockSucc);
+		}
+		return ReturnMsg.fail(OptionConstant.lockFail);
+	}
+	
+	@RequestMapping("/unLockApply")
+	@ResponseBody
+	public ReturnMsg unLockApply() {
+		if(userService.unLockApply()){
+			return ReturnMsg.success(OptionConstant.unLockSucc);
+		}
+		return ReturnMsg.fail(OptionConstant.unLockFail);
 	}
 	
 	@Override

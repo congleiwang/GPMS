@@ -19,16 +19,24 @@ public class ReturnMsg {
 		this.msg=msg;
 	}
 	
+	public static ReturnMsg success(){
+		return new ReturnMsg(true,"操作成功");
+	}
+	
 	public static ReturnMsg success(String msg){
 		if(StringUtils.isEmpty(msg)){
-			msg="操作成功";
+			return success();
 		}
 		return new ReturnMsg(true,msg);
 	}
-
+	
+	public static ReturnMsg fail(){
+		return new ReturnMsg(false,"操作失败");
+	}
+	
 	public static ReturnMsg fail(String msg){
 		if(StringUtils.isEmpty(msg)){
-			msg="操作失败";
+			return fail();
 		}
 		return new ReturnMsg(false,msg);
 	}

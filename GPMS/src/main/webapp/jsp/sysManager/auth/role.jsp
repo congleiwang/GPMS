@@ -133,6 +133,12 @@
 					roleRemoveUser();
 				}
 			}, '-', {
+				text : '全选',
+				iconCls : 'icon-ok',
+				handler : function() {
+					ru_datagrid.datagrid('selectAll');
+				}
+			}, '-', {
 				text : '取消选中',
 				iconCls : 'icon-undo',
 				handler : function() {

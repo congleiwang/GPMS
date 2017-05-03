@@ -27,6 +27,7 @@
 		<result property="modAt" column="MOD_AT" />
 		<result property="modCount" column="MOD_COUNT" />
 		<result property="isDel" column="IS_DEL" />
+		<result property="canApply" column="CAN_APPLY" />
 	</resultMap>
 	
 	<!-- 根据用户LongNm得到id -->
@@ -48,7 +49,7 @@
 	</select>
 	
 	<!-- 根据角色id，找到用户 -->
-	<select id="getUsersByRoleId" resultMap="User" parameterType="java.lang.Long">
+	<select id="getUsersByRoleId" resultMap="User">
 		SELECT
 		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
 		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
@@ -57,9 +58,25 @@
 		left join BASE_USER_ROLE ur on u.USER_ID=ur.USER_ID
 		WHERE
 		ur.ROLE_ID=#{roleId,jdbcType=NUMERIC} AND u.is_LOCK='0'
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<if test="ew.entity.userNm!=null and ew.entity.userNm!=''">
+					and u.USER_NM like '%' || #{ew.entity.userNm,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.loginNm!=null and ew.entity.loginNm!=''">
+					and u.LOGIN_NM like '%' || #{ew.entity.loginNm,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.orgId!=null and ew.entity.orgId!=0">
+					and u.ORG_ID in(
+					SELECT t.ORG_ID FROM BASE_ORG t where t.IS_USE='1'
+					START WITH t.ORG_ID= #{ew.entity.orgId,jdbcType=NUMERIC}
+					CONNECT BY PRIOR t.ORG_ID = t.PORG_ID)
+				</if>
+			</if>
+		</if>
 	</select>
 	<!-- 根据角色id及查询条件，找到之外的用户 -->
-	<select id="getUsersExRoleId" resultMap="User" parameterType="java.lang.Long">
+	<select id="getUsersExRoleId" resultMap="User">
 		SELECT
 		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
 		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
@@ -69,20 +86,22 @@
 		<if test="roleId!=null and roleId!=0">
 			and u.USER_ID not in (select ur.USER_ID from BASE_USER_ROLE ur where ur.role_id= #{roleId,jdbcType=NUMERIC})
 		</if>
-		<if test="user!=null">
-				<if test="user.userNm!=null and user.userNm!=''">
-					and u.USER_NM like '%' || #{user.userNm,jdbcType=VARCHAR} || '%'
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<if test="ew.entity.userNm!=null and ew.entity.userNm!=''">
+					and u.USER_NM like '%' || #{ew.entity.userNm,jdbcType=VARCHAR} || '%'
 				</if>
-				<if test="user.loginNm!=null and user.loginNm!=''">
-					and u.LOGIN_NM like '%' || #{user.loginNm,jdbcType=VARCHAR} || '%'
+				<if test="ew.entity.loginNm!=null and ew.entity.loginNm!=''">
+					and u.LOGIN_NM like '%' || #{ew.entity.loginNm,jdbcType=VARCHAR} || '%'
 				</if>
-				<if test="user.orgId!=null and user.orgId!=0">
+				<if test="ew.entity.orgId!=null and ew.entity.orgId!=0">
 					and u.ORG_ID in(
 					SELECT t.ORG_ID FROM BASE_ORG t where t.IS_USE='1'
-					START WITH t.ORG_ID= #{user.orgId,jdbcType=NUMERIC}
+					START WITH t.ORG_ID= #{ew.entity.orgId,jdbcType=NUMERIC}
 					CONNECT BY PRIOR t.ORG_ID = t.PORG_ID)
 				</if>
 			</if>
+		</if>
 	</select>
 	
 	<!-- 根据用户id，找到用户 -->
@@ -137,6 +156,17 @@
 		update BASE_USER set
 		is_LOCK='0' where USER_ID=#{userId,jdbcType=NUMERIC}
 	</update>
+	
+	<!-- 锁定申请 -->
+	<update id="lockApply" parameterType="java.lang.Long">
+		update BASE_USER set
+		CAN_APPLY='0' where USER_ID=#{userId,jdbcType=NUMERIC}
+	</update>
+	<!-- 解锁申请 -->
+	<update id="unLockApply" parameterType="java.lang.Long">
+		update BASE_USER set
+		CAN_APPLY='1' where USER_ID=#{userId,jdbcType=NUMERIC}
+	</update>
 
 	<select id="selectPage" resultMap="User">
 		SELECT
@@ -174,4 +204,26 @@
 			</if>
 		</if>
 	</select>
+	 
+	<select id="getMyStuList" resultMap="cn.edu.ecit.cl.wang.sys.dao.UserDao.User" parameterType="java.lang.Long">
+    	SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		LEFT JOIN GPMS_APPLY_MENTOR am on u.USER_ID =am.SENDER
+		WHERE
+		am.RECEIVER=#{receiver,jdbcType=NUMERIC} AND u.is_LOCK='0' and am.state='3'
+    </select>
+    
+	<select id="getMyMentor" resultMap="cn.edu.ecit.cl.wang.sys.dao.UserDao.User" parameterType="java.lang.Long">
+    	SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		LEFT JOIN GPMS_APPLY_MENTOR am on u.USER_ID =am.RECEIVER
+		WHERE
+		am.SENDER=#{sender,jdbcType=NUMERIC} AND u.is_LOCK='0' and am.state='3'
+    </select>
 </mapper>
