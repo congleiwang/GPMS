@@ -1,27 +1,27 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%> 
 <script type="text/javascript">
-var subRepDg = $('#subRep_datagrid');
-var subRepFlag=true;
+var paperDg = $('#paper_datagrid');
+var paperFlag=true;
 $(function() {
 	$.ajax({
-		url : '${pageContext.request.contextPath}/subRep/getAllowSubRep',
+		url : '${pageContext.request.contextPath}/paper/getAllowPaper',
 		type:'post',
 		dataType : 'json',
 		success : function(d) {
-			if(d && d.srId){
-				$('#subRepSend').linkbutton("disable");
-				subRepFlag=false;
+			if(d && d.paperId){
+				$('#paperSend').linkbutton("disable");
+				paperFlag=false;
 			}
 		}
 	});
-	subRepDg.datagrid({
+	paperDg.datagrid({
 				fit : true,
 				pageSize : 10,
 				rownumbers:true,
 				singleSelect:true,
 				pageList : [ 10, 20, 30, 40 ],
-				url : '${pageContext.request.contextPath}/subRep/mySubRepList',
-				idField : 'srId',
+				url : '${pageContext.request.contextPath}/paper/myPaperList',
+				idField : 'paperId',
 				pagePosition : 'bottom',
 				pagination : true,
 				loadMsg : '正在加载数据当中....',
@@ -42,68 +42,68 @@ $(function() {
 						return timeToString(value);
 					}
 				} ,{
-					field : 'srFileUrl',
+					field : 'pfileUrl',
 					title : '附件',
-					width : 220,
+					width : 250,
 					formatter : function(value, rowData, rowIndex) {
 						return downHref(value);
 					}
 				} ,{
-					field : 'srRemark',
-					title : '备注',
+					field : 'abs',
+					title : '摘要',
 					width : 250
 				}] ],
 				toolbar : [{
 					text : '添加',
 					iconCls : 'icon-add',
 					handler : function() {
-						subRepAdd();
+						paperAdd();
 					}
 				}, '-', {
 					text : '修改',
 					iconCls : 'icon-edit',
-					id:'subRepUpdate',
+					id:'paperUpdate',
 					handler : function() {
-						subRepUpdate();
+						paperUpdate();
 					}
 				}, '-', {
 					text : '删除',
-					id:'subRepDel',
+					id:'paperDel',
 					iconCls : 'icon-remove',
 					handler : function() {
-						subRepDel();
+						paperDel();
 					}
 				}, '-',{
 					text : '取消选中',
 					iconCls : 'icon-undo',
 					handler : function() {
-						subRepDg.datagrid('unselectAll');
+						paperDg.datagrid('unselectAll');
 					}
 				},'-', {
 					text : '提交审批',
-					id:'subRepSend',
+					id:'paperSend',
 					iconCls : 'icon-tip',
 					handler : function() {
-						subRepSend();
+						paperSend();
 					}
 				}],
 				onClickRow:function(index, row){
 					if(row.state=='1'){
-						if(subRepFlag){
-							$('#subRepSend').linkbutton("enable");							
+						if(paperFlag){
+							$('#paperSend').linkbutton("enable");							
 						}
-						$('#subRepUpdate').linkbutton("enable");
-						$('#subRepDel').linkbutton("enable");
+						$('#paperUpdate').linkbutton("enable");
+						$('#paperDel').linkbutton("enable");
 					}else{
-						$('#subRepSend').linkbutton("disable");
-						$('#subRepUpdate').linkbutton("disable");
-						$('#subRepDel').linkbutton("disable");
+						$('#paperSend').linkbutton("disable");
+						$('#paperUpdate').linkbutton("disable");
+						$('#paperDel').linkbutton("disable");
 					}
 				},
 				onDblClickRow:function(index,row){
-					var datailSubRep=$('<div/>').dialog({
-						title : '查看课题报告',
-						href : '${pageContext.request.contextPath}/jsp/subjectReport/datailSubRep.jsp',
+					var datailPaper=$('<div/>').dialog({
+						title : '查看论文',
+						href : '${pageContext.request.contextPath}/jsp/paper/datailPaper.jsp',
 						width : 600,
 						height : 400,
 						modal : true,
@@ -111,24 +111,24 @@ $(function() {
 						buttons : [ {
 							text : '关闭',
 							handler : function() {
-								subRepDg.datagrid('unselectAll');
-								datailSubRep.dialog("destroy");
+								paperDg.datagrid('unselectAll');
+								datailPaper.dialog("destroy");
 							}
 						} ],
 						onClose : function() {
-							subRepDg.datagrid('unselectAll');
+							paperDg.datagrid('unselectAll');
 							$(this).dialog('destroy');
 						},
 						onLoad : function() {
-							$('#detailSubRepSrFileUrl').html(row.srFileUrl);
-							$('#detailSubRepSrFileUrl').attr('href',"file/download?fileName="+row.srFileUrl);
+							$('#datailPaperPfileUrl').html(row.pfileUrl);
+							$('#datailPaperPfileUrl').attr('href',"file/download?fileName="+row.pfileUrl);
 							if(row.state=="3" ||row.state=="4" ){
-								$('#detailSubRepExamRemark').html(row.examFileUrl);
-								$('#detailSubRepExamRemark').attr('href',"file/download?fileName="+row.examFileUrl);
+								$('#datailPaperExamFileUrl').html(row.examFileUrl);
+								$('#datailPaperExamFileUrl').attr('href',"file/download?fileName="+row.examFileUrl);
 							}
-			                $('#detailSubRep_Form').form('load',{
+			                $('#detailPaper_Form').form('load',{
 			                	title:row.title,
-								srRemark:row.srRemark,
+			                	abs:row.abs,
 			                	state:row.state,
 								createAt:timeToString(row.createAt),
 								createNm:row.createNm,
@@ -142,13 +142,13 @@ $(function() {
 				}
 			});
 });
-function subRepAdd(){
-	$('#subRep_Dialog').dialog('open');
-	$('#subRep_updateForm').form('clear');
-	$("#subRep_Dialog").dialog('setTitle','新增课题报告');
+function paperAdd(){
+	$('#paper_Dialog').dialog('open');
+	$('#paper_updateForm').form('clear');
+	$("#paper_Dialog").dialog('setTitle','新增论文');
 }
-function subRepDel() {
-	var row = subRepDg.datagrid('getSelected');
+function paperDel() {
+	var row = paperDg.datagrid('getSelected');
 	if (!row) {
 		$.messager.alert('提示', '请勾选要删除的数据！');
 		return;
@@ -157,13 +157,13 @@ function subRepDel() {
 		function(r) {
 			if (r) {
 				$.ajax({
-					url : '${pageContext.request.contextPath}/subRep/del',
-					data :"id="+row.srId,
+					url : '${pageContext.request.contextPath}/paper/del',
+					data :"id="+row.paperId,
 					type:'post',
 					dataType : 'json',
 					success : function(d) {
-						subRepDg.datagrid('load');
-						subRepDg.datagrid('unselectAll');
+						paperDg.datagrid('load');
+						paperDg.datagrid('unselectAll');
 						$.messager.show({
 							title : '提示',
 							msg : d.msg
@@ -173,30 +173,30 @@ function subRepDel() {
 			}
 		});
 }
-function subRepUpdate(){
-	var row = subRepDg.datagrid('getSelected');
+function paperUpdate(){
+	var row = paperDg.datagrid('getSelected');
 	if (!row) {
 		$.messager.alert('提示', '请选择要修改的数据！');
 		return;
 	}
-	$('#subRep_Dialog').dialog('open');
-	$('#subRep_updateForm').form('clear');
-	$("#subRep_Dialog").dialog('setTitle','修改课题报告');
-	$('#subRep_updateForm').form('load',{
-		srId:row.srId,
+	$('#paper_Dialog').dialog('open');
+	$('#paper_updateForm').form('clear');
+	$("#paper_Dialog").dialog('setTitle','修改论文');
+	$('#paper_updateForm').form('load',{
+		paperId:row.paperId,
     	title:row.title,
-    	remark:row.remark
+    	abs:row.abs
     });
 }
-function subRepSave(){
-	var srId=$("#subRep_updateForm input[name=srId]").val();
+function paperSave(){
+	var paperId=$("#paper_updateForm input[name=paperId]").val();
 	var url;
-	if(srId){
-		url='${pageContext.request.contextPath}/subRep/update';
+	if(paperId){
+		url='${pageContext.request.contextPath}/paper/update';
 	}else{
-		url='${pageContext.request.contextPath}/subRep/add';
+		url='${pageContext.request.contextPath}/paper/add';
 	}
-	$('#subRep_updateForm').form('submit',{
+	$('#paper_updateForm').form('submit',{
 		onSubmit:function(){
 			return $(this).form('validate');
 		},
@@ -204,16 +204,16 @@ function subRepSave(){
         success:function(r){
         	var obj=$.parseJSON(r);
             if(obj.success){
-            	$('#subRep_updateForm').form('clear');
-            	$("#subRep_Dialog").dialog("close");
-            	subRepDg.datagrid("reload");
+            	$('#paper_updateForm').form('clear');
+            	$("#paper_Dialog").dialog("close");
+            	paperDg.datagrid("reload");
             }
             $.messager.alert('提示', obj.msg);
 	    }
 	});
 }
-function subRepSend(){
-	var row = subRepDg.datagrid('getSelected');
+function paperSend(){
+	var row = paperDg.datagrid('getSelected');
 	if (!row) {
 		$.messager.alert('提示', '请勾选要提交的数据！');
 		return;
@@ -222,13 +222,13 @@ function subRepSend(){
 		function(r) {
 			if (r) {
 				$.ajax({
-					url : '${pageContext.request.contextPath}/subRep/subRepSend',
-					data :"srId="+row.srId,
+					url : '${pageContext.request.contextPath}/paper/paperSend',
+					data :"paperId="+row.paperId,
 					type:'post',
 					dataType : 'json',
 					success : function(d) {
-						subRepDg.datagrid('load');
-						subRepDg.datagrid('unselectAll');
+						paperDg.datagrid('load');
+						paperDg.datagrid('unselectAll');
 						$.messager.show({
 							title : '提示',
 							msg : d.msg
@@ -238,20 +238,20 @@ function subRepSend(){
 			}
 		});
 }
-function subRepSearchs() {
-	var searchForm = $('#subRep_searchForm').form();
-	subRepDg.datagrid('load', serializeObject(searchForm));
+function paperSearchs() {
+	var searchForm = $('#paper_searchForm').form();
+	paperDg.datagrid('load', serializeObject(searchForm));
 }
-function subRepCleanSearch() {
-	subRepDg.datagrid('load', {});
-	$('#subRep_searchForm').form('clear');
+function paperCleanSearch() {
+	paperDg.datagrid('load', {});
+	$('#paper_searchForm').form('clear');
 }
 
 </script>
 <div class="easyui-layout" data-options="fit:true">
 	<div data-options="region:'north',border:false,title:'查询条件'"style="height: 60px;overflow: hidden;" align="left">
-		<div id="subRep_toolbar">
-			<form id="subRep_searchForm">
+		<div id="paper_toolbar">
+			<form id="paper_searchForm">
 				<table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
 					<tr>
 						<th>状态</th>
@@ -261,8 +261,8 @@ function subRepCleanSearch() {
 						<th>标题</th>
 						<td><input name="title"/></td>
 						<td colspan="2">
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="subRepSearchs();">查询</a>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="subRepCleanSearch();">重置</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="paperSearchs();">查询</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="paperCleanSearch();">重置</a>
 						</td>
 					</tr>
 				</table>
@@ -270,21 +270,21 @@ function subRepCleanSearch() {
 		</div>
 	</div>
 	<div data-options="region:'center',border:false" style="overflow: hidden;">
-		<table id="subRep_datagrid" ></table>
+		<table id="paper_datagrid" ></table>
 	</div>
 </div>
 
-<div id="subRep_Dialog" class="easyui-dialog" style="width:600px;height:300px;" align="center"
+<div id="paper_Dialog" class="easyui-dialog" style="width:600px;height:300px;" align="center"
 	data-options="closed:true,modal:true,title:'添加',resizable :true,
 	buttons:[{
 		text : '保存',
 		iconCls : 'icon-save',
 		handler :  function() {
-			subRepSave();
+			paperSave();
 	   }
 	}]">
-	<form id="subRep_updateForm" method="post" enctype="multipart/form-data">
-		<input type="hidden" name="srId"/>
+	<form id="paper_updateForm" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="paperId"/>
 		<table>
 			<tr>
 				<th>标题：</th>
@@ -293,15 +293,15 @@ function subRepCleanSearch() {
 				</td>
 			</tr>
 			<tr>
-				<th>备注：</th>
+				<th>摘要：</th>
 				<td>
-					<textarea name="srRemark" rows="4" cols="50"></textarea>
+					<textarea name="abs" rows="4" cols="50"></textarea>
 				</td>
 			</tr>
 			<tr>
 				<th>附件</th>
 				<td>
-					<input type="file" name="srFile" class="easyui-filebox" />
+					<input type="file" name="pfile" class="easyui-filebox" />
 				</td>
 			</tr>
 		</table>

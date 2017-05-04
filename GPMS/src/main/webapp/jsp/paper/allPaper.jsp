@@ -1,15 +1,15 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%> 
 <script type="text/javascript">
-var allSubRepDg = $('#allSubRep_datagrid');
+var allPaperDg = $('#allPaper_datagrid');
 $(function() {
-	allSubRepDg.datagrid({
+	allPaperDg.datagrid({
 				fit : true,
 				pageSize : 10,
 				rownumbers:true,
 				singleSelect:true,
 				pageList : [ 10, 20, 30, 40 ],
-				url : '${pageContext.request.contextPath}/subRep/list',
-				idField : 'srId',
+				url : '${pageContext.request.contextPath}/paper/list',
+				idField : 'paperId',
 				pagePosition : 'bottom',
 				pagination : true,
 				loadMsg : '正在加载数据当中....',
@@ -48,9 +48,9 @@ $(function() {
 						return timeToString(value);
 					}
 				} ,{
-					field : 'srFileUrl',
-					title : '开题报告附件',
-					width : 220,
+					field : 'pfileUrl',
+					title : '论文附件',
+					width : 250,
 					formatter : function(value, rowData, rowIndex) {
 						return downHref(value);
 					}
@@ -59,13 +59,13 @@ $(function() {
 					text : '取消选中',
 					iconCls : 'icon-undo',
 					handler : function() {
-						allSubRepDg.datagrid('unselectAll');
+						allPaperDg.datagrid('unselectAll');
 					}
 				}],
 				onDblClickRow:function(index,row){
-					var datailSubRep=$('<div/>').dialog({
-						title : '查看课题报告',
-						href : '${pageContext.request.contextPath}/jsp/subjectReport/datailSubRep.jsp',
+					var datailPaper=$('<div/>').dialog({
+						title : '查看论文',
+						href : '${pageContext.request.contextPath}/jsp/paper/datailPaper.jsp',
 						width : 600,
 						height : 400,
 						modal : true,
@@ -73,24 +73,24 @@ $(function() {
 						buttons : [ {
 							text : '关闭',
 							handler : function() {
-								allSubRepDg.datagrid('unselectAll');
-								datailSubRep.dialog("destroy");
+								paperDg.datagrid('unselectAll');
+								datailPaper.dialog("destroy");
 							}
 						} ],
 						onClose : function() {
-							allSubRepDg.datagrid('unselectAll');
+							paperDg.datagrid('unselectAll');
 							$(this).dialog('destroy');
 						},
 						onLoad : function() {
-							$('#detailSubRepSrFileUrl').html(row.srFileUrl);
-							$('#detailSubRepSrFileUrl').attr('href',"file/download?fileName="+row.srFileUrl);
+							$('#datailPaperPfileUrl').html(row.pfileUrl);
+							$('#datailPaperPfileUrl').attr('href',"file/download?fileName="+row.pfileUrl);
 							if(row.state=="3" ||row.state=="4" ){
-								$('#detailSubRepExamRemark').html(row.examFileUrl);
-								$('#detailSubRepExamRemark').attr('href',"file/download?fileName="+row.examFileUrl);
+								$('#datailPaperExamFileUrl').html(row.examFileUrl);
+								$('#datailPaperExamFileUrl').attr('href',"file/download?fileName="+row.examFileUrl);
 							}
-			                $('#detailSubRep_Form').form('load',{
+			                $('#detailPaper_Form').form('load',{
 			                	title:row.title,
-								srRemark:row.srRemark,
+			                	abs:row.abs,
 			                	state:row.state,
 								createAt:timeToString(row.createAt),
 								createNm:row.createNm,
@@ -104,19 +104,19 @@ $(function() {
 				}
 			});
 });
-function allSubRepSearchs() {
-	var searchForm = $('#allSubRep_searchForm').form();
-	allSubRepDg.datagrid('load', serializeObject(searchForm));
+function allPaperSearchs() {
+	var searchForm = $('#allPaper_searchForm').form();
+	allPaperDg.datagrid('load', serializeObject(searchForm));
 }
-function allSubRepCleanSearch() {
-	allSubRepDg.datagrid('load', {});
-	$('#allSubRep_searchForm').form('clear');
+function allPaperCleanSearch() {
+	allPaperDg.datagrid('load', {});
+	$('#allPaper_searchForm').form('clear');
 }
 </script>
 <div class="easyui-layout" data-options="fit:true">
 	<div data-options="region:'north',border:false,title:'查询条件'"style="height: 85px;overflow: hidden;" align="left">
-		<div id="allSubRep_toolbar">
-			<form id="allSubRep_searchForm">
+		<div id="allPaper_toolbar">
+			<form id="allPaper_searchForm">
 				<table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
 					<tr>
 						<th>学生</th>
@@ -136,8 +136,8 @@ function allSubRepCleanSearch() {
 							至<input name="examAtEnd" class="easyui-datetimebox" data-options="editable:false" style="width: 155px;" />
 						</td>
 						<td>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="allSubRepSearchs();">查询</a>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="allSubRepCleanSearch();">重置</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="allPaperSearchs();">查询</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="allPaperCleanSearch();">重置</a>
 						</td>
 					</tr>
 				</table>
@@ -145,6 +145,6 @@ function allSubRepCleanSearch() {
 		</div>
 	</div>
 	<div data-options="region:'center',border:false" style="overflow: hidden;">
-		<table id="allSubRep_datagrid" ></table>
+		<table id="allPaper_datagrid" ></table>
 	</div>
 </div>

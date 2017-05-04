@@ -50,7 +50,9 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	public boolean insert(SubRep entity) {
 		try {
 			if(FileUtils.saveFile(entity.getSrFile(), gp.getUploadPath())){
-				entity.setSrFileUrl(entity.getSrFile().getOriginalFilename());			
+				entity.setSrFileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
+									TimeUtils.getNowStr() + "_" +
+									entity.getSrFile().getOriginalFilename());			
 			}
 			entity.setCreator(SpringSecurityUtils.getCurrentUser().getUserId());
 			entity.setCreateAt(TimeUtils.getNow());
@@ -66,7 +68,9 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	@Override
 	public boolean updateById(SubRep entity) {
 		if(FileUtils.saveFile(entity.getSrFile(), gp.getUploadPath())){
-			entity.setSrFileUrl(entity.getSrFile().getOriginalFilename());			
+			entity.setSrFileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
+								TimeUtils.getNowStr() + "_" +
+								entity.getSrFile().getOriginalFilename());			
 		}
 		return super.updateById(entity);
 	}
@@ -88,6 +92,7 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 
 	@Override
 	public Page<SubRep> examList(SubRep obj, Integer currPage, Integer pageSize) {
+		obj.setState("2");
 		EntityWrapper<SubRep> ew=new EntityWrapper<SubRep>(obj);
 		Page<SubRep> page=new Page<SubRep>(currPage,pageSize);
 		
@@ -123,6 +128,12 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 		}
 		subRep.setState("4");
 		return subRepDao.updateById(subRep)>0;
+	}
+
+
+	@Override
+	public SubRep getAllowSubRep() {
+		return subRepDao.getAllowSubRep(SpringSecurityUtils.getCurrentUser().getUserId());
 	}
 
 }

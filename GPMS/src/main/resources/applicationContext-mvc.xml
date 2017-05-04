@@ -32,13 +32,12 @@
 	<!-- 定义注解驱动Controller方法处理适配器-->
 	<mvc:annotation-driven>
 		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
 			<!-- JSON请求处理 -->
-			<bean
-				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
 			<!-- XML请求处理 -->
-			<bean
-				class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter" />
+			<bean class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter" />
 		</mvc:message-converters>
 	</mvc:annotation-driven>
 

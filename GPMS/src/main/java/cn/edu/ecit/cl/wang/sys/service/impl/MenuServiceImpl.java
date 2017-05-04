@@ -38,9 +38,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements IMenu
 		}
 		TreeUtils<MenuTree> treeUtils=new TreeUtils<MenuTree>();
 		Map<String, List<MenuTree>> map=treeUtils.getTreeMap(menuTreeList);
-		return treeUtils.buildTree(getFirstMenuTree(), map);
+		return treeUtils.buildTree(map.get(null), map);
 	}
 
+	@SuppressWarnings("unused")
 	private List<MenuTree> getFirstMenuTree(){
 		List<MenuTree> firstMenuTreeList=new ArrayList<MenuTree>();
 		for(Menu menu:menuDao.getFirstMenu()){
@@ -67,7 +68,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements IMenu
 		}
 		TreeUtils<MenuTree> treeUtils=new TreeUtils<MenuTree>();
 		Map<String, List<MenuTree>> map=treeUtils.getTreeMap(menuTreeList);
-		return treeUtils.buildTree(getFirstMenuTree(), map);
+		return treeUtils.buildTree(map.get(null), map);
 		
 	}
 

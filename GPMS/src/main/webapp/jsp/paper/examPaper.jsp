@@ -1,15 +1,15 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%> 
 <script type="text/javascript">
-var examSubRepDg = $('#examSubRep_datagrid');
+var examPaperDg = $('#examPaper_datagrid');
 $(function() {
-	examSubRepDg.datagrid({
+	examPaperDg.datagrid({
 				fit : true,
 				pageSize : 10,
 				rownumbers:true,
 				singleSelect:true,
 				pageList : [ 10, 20, 30, 40 ],
-				url : '${pageContext.request.contextPath}/subRep/examList',
-				idField : 'srId',
+				url : '${pageContext.request.contextPath}/paper/examList',
+				idField : 'paperId',
 				pagePosition : 'bottom',
 				pagination : true,
 				loadMsg : '正在加载数据当中....',
@@ -30,7 +30,7 @@ $(function() {
 						return timeToString(value);
 					}
 				} ,{
-					field : 'srFileUrl',
+					field : 'pfileUrl',
 					title : '附件',
 					width : 220,
 					formatter : function(value, rowData, rowIndex) {
@@ -41,19 +41,19 @@ $(function() {
 					text : '审批',
 					iconCls : 'icon-remove',
 					handler : function() {
-						examSubRep();
+						examPaper();
 					}
 				}, '-', {
 					text : '取消选中',
 					iconCls : 'icon-undo',
 					handler : function() {
-						examSubRepDg.datagrid('unselectAll');
+						examPaperDg.datagrid('unselectAll');
 					}
 				}],
 				onDblClickRow:function(index,row){
-					var datailSubRep=$('<div/>').dialog({
-						title : '查看课题报告',
-						href : '${pageContext.request.contextPath}/jsp/subjectReport/datailSubRep.jsp',
+					var datailPaper=$('<div/>').dialog({
+						title : '查看论文',
+						href : '${pageContext.request.contextPath}/jsp/paper/datailPaper.jsp',
 						width : 600,
 						height : 400,
 						modal : true,
@@ -61,24 +61,24 @@ $(function() {
 						buttons : [ {
 							text : '关闭',
 							handler : function() {
-								examSubRepDg.datagrid('unselectAll');
-								datailSubRep.dialog("destroy");
+								examPaperDg.datagrid('unselectAll');
+								datailPaper.dialog("destroy");
 							}
 						} ],
 						onClose : function() {
-							examSubRepDg.datagrid('unselectAll');
+							examPaperDg.datagrid('unselectAll');
 							$(this).dialog('destroy');
 						},
 						onLoad : function() {
-							$('#detailSubRepSrFileUrl').html(row.srFileUrl);
-							$('#detailSubRepSrFileUrl').attr('href',"file/download?fileName="+row.srFileUrl);
+							$('#datailPaperPfileUrl').html(row.pfileUrl);
+							$('#datailPaperPfileUrl').attr('href',"file/download?fileName="+row.pfileUrl);
 							if(row.state=="3" ||row.state=="4" ){
-								$('#detailSubRepExamRemark').html(row.examFileUrl);
-								$('#detailSubRepExamRemark').attr('href',"file/download?fileName="+row.examFileUrl);
+								$('#datailPaperExamFileUrl').html(row.examFileUrl);
+								$('#datailPaperExamFileUrl').attr('href',"file/download?fileName="+row.examFileUrl);
 							}
-			                $('#detailSubRep_Form').form('load',{
+			                $('#detailPaper_Form').form('load',{
 			                	title:row.title,
-								srRemark:row.srRemark,
+			                	abs:row.abs,
 			                	state:row.state,
 								createAt:timeToString(row.createAt),
 								createNm:row.createNm,
@@ -92,40 +92,40 @@ $(function() {
 				}
 			});
 });
-function examSubRepSearchs() {
-	var searchForm = $('#examSubRep_searchForm').form();
-	examSubRepDg.datagrid('load', serializeObject(searchForm));
+function examPaperSearchs() {
+	var searchForm = $('#examPaper_searchForm').form();
+	examPaperDg.datagrid('load', serializeObject(searchForm));
 }
-function examSubRepCleanSearch() {
-	examSubRepDg.datagrid('load', {});
-	$('#examSubRep_searchForm').form('clear');
+function examPaperCleanSearch() {
+	examPaperDg.datagrid('load', {});
+	$('#examPaper_searchForm').form('clear');
 }
-function examSubRep(){
-	var row = examSubRepDg.datagrid('getSelected');
+function examPaper(){
+	var row = examPaperDg.datagrid('getSelected');
 	if (!row) {
 		$.messager.alert('提示', '请勾选要审批的数据！');
 		return;
 	}
-	$('#examSubRep_examDialog').dialog('open');
-	$('#examSubRep_examForm').form('clear');
+	$('#examPaper_dialog').dialog('open');
+	$('#examPaper_form').form('clear');
 }
-function examSubRepAllow() {
-	$.messager.confirm('请确认','通过后将进入提交论文阶段，确认？',
+function examPaperAllow() {
+	$.messager.confirm('请确认','通过后将进入答辩阶段，确认？',
 		function(r) {
 			if (r) {
-				var row = examSubRepDg.datagrid('getSelected');
-				$('#examSubRep_examForm input[name=srId]').val(row.srId);
-				$('#examSubRep_examForm').form('submit',{
+				var row = examPaperDg.datagrid('getSelected');
+				$('#examPaper_form input[name=paperId]').val(row.paperId);
+				$('#examPaper_form').form('submit',{
 					onSubmit:function(){
 						return $(this).form('validate');
 					},
-					url:'${pageContext.request.contextPath}/subRep/examSubRepAllow',
+					url:'${pageContext.request.contextPath}/paper/examPaperAllow',
 			        success:function(r){
 			        	var obj=$.parseJSON(r);
 			            if(obj.success){
-			            	$('#examSubRep_examForm').form('clear');
-			            	$("#examSubRep_examDialog").dialog("close");
-			            	examSubRepDg.datagrid("reload");
+			            	$('#examPaper_form').form('clear');
+			            	$("#examPaper_dialog").dialog("close");
+			            	examPaperDg.datagrid("reload");
 			            }
 			            $.messager.alert('提示', obj.msg);
 				    }
@@ -133,23 +133,23 @@ function examSubRepAllow() {
 			}
 		});
 }
-function examSubRepReject(){
+function examPaperReject(){
 	$.messager.confirm('请确认','审批后不可修改，确认？',
 		function(r) {
 			if (r) {
-				var row = examSubRepDg.datagrid('getSelected');
-				$('#examSubRep_examForm input[name=srId]').val(row.srId);
-				$('#examSubRep_examForm').form('submit',{
+				var row = examPaperDg.datagrid('getSelected');
+				$('#examPaper_form input[name=paperId]').val(row.paperId);
+				$('#examPaper_form').form('submit',{
 					onSubmit:function(){
 						return $(this).form('validate');
 					},
-					url:'${pageContext.request.contextPath}/subRep/examSubRepReject',
+					url:'${pageContext.request.contextPath}/subRep/examPaperReject',
 			        success:function(r){
 			        	var obj=$.parseJSON(r);
 			            if(obj.success){
-			            	$('#examSubRep_examForm').form('clear');
-			            	$("#examSubRep_examDialog").dialog("close");
-			            	examSubRepDg.datagrid("reload");
+			            	$('#examPaper_form').form('clear');
+			            	$("#examPaper_dialog").dialog("close");
+			            	examPaperDg.datagrid("reload");
 			            }
 			            $.messager.alert('提示', obj.msg);
 				    }
@@ -160,8 +160,8 @@ function examSubRepReject(){
 </script>
 <div class="easyui-layout" data-options="fit:true">
 	<div data-options="region:'north',border:false,title:'查询条件'"style="height: 60px;overflow: hidden;" align="left">
-		<div id="examSubRep_toolbar">
-			<form id="examSubRep_searchForm">
+		<div id="examPaper_toolbar">
+			<form id="examPaper_searchForm">
 				<table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
 					<tr>
 						<th>提交人</th>
@@ -173,8 +173,8 @@ function examSubRepReject(){
 							至<input name="createAtEnd" class="easyui-datetimebox" data-options="editable:false" style="width: 155px;" />
 						</td>
 						<td>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examSubRepSearchs();">查询</a>
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examSubRepCleanSearch();">重置</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examPaperSearchs();">查询</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examPaperCleanSearch();">重置</a>
 						</td>
 					</tr>
 				</table>
@@ -182,27 +182,27 @@ function examSubRepReject(){
 		</div>
 	</div>
 	<div data-options="region:'center',border:false" style="overflow: hidden;">
-		<table id="examSubRep_datagrid" ></table>
+		<table id="examPaper_datagrid" ></table>
 	</div>
 </div>
 
-<div id="examSubRep_examDialog" class="easyui-dialog" style="width:600px;height:300px;" align="center"
+<div id="examPaper_dialog" class="easyui-dialog" style="width:600px;height:300px;" align="center"
 	data-options="closed:true,modal:true,title:'添加',resizable :true,
 	buttons:[{
 		text : '同意',
 		iconCls : 'icon-ok',
 		handler :  function() {
-			examSubRepAllow();
+			examPaperAllow();
 	   }
 	},{
 		text : '拒绝',
 		iconCls : 'icon-no',
 		handler :  function() {
-			examSubRepReject();
+			examPaperReject();
 	   }
 	}]">
-	<form id="examSubRep_examForm" method="post" enctype="multipart/form-data">
-		<input type="hidden" name="srId"/>
+	<form id="examPaper_form" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="paperId"/>
 		<table>
 			<tr>
 				<th>审批意见</th>

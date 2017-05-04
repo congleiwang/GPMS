@@ -1,6 +1,7 @@
 package cn.edu.ecit.cl.wang.sys.controller;
 
 import java.io.File;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,7 +30,7 @@ public class FileDown {
 	        HttpServletRequest request) {
 	    HttpHeaders headers = new HttpHeaders();
         try {
-            headers.setContentDispositionFormData("attachment", fileName);
+            headers.setContentDispositionFormData("attachment", URLEncoder.encode(fileName, "UTF-8"));
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             // 获取物理路径
             String filePath = System.getProperty("web.root") + gp.getUploadPath();

@@ -1,6 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
-<form id="detailSubRep_Form" >
-	<input type="hidden" name="subId" />
+<form id="detailPaper_Form" >
 	<table>
 		<tr>
 			<th>标题：</th>
@@ -19,12 +18,12 @@
 			<td><input type="text" name="sendAt" readonly="readonly"/></td>
 		</tr>
 		<tr>
-			<th>描述</th>
-			<td colspan="3"><textarea name="srRemark" rows="5" cols="60" readonly="readonly"></textarea></td>
+			<th>摘要：</th>
+			<td colspan="3"><textarea name="abs" rows="5" cols="60" readonly="readonly"></textarea></td>
 		</tr>
 		<tr>
-			<th>开题报告附件</th>
-			<td colspan="3"><a id='detailSubRepSrFileUrl'></a></td>
+			<th>开题报告附件：</th>
+			<td colspan="3"><a id='datailPaperPfileUrl'></a></td>
 		</tr>
 		<tr>
 			<th>审批人</th>
@@ -38,7 +37,7 @@
 		</tr>
 		<tr>
 			<th>审批附件</th>
-			<td colspan="3"><a id='detailSubRepExamRemark'></a></td>
+			<td colspan="3"><a id='datailPaperExamFileUrl'></a></td>
 		</tr>
 	</table>
 </form>

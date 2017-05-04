@@ -88,6 +88,12 @@ public class SubRepController extends BaseController<SubRep>{
 		}
 		return ReturnMsg.fail("提交失败");
 	}
+	
+	@RequestMapping("getAllowSubRep")
+	@ResponseBody
+	public SubRep getAllowSubRep(){
+		return subRepService.getAllowSubRep();
+	}
 
 	@Override
 	public Page<SubRep> selectPage(SubRep obj, int currPage, int pageSize) {

@@ -19,4 +19,6 @@ public interface ISubRepService extends IService<SubRep>{
 
 	Page<SubRep> selectPage(SubRep obj, int currPage, int pageSize);
 
+	SubRep getAllowSubRep();
+
 }

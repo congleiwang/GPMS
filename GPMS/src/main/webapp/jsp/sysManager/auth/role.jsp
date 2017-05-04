@@ -346,7 +346,7 @@
 		var roleRow = roleDatagrid.datagrid('getSelected');
 		var nodes = $('#role_menuTree').tree('getChecked', 'checked');
 		var a = $('#role_menuTree').tree('getChecked', 'indeterminate');
-		nodes.push(a);
+		Array.prototype.push.apply(nodes,a);
 		if(!roleRow){
 			$.messager.show({title : '提示',msg :'请选择目标角色'});
 			return ;
@@ -355,7 +355,7 @@
 				function(r) {
 					if (r) {
 						var menuCds=[];
-						for ( var i = 0; i < nodes.length; i++) {
+						for ( var i = 0,len=nodes.length; i < len; i++) {
 							menuCds.push(nodes[i].id);
 						}
 						$.ajax({
@@ -382,7 +382,7 @@
 		<table id="role_datagrid"></table>
 	</div>
 	<div data-options="region:'east',border:false" style="width:530px;height: 100%">
-		<div class="easyui-tabs" style="height: 546px">
+		<div class="easyui-tabs" style="height: 543px">
 			<div title="角色权限">
 				<div class="datagrid-toolbar">
 					<a href="javascript:void(0);" class="easyui-linkbutton" style="margin-top: 3px" onclick="saveRoleAtuth();">保存权限</a>

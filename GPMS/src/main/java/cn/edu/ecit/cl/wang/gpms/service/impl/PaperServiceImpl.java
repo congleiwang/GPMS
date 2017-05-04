@@ -1,0 +1,139 @@
+package cn.edu.ecit.cl.wang.gpms.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+
+import cn.edu.ecit.cl.wang.gpms.dao.PaperDao;
+import cn.edu.ecit.cl.wang.gpms.po.Paper;
+import cn.edu.ecit.cl.wang.gpms.service.IPaperService;
+import cn.edu.ecit.cl.wang.sys.common.utils.FileUtils;
+import cn.edu.ecit.cl.wang.sys.common.utils.GlobalProperties;
+import cn.edu.ecit.cl.wang.sys.common.utils.SpringSecurityUtils;
+import cn.edu.ecit.cl.wang.sys.common.utils.TimeUtils;
+import cn.edu.ecit.cl.wang.sys.dao.UtilsDao;
+import cn.edu.ecit.cl.wang.sys.po.User;
+import cn.edu.ecit.cl.wang.sys.service.IUserService;
+
+@Service("parperService")
+public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IPaperService{
+	
+	@Autowired
+	PaperDao paperDao;
+	
+	@Autowired
+	GlobalProperties gp;
+	
+	@Autowired
+	UtilsDao utilsDao;
+	
+	@Autowired
+	IUserService userService;
+
+	@Override
+	public Page<Paper> selectPage(Paper obj, int currPage, int pageSize) {
+		obj.setState("3");
+		EntityWrapper<Paper> ew=new EntityWrapper<Paper>(obj);
+		Page<Paper> page=new Page<Paper>(currPage,pageSize);
+		return selectPage(page, ew);
+	}
+
+	
+	@Override
+	public boolean insert(Paper entity) {
+		try {
+			if(FileUtils.saveFile(entity.getPfile(), gp.getUploadPath())){
+				entity.setPfileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
+									TimeUtils.getNowStr() + "_" +
+									entity.getPfile().getOriginalFilename());			
+			}
+			entity.setCreator(SpringSecurityUtils.getCurrentUser().getUserId());
+			entity.setCreateAt(TimeUtils.getNow());
+			entity.setState("1");
+			Long paperId = utilsDao.selectKey("seq_gpms_paper");
+			entity.setPaperId(paperId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return super.insert(entity);
+	}
+	
+	@Override
+	public boolean updateById(Paper entity) {
+		if(FileUtils.saveFile(entity.getPfile(), gp.getUploadPath())){
+			entity.setPfileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
+					TimeUtils.getNowStr() + "_" +
+					entity.getPfile().getOriginalFilename());			
+		}
+		return super.updateById(entity);
+	}
+
+	@Override
+	public Page<Paper> myPaperList(Paper obj, Integer currPage, Integer pageSize) {
+		obj.setCreator(SpringSecurityUtils.getCurrentUser().getUserId());
+		EntityWrapper<Paper> ew=new EntityWrapper<Paper>(obj);
+		Page<Paper> page=new Page<Paper>(currPage,pageSize);
+		return selectPage(page, ew);
+	}
+
+	@Override
+	public boolean paperSend(Paper paper) {
+		paper.setState("2");
+		paper.setSendAt(TimeUtils.getNow());
+		return updateById(paper);
+	}
+
+	@Override
+	public Page<Paper> examList(Paper obj, Integer currPage, Integer pageSize) {
+		obj.setState("2");
+		EntityWrapper<Paper> ew=new EntityWrapper<Paper>(obj);
+		Page<Paper> page=new Page<Paper>(currPage,pageSize);
+		
+		List<User> users=userService.getMyStuList();
+		if(CollectionUtils.isNotEmpty(users)){
+			List<Long> userIds=new ArrayList<Long>();
+			for(User user:users){
+				userIds.add(user.getUserId());
+			}
+			ew.in("p.creator", userIds);
+			return selectPage(page, ew);
+		}
+		return page;
+	}
+
+	@Override
+	public boolean examPaperAllow(Paper paper) {
+		paper.setExamAt(TimeUtils.getNow());
+		paper.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
+		if(FileUtils.saveFile(paper.getExamFile(), gp.getUploadPath())){
+			paper.setExamFileUrl(paper.getExamFile().getOriginalFilename());
+		}
+		paper.setState("3");
+		return paperDao.updateById(paper)>0;
+	}
+
+	@Override
+	public boolean examPaperReject(Paper paper) {
+		paper.setExamAt(TimeUtils.getNow());
+		paper.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
+		if(FileUtils.saveFile(paper.getExamFile(), gp.getUploadPath())){
+			paper.setExamFileUrl(paper.getExamFile().getOriginalFilename());
+		}
+		paper.setState("4");
+		return paperDao.updateById(paper)>0;
+	}
+
+
+	@Override
+	public Paper getAllowPaper() {
+		return paperDao.getAllowPaper(SpringSecurityUtils.getCurrentUser().getUserId());
+	}
+
+}
