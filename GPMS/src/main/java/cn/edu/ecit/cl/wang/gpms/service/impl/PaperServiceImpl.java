@@ -29,7 +29,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 	PaperDao paperDao;
 	
 	@Autowired
-	GlobalProperties gp;
+	GlobalProperties globalProperties;
 	
 	@Autowired
 	UtilsDao utilsDao;
@@ -49,7 +49,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 	@Override
 	public boolean insert(Paper entity) {
 		try {
-			if(FileUtils.saveFile(entity.getPfile(), gp.getUploadPath())){
+			if(FileUtils.saveFile(entity.getPfile(), globalProperties.getUploadPath())){
 				entity.setPfileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
 									TimeUtils.getNowStr() + "_" +
 									entity.getPfile().getOriginalFilename());			
@@ -67,7 +67,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 	
 	@Override
 	public boolean updateById(Paper entity) {
-		if(FileUtils.saveFile(entity.getPfile(), gp.getUploadPath())){
+		if(FileUtils.saveFile(entity.getPfile(), globalProperties.getUploadPath())){
 			entity.setPfileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
 					TimeUtils.getNowStr() + "_" +
 					entity.getPfile().getOriginalFilename());			
@@ -112,7 +112,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 	public boolean examPaperAllow(Paper paper) {
 		paper.setExamAt(TimeUtils.getNow());
 		paper.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
-		if(FileUtils.saveFile(paper.getExamFile(), gp.getUploadPath())){
+		if(FileUtils.saveFile(paper.getExamFile(), globalProperties.getUploadPath())){
 			paper.setExamFileUrl(paper.getExamFile().getOriginalFilename());
 		}
 		paper.setState("3");
@@ -123,7 +123,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 	public boolean examPaperReject(Paper paper) {
 		paper.setExamAt(TimeUtils.getNow());
 		paper.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
-		if(FileUtils.saveFile(paper.getExamFile(), gp.getUploadPath())){
+		if(FileUtils.saveFile(paper.getExamFile(), globalProperties.getUploadPath())){
 			paper.setExamFileUrl(paper.getExamFile().getOriginalFilename());
 		}
 		paper.setState("4");

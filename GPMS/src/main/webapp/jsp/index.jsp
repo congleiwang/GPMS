@@ -9,10 +9,10 @@
 <meta http-equiv="expires" content="0">
 <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
 <meta http-equiv="description" content="This is my page">
-<script type="text/javascript" src="js/jquery-easyui-1.3.1/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="js/jquery-easyui-1.5.2/jquery.min.js"></script>
 <script type="text/javascript" src="js/jquery-easyui-1.3.1/jquery.cookie.js"></script>
-<script type="text/javascript" src="js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="js/jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="js/jquery-easyui-1.5.2/locale/easyui-lang-zh_CN.js"></script>
 <%
 	String easyuiThemeName = "default";
 	Cookie cookies[] = request.getCookies();
@@ -25,8 +25,8 @@
 		}
 	}
 %>
-<link rel="stylesheet" href="js/jquery-easyui-1.3.1/themes/<%=easyuiThemeName%>/easyui.css"	type="text/css"></link>
-<link rel="stylesheet" href="js/jquery-easyui-1.3.1/themes/icon.css" type="text/css"></link>
+<link rel="stylesheet" href="js/jquery-easyui-1.5.2/themes/<%=easyuiThemeName%>/easyui.css"	type="text/css"></link>
+<link rel="stylesheet" href="js/jquery-easyui-1.5.2/themes/icon.css" type="text/css"></link>
 <script type="text/javascript">
 	function changeTheme(themeName) {
 		var $easyuiTheme = $('#easyuiTheme');

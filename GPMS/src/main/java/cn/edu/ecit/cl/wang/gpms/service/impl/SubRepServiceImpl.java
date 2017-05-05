@@ -32,7 +32,7 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	IUserService userService;
 	
 	@Autowired
-	GlobalProperties gp;
+	GlobalProperties globalProperties;
 	
 	@Autowired
 	UtilsDao utilsDao;
@@ -49,7 +49,7 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	@Override
 	public boolean insert(SubRep entity) {
 		try {
-			if(FileUtils.saveFile(entity.getSrFile(), gp.getUploadPath())){
+			if(FileUtils.saveFile(entity.getSrFile(), globalProperties.getUploadPath())){
 				entity.setSrFileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
 									TimeUtils.getNowStr() + "_" +
 									entity.getSrFile().getOriginalFilename());			
@@ -67,7 +67,7 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	
 	@Override
 	public boolean updateById(SubRep entity) {
-		if(FileUtils.saveFile(entity.getSrFile(), gp.getUploadPath())){
+		if(FileUtils.saveFile(entity.getSrFile(), globalProperties.getUploadPath())){
 			entity.setSrFileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
 								TimeUtils.getNowStr() + "_" +
 								entity.getSrFile().getOriginalFilename());			
@@ -112,7 +112,7 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	public boolean examSubRepAllow(SubRep subRep) {
 		subRep.setExamAt(TimeUtils.getNow());
 		subRep.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
-		if(FileUtils.saveFile(subRep.getExamFile(), gp.getUploadPath())){
+		if(FileUtils.saveFile(subRep.getExamFile(), globalProperties.getUploadPath())){
 			subRep.setExamFileUrl(subRep.getExamFile().getOriginalFilename());
 		}
 		subRep.setState("3");
@@ -123,7 +123,7 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	public boolean examSubRepReject(SubRep subRep) {
 		subRep.setExamAt(TimeUtils.getNow());
 		subRep.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
-		if(FileUtils.saveFile(subRep.getExamFile(), gp.getUploadPath())){
+		if(FileUtils.saveFile(subRep.getExamFile(), globalProperties.getUploadPath())){
 			subRep.setExamFileUrl(subRep.getExamFile().getOriginalFilename());
 		}
 		subRep.setState("4");

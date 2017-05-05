@@ -77,6 +77,9 @@ public class Paper {
 
 	@TableField("EXAM_REMARK")
 	private String examRemark;
+	
+	@TableField("score")
+	private double score;
 
 	public Long getPaperId() {
 		return paperId;
@@ -252,6 +255,14 @@ public class Paper {
 
 	public void setExamFile(MultipartFile examFile) {
 		this.examFile = examFile;
+	}
+
+	public double getScore() {
+		return score;
+	}
+
+	public void setScore(double score) {
+		this.score = score;
 	}
 
 }

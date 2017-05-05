@@ -30,7 +30,7 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectDao, Subject> impleme
 	UtilsDao utilsDao;
 
 	@Autowired
-	GlobalProperties gp;
+	GlobalProperties globalProperties;
 	
 	@Autowired
 	IMsgService msgService;
@@ -49,7 +49,7 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectDao, Subject> impleme
 	public boolean insert(Subject entity) {
 		try {
 			if(entity.getFile()!=null && entity.getFile().getSize()!=0){
-				String path = System.getProperty("web.root") + gp.getUploadPath();
+				String path = System.getProperty("web.root") + globalProperties.getUploadPath();
 				String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + System.currentTimeMillis() + "_"
 						+ entity.getFile().getOriginalFilename();
 				File file = new File(path, fileName);
@@ -72,7 +72,7 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectDao, Subject> impleme
 	@Override
 	public boolean updateById(Subject entity) {
 		if(entity.getFile().getSize()!=0){
-			String path = System.getProperty("web.root") + gp.getUploadPath();
+			String path = System.getProperty("web.root") + globalProperties.getUploadPath();
 			String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + System.currentTimeMillis() + "_"
 					+ entity.getFile().getOriginalFilename();
 			File file = new File(path, fileName);

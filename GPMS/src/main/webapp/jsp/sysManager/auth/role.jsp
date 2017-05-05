@@ -344,9 +344,7 @@
 	//保存角色权限
 	function saveRoleAtuth(){
 		var roleRow = roleDatagrid.datagrid('getSelected');
-		var nodes = $('#role_menuTree').tree('getChecked', 'checked');
-		var a = $('#role_menuTree').tree('getChecked', 'indeterminate');
-		Array.prototype.push.apply(nodes,a);
+		var nodes = $('#role_menuTree').tree('getChecked', ['checked','indeterminate']);
 		if(!roleRow){
 			$.messager.show({title : '提示',msg :'请选择目标角色'});
 			return ;

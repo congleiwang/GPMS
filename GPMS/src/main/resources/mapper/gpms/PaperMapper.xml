@@ -32,7 +32,7 @@
 		<if test="ew!=null">
 			<if test="ew.entity!=null">
 				<where>
-					<if test="ew.entity.creator!=null and ew.entity.creator!=''">
+					<if test="ew.entity.creator!=null and ew.entity.creator!=0">
 						and p.creator=#{ew.entity.creator,jdbcType=NUMERIC}
 					</if>
 					<if test="ew.entity.title!=null and ew.entity.title!=''">
