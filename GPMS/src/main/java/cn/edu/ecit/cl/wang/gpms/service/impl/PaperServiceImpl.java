@@ -39,6 +39,9 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 
 	@Override
 	public Page<Paper> selectPage(Paper obj, int currPage, int pageSize) {
+		if(obj.getOrgId()==null){
+			obj.setOrgId(SpringSecurityUtils.getCurrentUser().getOrgId());
+		}
 		obj.setState("3");
 		EntityWrapper<Paper> ew=new EntityWrapper<Paper>(obj);
 		Page<Paper> page=new Page<Paper>(currPage,pageSize);
@@ -134,6 +137,21 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 	@Override
 	public Paper getAllowPaper() {
 		return paperDao.getAllowPaper(SpringSecurityUtils.getCurrentUser().getUserId());
+	}
+
+
+	@Override
+	public boolean saveScore(List<Paper> paperList) {
+		boolean result=true;
+		for(Paper paper: paperList){
+			Paper p=new Paper();
+			p.setPaperId(paper.getPaperId());
+			p.setScore(paper.getScore());
+			if(!updateById(p)){
+				result=false;
+			}
+		}
+		return result;
 	}
 
 }

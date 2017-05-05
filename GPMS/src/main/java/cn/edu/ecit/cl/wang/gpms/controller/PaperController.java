@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -90,7 +91,16 @@ public class PaperController extends BaseController<Paper> {
 	public Paper getAllowPaper(){
 		return paperService.getAllowPaper();
 	}
-
+	
+	@RequestMapping("saveScore")
+	@ResponseBody
+	public ReturnMsg saveScore(@RequestBody List<Paper> paperList) {
+		if (paperService.saveScore(paperList)) {
+			return ReturnMsg.success("更新成功");
+		}
+		return ReturnMsg.fail("更新失败");
+	}
+	
 	@Override
 	public Page<Paper> selectPage(Paper paper, int currPage, int pageSize) {
 		return paperService.selectPage(paper, currPage, pageSize);

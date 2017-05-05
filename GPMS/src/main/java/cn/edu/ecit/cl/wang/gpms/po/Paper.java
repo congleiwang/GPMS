@@ -45,6 +45,12 @@ public class Paper {
 	@TableField(exist = false)
 	private String createNm;
 
+	@TableField(exist = false)
+	private Long orgId;
+
+	@TableField(exist = false)
+	private String orgNm;
+
 	@TableField("SEND_AT")
 	private Timestamp sendAt;
 
@@ -77,7 +83,7 @@ public class Paper {
 
 	@TableField("EXAM_REMARK")
 	private String examRemark;
-	
+
 	@TableField("score")
 	private double score;
 
@@ -111,6 +117,14 @@ public class Paper {
 
 	public void setPfileUrl(String pfileUrl) {
 		this.pfileUrl = pfileUrl;
+	}
+
+	public MultipartFile getPfile() {
+		return pfile;
+	}
+
+	public void setPfile(MultipartFile pfile) {
+		this.pfile = pfile;
 	}
 
 	public String getState() {
@@ -159,6 +173,22 @@ public class Paper {
 
 	public void setCreateNm(String createNm) {
 		this.createNm = createNm;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+
+	public String getOrgNm() {
+		return orgNm;
+	}
+
+	public void setOrgNm(String orgNm) {
+		this.orgNm = orgNm;
 	}
 
 	public Timestamp getSendAt() {
@@ -233,28 +263,20 @@ public class Paper {
 		this.examFileUrl = examFileUrl;
 	}
 
-	public String getExamRemark() {
-		return examRemark;
-	}
-
-	public void setExamRemark(String examRemark) {
-		this.examRemark = examRemark;
-	}
-
-	public MultipartFile getPfile() {
-		return pfile;
-	}
-
-	public void setPfile(MultipartFile pfile) {
-		this.pfile = pfile;
-	}
-
 	public MultipartFile getExamFile() {
 		return examFile;
 	}
 
 	public void setExamFile(MultipartFile examFile) {
 		this.examFile = examFile;
+	}
+
+	public String getExamRemark() {
+		return examRemark;
+	}
+
+	public void setExamRemark(String examRemark) {
+		this.examRemark = examRemark;
 	}
 
 	public double getScore() {

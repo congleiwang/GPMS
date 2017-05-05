@@ -1,5 +1,7 @@
 package cn.edu.ecit.cl.wang.gpms.service;
 
+import java.util.List;
+
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -20,5 +22,7 @@ public interface IPaperService extends IService<Paper> {
 	Page<Paper> selectPage(Paper paper, int currPage, int pageSize);
 
 	Paper getAllowPaper();
+
+	boolean saveScore(List<Paper> paperList);
 
 }
