@@ -1,6 +1,16 @@
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript" charset="utf-8">
+	function changeTheme(themeName) {
+		var $easyuiTheme = $('#easyuiTheme');
+		var url = $easyuiTheme.attr('href');
+		var href = url.substring(0, url.indexOf('themes')) + 'themes/' + themeName + '/easyui.css';
+		$easyuiTheme.attr('href', href);
+		$.cookie('easyuiThemeName', themeName, {
+			expires : 7
+		});
+	}
+
 	function logout() {
 		$('#sessionInfoDiv').html('');
 		$.post('${pageContext.request.contextPath}/j_spring_security_logout', function() {
@@ -87,19 +97,22 @@
 	<a href="javascript:void(0);" class="easyui-menubutton"
 		data-options="menu:'#logout',iconCls:'icon-back'">注销</a>
 </div>
-<div id="layout_north_pfMenu" style="width: 120px; display: none;">
-	<div onclick="changeTheme('default');">default</div>
-	<div onclick="changeTheme('gray');">gray</div>
-	<div onclick="changeTheme('metro');">metro</div>
-	<div onclick="changeTheme('cupertino');">cupertino</div>
-	<div onclick="changeTheme('dark-hive');">dark-hive</div>
-	<div onclick="changeTheme('pepper-grinder');">pepper-grinder</div>
-	<div onclick="changeTheme('sunny');">sunny</div>
-</div>
 <div id="controlPanel" style="width: 100px; display: none;">
 	<div onclick="showUserInfo();">个人信息</div>
 	<div class="menu-sep"></div>
 	<div onclick="changePassword();">修改密码</div>
+	<div class="menu-sep"></div>
+	<div data-options="iconCls:'icon-edit'">  
+        <span>更换皮肤</span>
+        <div style="width:150px;">
+	        <div onclick="changeTheme('default');">default</div>
+			<div onclick="changeTheme('black');">black</div>
+			<div onclick="changeTheme('bootstrap');">bootstrap</div>
+			<div onclick="changeTheme('gray');">gray</div>
+			<div onclick="changeTheme('material');">material</div>
+			<div onclick="changeTheme('metro');">metro</div>
+		</div>
+	</div>
 </div>
 <div id="logout" style="width: 100px; display: none;">
 	<div onclick="logout();">注销</div>

@@ -26,31 +26,8 @@
 		}
 	}
 %>
-<link rel="stylesheet" href="js/jquery-easyui-1.5.2/themes/<%=easyuiThemeName%>/easyui.css"	type="text/css"></link>
+<link id="easyuiTheme"  rel="stylesheet" href="js/jquery-easyui-1.5.2/themes/<%=easyuiThemeName%>/easyui.css" type="text/css"></link>
 <link rel="stylesheet" href="js/jquery-easyui-1.5.2/themes/icon.css" type="text/css"></link>
-<script type="text/javascript">
-	function changeTheme(themeName) {
-		var $easyuiTheme = $('#easyuiTheme');
-		var url = $easyuiTheme.attr('href');
-		var href = url.substring(0, url.indexOf('themes')) + 'themes/' + themeName + '/easyui.css';
-		$easyuiTheme.attr('href', href);
-		var $iframe = $('iframe');
-		if ($iframe.length > 0) {
-			for ( var i = 0; i < $iframe.length; i++) {
-				var ifr = $iframe[i];
-				$(ifr).contents().find('#easyuiTheme').attr('href', href);
-			}
-		}
-		$.cookie('easyuiThemeName', themeName, {
-			expires : 7
-		});
-	}
-	$(function() {
-		if ('${sessionInfo.userId}'!="") {
-			$('#user_login_loginDialog').dialog('close');
-		}
-	});
-</script>
 </head>
 <body class="easyui-layout">
 	<div data-options="region:'north'" style="height:60px;">
