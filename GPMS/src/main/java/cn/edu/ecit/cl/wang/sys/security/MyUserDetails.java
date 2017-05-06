@@ -42,6 +42,7 @@ public class MyUserDetails extends User implements UserDetails {
 		setModCount(user.getModCount());
 		setModer(user.getModer());
 		setOrgId(user.getOrgId());
+		setOrgNm(user.getOrgNm());
 		setPasswd(user.getPasswd());
 		setPasswdErr(user.getPasswdErr());
 		setPhoneNum(user.getPhoneNum());

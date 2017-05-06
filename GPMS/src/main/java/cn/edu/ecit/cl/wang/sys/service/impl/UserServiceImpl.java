@@ -190,4 +190,21 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 		return userDao.unLockApply(SpringSecurityUtils.getCurrentUser().getUserId());
 	}
 
+	@Override
+	public int changePasswd(String oldPasswd, String newPasswd) {
+		String passwd=SpringSecurityUtils.getCurrentUser().getPasswd();
+		if(passwd.equals(MD5.encode(oldPasswd.trim()))){
+			User u=new User();
+			u.setUserId(SpringSecurityUtils.getCurrentUser().getUserId());
+			u.setPasswd(MD5.encode(newPasswd.trim()));
+			if(userDao.updateById(u)>0){
+				return 1;
+			}else{
+				return 2;
+			}
+		}else{
+			return 3;
+		}
+	}
+
 }

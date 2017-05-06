@@ -143,6 +143,19 @@ public class UserController extends BaseController<User> {
 		return ReturnMsg.fail(OptionConstant.unLockFail);
 	}
 	
+	@RequestMapping("/changePasswd")
+	@ResponseBody
+	public ReturnMsg changePasswd(String oldPasswd,String newPasswd) {
+		int result=userService.changePasswd(oldPasswd,newPasswd);
+		if(result==3){
+			return ReturnMsg.fail("原密码错误，修改失败！");
+		}
+		if(result==1){
+			return ReturnMsg.success("密码修改成功,请重新登陆！");
+		}
+		return ReturnMsg.fail("密码修改失败");
+	}
+	
 	@Override
 	public boolean updateData(User obj) {
 		return userService.updateById(obj);

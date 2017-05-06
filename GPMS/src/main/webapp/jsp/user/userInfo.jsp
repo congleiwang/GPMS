@@ -1,34 +1,43 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="easyui-layout" data-options="fit:true">
-	<%--<div data-options="region:'east',title:'拥有权限',split:true" style="width: 200px;">
-		<ul></ul>
-	</div>
-	--%><div data-options="region:'center',title:'个人信息'" style="overflow: hidden;padding: 5px;">
-		<form method="post" id="layout_north_form">
-			<input name="id" type="hidden" value="${sessionInfo.userId}" />
-			<table class="tableForm">
-				<tr>
-					<th style="width: 55px;">登录名</th>
-					<td><input readonly="readonly" value="${sessionInfo.loginName}" /></td>
-				</tr>
-				<tr>
-					<th>登录IP</th>
-					<td><input readonly="readonly" value="${sessionInfo.ip}" /></td>
-				</tr>
-				<tr>
-					<th>修改密码</th>
-					<td><input name="pwd" type="password" class="easyui-validatebox" data-options="required:'true',missingMessage:'请填写登录密码'" /></td>
-				</tr>
-				<tr>
-					<th>所属角色</th>
-					<td><textarea readonly="readonly" style="height: 80px;">${sessionInfo.roleNames}</textarea></td>
-				</tr>
-				<tr style="display: none;">
-					<th>权限ID</th>
-					<td><input name="authIds" value="${sessionInfo.authIds}" /></td>
-				</tr>
-			</table>
-		</form>
-	</div>
+	<form id="userInfo" method="post">
+		<input type="hidden" name="userId" value=""/>
+		<table>
+			<tr>
+				<th>所属机构</th>
+				<td><input name="orgNm" type="text" value="${sessionScope.user.orgNm}" /></td>
+				<th>登陆名</th>
+				<td><input name="loginNm" type="text" value="${sessionScope.user.loginNm}" readonly="readonly" /></td>
+			</tr>
+			<tr>
+				<th>用户名</th>
+				<td><input name="userNm" type="text" value="${sessionScope.user.userNm}" readonly="readonly" /></td>
+				<th>电话</th>
+				<td><input name="phoneNum" type="text" value="${sessionScope.user.phoneNum}" readonly="readonly"/></td>
+			</tr>
+			<tr>
+				<th>地址</th>
+				<td><input name="address" type="text" value="${sessionScope.user.address}" readonly="readonly" /></td>
+				<th>邮箱</th>
+				<td><input name="email" type="email" value="${sessionScope.user.email}" readonly="readonly" /></td>
+			</tr>
+			<tr>
+				<th>注册时间</th>
+				<td><input name="signAt" type="text" value="${sessionScope.user.signAt}" readonly="readonly" /></td>
+				<th>最后登陆</th>
+				<td><input name="lastLoginAt" type="text" value="${sessionScope.user.lastLoginAt}" readonly="readonly" /></td>
+			</tr>
+			<tr>
+				<th>最后修改</th>
+				<td><input name="modAt" type="text" value="${sessionScope.user.modAt}" readonly="readonly" /></td>
+				<th>修改次数</th>
+				<td><input name="modCount" type="text" value="${sessionScope.user.modCount}" readonly="readonly" /></td>
+			</tr>
+			<tr>
+				<th>备注</th>
+				<td colspan="3"><textarea name='remark' rows="3" cols="60">${sessionScope.user.remark}</textarea></td>
+			</tr>
+		</table>
+	</form>
 </div>

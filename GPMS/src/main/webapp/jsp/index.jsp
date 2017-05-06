@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE HTML>
 <html>
@@ -10,18 +10,19 @@
 <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
 <meta http-equiv="description" content="This is my page">
 <script type="text/javascript" src="js/jquery-easyui-1.5.2/jquery.min.js"></script>
-<script type="text/javascript" src="js/jquery-easyui-1.3.1/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/jquery-easyui-1.5.2/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="js/jquery-easyui-1.5.2/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="js/syUtil.js"></script>
 <%
 	String easyuiThemeName = "default";
 	Cookie cookies[] = request.getCookies();
 	if (cookies != null && cookies.length > 0) {
 		for (Cookie cookie : cookies) {
-	if (cookie.getName().equals("easyuiThemeName")) {
-		easyuiThemeName = cookie.getValue();
-		break;
-	}
+			if (cookie.getName().equals("easyuiThemeName")) {
+				easyuiThemeName = cookie.getValue();
+				break;
+			}
 		}
 	}
 %>

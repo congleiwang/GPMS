@@ -37,4 +37,6 @@ public interface IUserService extends IService<User> {
 	public List<User> getMyStuList();
 
 	public User getMyMentor();
+
+	public int changePasswd(String oldPasswd,String newPasswd);
 }
