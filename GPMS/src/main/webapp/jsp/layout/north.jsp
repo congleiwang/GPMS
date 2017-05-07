@@ -1,5 +1,39 @@
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<div>
+	<img alt="" height="55px" width="350px" src="${pageContext.request.contextPath}/images/index_logo.jpg">
+</div>
+<div id="sessionInfoDiv" style="position: absolute;right: 5px;top:10px;">
+	<c:if test="${sessionScope.user != null}">
+		[<strong>${sessionScope.user.userNm}</strong>]，欢迎你！您使用[<strong>${sessionScope.user.ipAddr}</strong>]IP登录！
+	</c:if>
+</div>
+<div style="position: absolute; right: 0px; bottom: 0px; ">
+	<a href="javascript:void(0);" class="easyui-menubutton"
+		data-options="menu:'#controlPanel',iconCls:'icon-help'">控制面板</a>
+	<a href="javascript:void(0);" class="easyui-menubutton"
+		data-options="menu:'#logout',iconCls:'icon-back'">注销</a>
+</div>
+<div id="controlPanel" style="width: 100px; display: none;">
+	<div onclick="showUserInfo();">个人信息</div>
+	<div class="menu-sep"></div>
+	<div onclick="changePassword();">修改密码</div>
+	<div class="menu-sep"></div>
+	<div data-options="iconCls:'icon-edit'">  
+        <span>更换皮肤</span>
+        <div style="width:150px;">
+	        <div onclick="changeTheme('default');">默认</div>
+			<div onclick="changeTheme('black');">黑色</div>
+			<div onclick="changeTheme('bootstrap');">亮灰</div>
+			<div onclick="changeTheme('gray');">灰色</div>
+			<div onclick="changeTheme('material');">淡灰</div>
+			<div onclick="changeTheme('metro');">纯白</div>
+		</div>
+	</div>
+</div>
+<div id="logout" style="width: 100px; display: none;">
+	<div onclick="logout();">注销</div>
+</div>
 <script type="text/javascript" charset="utf-8">
 	function changeTheme(themeName) {
 		var $easyuiTheme = $('#easyuiTheme');
@@ -86,34 +120,3 @@
 		});
 	}
 </script>
-<div id="sessionInfoDiv" style="position: absolute;right: 5px;top:10px;">
-	<c:if test="${sessionScope.user != null}">
-		[<strong>${sessionScope.user.userNm}</strong>]，欢迎你！您使用[<strong>${sessionScope.user.ipAddr}</strong>]IP登录！
-	</c:if>
-</div>
-<div style="position: absolute; right: 0px; bottom: 0px; ">
-	<a href="javascript:void(0);" class="easyui-menubutton"
-		data-options="menu:'#controlPanel',iconCls:'icon-help'">控制面板</a>
-	<a href="javascript:void(0);" class="easyui-menubutton"
-		data-options="menu:'#logout',iconCls:'icon-back'">注销</a>
-</div>
-<div id="controlPanel" style="width: 100px; display: none;">
-	<div onclick="showUserInfo();">个人信息</div>
-	<div class="menu-sep"></div>
-	<div onclick="changePassword();">修改密码</div>
-	<div class="menu-sep"></div>
-	<div data-options="iconCls:'icon-edit'">  
-        <span>更换皮肤</span>
-        <div style="width:150px;">
-	        <div onclick="changeTheme('default');">default</div>
-			<div onclick="changeTheme('black');">black</div>
-			<div onclick="changeTheme('bootstrap');">bootstrap</div>
-			<div onclick="changeTheme('gray');">gray</div>
-			<div onclick="changeTheme('material');">material</div>
-			<div onclick="changeTheme('metro');">metro</div>
-		</div>
-	</div>
-</div>
-<div id="logout" style="width: 100px; display: none;">
-	<div onclick="logout();">注销</div>
-</div>

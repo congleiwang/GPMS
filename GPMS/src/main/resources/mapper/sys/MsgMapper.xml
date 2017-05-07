@@ -11,8 +11,28 @@
 		<result property="msgCont" column="msg_cont" />
 		<result property="sendAt" column="send_At" />
 		<result property="sender" column="sender" />
+		<result property="sendNm" column="sender_nm" />
 		<result property="receiver" column="receiver" />
 		<result property="msgState" column="msg_state" />
 	</resultMap>
+	
+	<select id="selectPage" resultMap="Msg">
+		select 
+			m.msg_id,m.msg_title,m.msg_cont,m.send_At,m.sender,u.user_nm sender_nm,m.receiver,m.msg_state
+		from BASE_MSG m
+		left join base_user u on m.sender=u.user_id
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<where>
+					<if test="ew.entity.receiver!=null and ew.entity.receiver!=0">
+						and m.receiver = #{ew.entity.receiver,jdbcType=NUMERIC}
+					</if>
+					<if test="ew.entity.msgState!=null and ew.entity.msgState!=0">
+						and m.msg_state = #{ew.entity.msgState,jdbcType=VARCHAR}
+					</if>
+				</where>
+			</if>
+		</if>
+	</select>
     
 </mapper>

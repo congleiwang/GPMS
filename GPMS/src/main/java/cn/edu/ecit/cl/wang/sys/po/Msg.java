@@ -22,6 +22,9 @@ public class Msg {
 	@TableField("send_At")
 	private Timestamp sendAt;
 	
+	@TableField(exist=false)
+	private Timestamp sendNm;
+	
 	@TableField("sender")
 	private Long sender;
 	
@@ -85,6 +88,14 @@ public class Msg {
 
 	public void setMsgState(String msgState) {
 		this.msgState = msgState;
+	}
+
+	public Timestamp getSendNm() {
+		return sendNm;
+	}
+
+	public void setSendNm(Timestamp sendNm) {
+		this.sendNm = sendNm;
 	}
 	
 }
