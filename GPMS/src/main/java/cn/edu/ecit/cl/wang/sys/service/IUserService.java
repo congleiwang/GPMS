@@ -16,20 +16,12 @@ public interface IUserService extends IService<User> {
 
 	public Page<User> selectPage(User user, int pageNum, int pageSize);
 
-	public void updateLoginAt(Long userId);
-
-	public void cleanPassErr(Long userId);
-
 	public User getUnLockUserById(Long id);
 
 	public boolean lockUserBatchIds(List<Long> ids);
 
 	public boolean unLockUserBatchIds(List<Long> ids);
 	
-	public boolean lockApply();
-	
-	public boolean unLockApply();
-
 	public Page<User> getUsersByRoleId(User user, Long roleId, int pageNum, int pageSize);
 
 	public Page<User> getUsersExRoleId(User user, Long roleId, int pageNum, int pageSize);
@@ -39,4 +31,6 @@ public interface IUserService extends IService<User> {
 	public User getMyMentor();
 
 	public int changePasswd(String oldPasswd,String newPasswd);
+
+	public boolean upMyInfo(User user);
 }

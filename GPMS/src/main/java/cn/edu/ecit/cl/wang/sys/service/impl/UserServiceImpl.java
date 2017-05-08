@@ -110,17 +110,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 		return userDao.getUnLockUserById(id);
 	}
 
-
-	@Override
-	public void updateLoginAt(Long userId) {
-		userDao.updateLoginAt(userId);
-	}
-
-	@Override
-	public void cleanPassErr(Long userId) {
-		userDao.cleanPassErr(userId);
-	}
-
 	@Override
 	public boolean lockUserBatchIds(List<Long> ids) {
 		boolean result=true;
@@ -181,16 +170,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 	}
 
 	@Override
-	public boolean lockApply() {
-		return userDao.lockApply(SpringSecurityUtils.getCurrentUser().getUserId());
-	}
-
-	@Override
-	public boolean unLockApply() {
-		return userDao.unLockApply(SpringSecurityUtils.getCurrentUser().getUserId());
-	}
-
-	@Override
 	public int changePasswd(String oldPasswd, String newPasswd) {
 		String passwd=SpringSecurityUtils.getCurrentUser().getPasswd();
 		if(passwd.equals(MD5.encode(oldPasswd.trim()))){
@@ -205,6 +184,12 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 		}else{
 			return 3;
 		}
+	}
+
+	@Override
+	public boolean upMyInfo(User user) {
+		user.setUserId(SpringSecurityUtils.getCurrentUser().getUserId());
+		return userDao.updateById(user)>0;
 	}
 
 }

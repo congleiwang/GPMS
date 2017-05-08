@@ -2,6 +2,9 @@ package cn.edu.ecit.cl.wang.sys.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -125,22 +128,29 @@ public class UserController extends BaseController<User> {
 		return ReturnMsg.fail(OptionConstant.unLockBatchFail);
 	}
 	
-	@RequestMapping("/lockApply")
+	@RequestMapping("/canApply")
 	@ResponseBody
-	public ReturnMsg lockApply() {
-		if(userService.lockApply()){
-			return ReturnMsg.success(OptionConstant.lockSucc);
+	public ReturnMsg canApply(User user, HttpServletRequest request) {
+		if(userService.upMyInfo(user)){
+			HttpSession session=request.getSession();
+			User u=(User) session.getAttribute("user");
+			u.setCanApply(user.getCanApply());
+			return ReturnMsg.success();
 		}
-		return ReturnMsg.fail(OptionConstant.lockFail);
+		return ReturnMsg.fail();
 	}
 	
-	@RequestMapping("/unLockApply")
+	@RequestMapping("/upMyInfo")
 	@ResponseBody
-	public ReturnMsg unLockApply() {
-		if(userService.unLockApply()){
-			return ReturnMsg.success(OptionConstant.unLockSucc);
+	public ReturnMsg upMyInfo(User user, HttpServletRequest request) {
+		if(userService.upMyInfo(user)){
+			HttpSession session=request.getSession();
+			User u=(User) session.getAttribute("user");
+			u.setPhoneNum(user.getPhoneNum());
+			u.setEmail(user.getEmail());
+			return ReturnMsg.success();
 		}
-		return ReturnMsg.fail(OptionConstant.unLockFail);
+		return ReturnMsg.fail();
 	}
 	
 	@RequestMapping("/changePasswd")

@@ -134,18 +134,6 @@
 		MOD_COUNT=MOD_COUNT+1 where USER_ID=#{userId,jdbcType=NUMERIC}
 	</update>
 
-	<!-- 更新最后登陆时间 -->
-	<update id="updateLoginAt" parameterType="java.lang.Long">
-		update BASE_USER set
-		last_login_at=sysdate where USER_ID=#{userId,jdbcType=NUMERIC}
-	</update>
-	
-	<!-- 清除错误次数 -->
-	<update id="cleanPassErr" parameterType="java.lang.Long">
-		update BASE_USER set
-		PASSWD_ERR=0 where USER_ID=#{userId,jdbcType=NUMERIC}
-	</update>
-
 	<!-- 锁定用户 -->
 	<update id="updateLockUser" parameterType="java.lang.Long">
 		update BASE_USER set
@@ -155,17 +143,6 @@
 	<update id="updateUnLockUser" parameterType="java.lang.Long">
 		update BASE_USER set
 		is_LOCK='0' where USER_ID=#{userId,jdbcType=NUMERIC}
-	</update>
-	
-	<!-- 锁定申请 -->
-	<update id="lockApply" parameterType="java.lang.Long">
-		update BASE_USER set
-		CAN_APPLY='0' where USER_ID=#{userId,jdbcType=NUMERIC}
-	</update>
-	<!-- 解锁申请 -->
-	<update id="unLockApply" parameterType="java.lang.Long">
-		update BASE_USER set
-		CAN_APPLY='1' where USER_ID=#{userId,jdbcType=NUMERIC}
 	</update>
 
 	<select id="selectPage" resultMap="User">

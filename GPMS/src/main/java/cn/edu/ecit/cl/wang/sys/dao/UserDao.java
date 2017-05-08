@@ -22,10 +22,6 @@ public interface UserDao extends BaseMapper<User> {
 
 	public String isUserLocked(@Param("userId") Long userId);
 
-	public void updateLoginAt(@Param("userId") Long userId);
-
-	public void cleanPassErr(@Param("userId") Long userId);
-
 	public User getUnLockUserById(@Param("userId") Long id);
 
 	public void updateModCount(@Param("userId") Long userId);

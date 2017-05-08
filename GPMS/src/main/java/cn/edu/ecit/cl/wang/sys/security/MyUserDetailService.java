@@ -22,9 +22,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import cn.edu.ecit.cl.wang.sys.common.utils.GlobalProperties;
 import cn.edu.ecit.cl.wang.sys.common.utils.SystemUtils;
+import cn.edu.ecit.cl.wang.sys.common.utils.TimeUtils;
 import cn.edu.ecit.cl.wang.sys.controller.UserController;
 import cn.edu.ecit.cl.wang.sys.po.LoginRecord;
 import cn.edu.ecit.cl.wang.sys.po.Role;
+import cn.edu.ecit.cl.wang.sys.po.User;
 import cn.edu.ecit.cl.wang.sys.service.ILoginRecordService;
 import cn.edu.ecit.cl.wang.sys.service.IMenuService;
 import cn.edu.ecit.cl.wang.sys.service.IOrgService;
@@ -76,8 +78,12 @@ public class MyUserDetailService implements UserDetailsService {
 			throw new LockedException("用户 " + loginNm + " 已被锁定!");
 		}
 		
-		userService.cleanPassErr(userId);
-		userService.updateLoginAt(userId);
+		User user=new User();
+		user.setUserId(userId);
+		user.setIpAddr(SystemUtils.getIpAddress(request));
+		user.setLastLoginAt(TimeUtils.getNow());
+		user.setPasswdErr(0);
+		userService.updateById(user);
 		//保存其登陆记录
 		loginRecordService.insert(new LoginRecord(loginNm, "1", SystemUtils.getIpAddress(request)));
 		

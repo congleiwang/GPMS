@@ -19,6 +19,12 @@
 	<div class="menu-sep"></div>
 	<div onclick="changePassword();">修改密码</div>
 	<div class="menu-sep"></div>
+	<c:forEach items="${sessionScope.user.roles}" var="role">
+		<c:if test="${role.roleId==2}">
+			<div onclick="canApplySetting();">可申请开关</div>
+			<div class="menu-sep"></div>
+		</c:if>
+	</c:forEach>
 	<div data-options="iconCls:'icon-edit'">  
         <span>更换皮肤</span>
         <div style="width:150px;">
@@ -69,19 +75,25 @@
 			buttons : [ {
 				text : '修改信息',
 				handler : function() {
-					$('#layout_north_form').form('submit', {
-						url : '${pageContext.request.contextPath}/userAction!doNotNeedSession_editUserInfo.action',
-						success : function(d) {
-							var json = $.parseJSON(d);
-							if (json.success) {
-								p.dialog('close');
+					if($("#userInfo").form('validate')){
+						var phoneNum=$("#userInfo input[name=phoneNum]").val();
+						var email=$("#userInfo input[name=email]").val();
+						$.ajax({
+							url : '${pageContext.request.contextPath}/user/upMyInfo',
+							data :"phoneNum="+phoneNum+"&email="+email,
+							type:'post',
+							dataType : 'json',
+							success : function(d) {
+								$.messager.alert({
+									title : '提示',
+									msg : d.msg
+								});
+								if(d.success){
+									p.dialog('close');
+								}
 							}
-							$.messager.show({
-								msg : json.msg,
-								title : '提示'
-							});
-						}
-					});
+						});
+					}
 				}
 			} ]
 		});
@@ -105,7 +117,7 @@
 							type:'post',
 							dataType : 'json',
 							success : function(d) {
-								$.messager.show({
+								$.messager.alert({
 									title : '提示',
 									msg : d.msg
 								});
@@ -115,6 +127,30 @@
 							}
 						});
 					}
+				}
+			} ]
+		});
+	}
+	function canApplySetting(){
+		var p = $('<div/>').dialog({
+			title : '可申请设置',
+			href : '${pageContext.request.contextPath}/jsp/user/canApply.jsp',
+			width : 400,
+			modal:true,
+			height :170,
+			buttons : [ {
+				text : '保存',
+				handler : function() {
+					$('#canApplyForm').form('submit',{
+					    url : '${pageContext.request.contextPath}/user/canApply',
+					    success:function(r){
+					        obj=$.parseJSON(r);
+					        if(obj.success){
+						       p.dialog('destroy');
+					        }
+					        $.messager.show({title:'提示',msg:obj.msg});
+					    }
+				    });
 				}
 			} ]
 		});

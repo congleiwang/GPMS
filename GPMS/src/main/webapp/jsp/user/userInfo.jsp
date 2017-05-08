@@ -6,7 +6,7 @@
 		<table>
 			<tr>
 				<th>所属机构</th>
-				<td><input name="orgNm" type="text" value="${sessionScope.user.orgNm}" /></td>
+				<td><input name="orgNm" type="text" value="${sessionScope.user.orgNm}" readonly="readonly" /></td>
 				<th>登陆名</th>
 				<td><input name="loginNm" type="text" value="${sessionScope.user.loginNm}" readonly="readonly" /></td>
 			</tr>
@@ -14,13 +14,13 @@
 				<th>用户名</th>
 				<td><input name="userNm" type="text" value="${sessionScope.user.userNm}" readonly="readonly" /></td>
 				<th>电话</th>
-				<td><input name="phoneNum" type="text" value="${sessionScope.user.phoneNum}" readonly="readonly"/></td>
+				<td><input name="phoneNum" type="text" value="${sessionScope.user.phoneNum}" data-options="required:true,missingMessage:'电话必填'" /></td>
 			</tr>
 			<tr>
 				<th>地址</th>
 				<td><input name="address" type="text" value="${sessionScope.user.address}" readonly="readonly" /></td>
 				<th>邮箱</th>
-				<td><input name="email" type="email" value="${sessionScope.user.email}" readonly="readonly" /></td>
+				<td><input name="email" type="email" value="${sessionScope.user.email}" data-options="required:true,missingMessage:'邮箱必填'"  /></td>
 			</tr>
 			<tr>
 				<th>注册时间</th>
