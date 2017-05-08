@@ -65,7 +65,7 @@
 							至<input name="createAtEnd" class="easyui-datetimebox" data-options="editable:false" style="width: 155px;" />
 						</td>
 						<th>申请状态</th>
-						<td><select name="state" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=GPMS&keyCd=applyState" valueField="keyValue" textField="caption">
+						<td><select name="state" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=GPMS&keyCd=applyState" valueField="keyValue" textField="caption">
 							</select>
 						</td>
 					</tr>

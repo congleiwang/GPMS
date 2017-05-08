@@ -418,7 +418,7 @@
 			</tr>
 			<tr>
 				<th>角色类型</th>
-				<td><select name="roleType" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=roleType" valueField="keyValue" textField="caption">
+				<td><select name="roleType" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=roleType" valueField="keyValue" textField="caption">
 					</select></td>
 			</tr>
 			<tr>

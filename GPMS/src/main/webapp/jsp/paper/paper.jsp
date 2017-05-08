@@ -255,7 +255,7 @@ function paperCleanSearch() {
 				<table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
 					<tr>
 						<th>状态</th>
-						<td><select name="state" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=GPMS&keyCd=applyState" valueField="keyValue" textField="caption">
+						<td><select name="state" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=GPMS&keyCd=applyState" valueField="keyValue" textField="caption">
 							</select>
 						</td>
 						<th>标题</th>

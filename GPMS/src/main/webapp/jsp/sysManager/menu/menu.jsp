@@ -165,7 +165,7 @@ function menuAddChild(){
 			<table>
 				<tr>
 					<th>系统名称：</th>
-					<td><select name="sysNm" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=system" valueField="keyValue" textField="caption">
+					<td><select name="sysNm" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=system" valueField="keyValue" textField="caption">
 						</select>
 					</td>
 				</tr>
@@ -179,7 +179,7 @@ function menuAddChild(){
 				</tr>
 				<tr>
 					<th>菜单类型：</th>
-					<td><select name="menuType" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=menuType" valueField="keyValue" textField="caption">
+					<td><select name="menuType" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=menuType" valueField="keyValue" textField="caption">
 						</select>
 					</td>
 				</tr>

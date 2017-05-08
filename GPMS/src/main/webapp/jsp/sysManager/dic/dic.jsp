@@ -215,7 +215,7 @@ function dicSave(){
 				<table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
 					<tr>
 						<th>系统</th>
-						<td><select name="sysNm" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=system" valueField="keyValue" textField="caption">
+						<td><select name="sysNm" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=system" valueField="keyValue" textField="caption">
 							</select>
 						</td>
 						<th>键值码</th>
@@ -255,7 +255,7 @@ function dicSave(){
 				</td>
 				<th class='sysNm'>系统</th>
 				<td class='sysNm'>
-					<select name="sysNm" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=system" valueField="keyValue" textField="caption"></select>
+					<select name="sysNm" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=system" valueField="keyValue" textField="caption"></select>
 				</td>
 			</tr>
 			<tr>

@@ -157,7 +157,7 @@ function orgAddChild(){
 			<table>
 				<tr>
 					<th>机构类型：</th>
-					<td><select name="orgType" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=orgType" valueField="keyValue" textField="caption">
+					<td><select name="orgType" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=orgType" valueField="keyValue" textField="caption">
 						</select>
 					</td>
 				</tr>

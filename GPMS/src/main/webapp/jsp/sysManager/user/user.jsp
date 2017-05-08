@@ -315,7 +315,7 @@
 			<tr>
 				<th>所属机构</th>
 				 <td>
-					<select class="easyui-combotree easyui-validatebox" data-options="required:true" url="${pageContext.request.contextPath}/org/getPermOrgTree" name="orgId"></select>
+					<select class="easyui-combotree easyui-validatebox" style="width:200px;" data-options="required:true" url="${pageContext.request.contextPath}/org/getPermOrgTree" name="orgId"></select>
 				</td>
 				<th>登录名</th>
 				<td><input name="loginNm" class="easyui-validatebox" data-options="required:true" /></td>

@@ -132,7 +132,7 @@
 				<table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
 					<tr>
 						<th>所属系统</th>
-						<td><select name="sysNm" draggable="false" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=system" valueField="keyValue" textField="caption">
+						<td><select name="sysNm" style="width:150px;" draggable="false" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=system" valueField="keyValue" textField="caption">
 							</select>
 						</td>
 						<th>参数键</th>
@@ -167,7 +167,7 @@
 				<td><input name="paramKey" class="easyui-validatebox" data-options="required:true" /></td>
 				<th class="sysNm">所属系统</th>
 				<td class="sysNm">
-					<select name="sysNm" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=system" valueField="keyValue" textField="caption">
+					<select name="sysNm" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=system" valueField="keyValue" textField="caption">
 					</select>
 				</td>
 			</tr>
@@ -175,7 +175,7 @@
 				<th>参数值</th>
 				<td><input name="paramValue" type="text" class="easyui-validatebox" data-options="required:true" /></td>
 				<th>参数类型</th>
-				<td><select name="type" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=paramType" valueField="keyValue" textField="caption">
+				<td><select name="type" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=SYS&keyCd=paramType" valueField="keyValue" textField="caption">
 					</select></td>
 			</tr>
 			<tr>

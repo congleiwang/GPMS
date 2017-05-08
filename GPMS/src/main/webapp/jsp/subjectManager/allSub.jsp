@@ -116,7 +116,7 @@ function allSubCleanSearch() {
 						<th>认领人</th>
 						<td colspan="2"><input name="doerNm"/></td>
 						<th>状态</th>
-						<td><select name="state" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=GPMS&keyCd=applyState" valueField="keyValue" textField="caption">
+						<td><select name="state" style="width:150px;" class="easyui-combobox" url="dictionary/getDictionaryByKey?sysNm=GPMS&keyCd=applyState" valueField="keyValue" textField="caption">
 							</select>
 						</td>
 					</tr>

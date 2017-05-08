@@ -6,7 +6,7 @@
 	<table>
 		<tr>
 			<th>所属机构</th>
-			<td><select class="easyui-combotree"
+			<td><select class="easyui-combotree" style="width:200px;"
 				url="${pageContext.request.contextPath}/org/getPermOrgTree"
 				name="orgId"></select></td>
 			<th>登录名</th>
