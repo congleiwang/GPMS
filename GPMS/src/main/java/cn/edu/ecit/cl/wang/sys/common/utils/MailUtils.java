@@ -11,29 +11,50 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class MailUtils {
+	
+	@Autowired
+	GlobalProperties globalProperties;
+	
+	public static void main(String[] args) throws Exception {
+		sendMail("congl.wang@sunyard.com","邮件测试","内容");
+	}
+	
 	public static void sendMail(String toMailAddr, String subject,String content) throws Exception {
-		Properties propes = new Properties();
+		Properties props = new Properties();
 		// 开启debug调试
-		propes.setProperty("mail.debug", "true");
+		props.setProperty("mail.debug", "true");
 		// 发送服务器需要身份验证
-		propes.setProperty("mail.smtp.auth", "true");
+		props.setProperty("mail.smtp.auth", "true");
 		// 设置邮件服务器主机名
-		propes.setProperty("mail.host", "smtp.foxmail.com");
+		props.setProperty("mail.smtp.host", "smtp.qq.com");
 		// 发送邮件协议名称
-		propes.setProperty("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.user","系统服务");
+		props.setProperty("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.port", "25"); 
+		props.put("mail.smtp.starttls.enable","true"); 
+		props.put("mail.smtp.EnableSSL.enable","true");
+
+		props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");   
+		props.setProperty("mail.smtp.socketFactory.fallback", "false");   
+		props.setProperty("mail.smtp.port", "465"); 
+		
+		
+		
 		// 设定发送这者的邮箱信息
 		
 		// 发送者的邮箱账号及密码
-		Session session = Session.getInstance(propes, new Authenticator() {
+		Session session = Session.getInstance(props, new Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("gpms123@foxmail.com", "gpms123456");
+				return new PasswordAuthentication("congleiwang@foxmail.com", "jhkworsawuambefb");
 			}
 		});
 		// 创建邮件对象
 		Message message = new MimeMessage(session);
 		// 设置邮件的发送者
-		message.setFrom(new InternetAddress("gpms123@foxmail.com"));
+		message.setFrom(new InternetAddress("congleiwang@foxmail.com"));
 		// 设置接收者
 		// RecipientType.To:接收人
 		// RecipientType.CC:抄送人
