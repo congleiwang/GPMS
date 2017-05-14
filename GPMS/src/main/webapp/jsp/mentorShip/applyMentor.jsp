@@ -62,6 +62,16 @@ function applyMentorSave(){
 		success:function(data){
 			var obj=$.parseJSON(data);
             $.messager.alert('提示', obj.msg);
+            if(data.success){
+            	var tab = $('#layout_center_centerTabs').tabs('getSelected');  // 获取选择的面板
+            	$('#layout_center_centerTabs').tabs('update', {
+            		tab: tab,
+            		options: {
+            			href: '/jsp/mentorShip/applyMentor.jsp'  // 新内容的URL
+            		}
+            	});
+
+            }
 		}
 	});
 }

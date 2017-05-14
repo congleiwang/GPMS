@@ -310,7 +310,7 @@ function rSubSend(){
 			<tr>
 				<th>附件</th>
 				<td>
-					<input type="file" name="file" class="easyui-filebox" />
+					<input type="text" name="file" buttonText='选择文件' class="easyui-filebox" />
 				</td>
 			</tr>
 		</table>

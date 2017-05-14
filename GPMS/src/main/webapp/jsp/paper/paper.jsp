@@ -104,8 +104,8 @@ $(function() {
 					var datailPaper=$('<div/>').dialog({
 						title : '查看论文',
 						href : '${pageContext.request.contextPath}/jsp/paper/datailPaper.jsp',
-						width : 600,
-						height : 400,
+						width : 700,
+						height : 500,
 						modal : true,
 						resizable :true,
 						buttons : [ {
@@ -301,7 +301,7 @@ function paperCleanSearch() {
 			<tr>
 				<th>附件</th>
 				<td>
-					<input type="file" name="pfile" class="easyui-filebox" />
+					<input type="text" buttonText='选择文件' name="pfile" class="easyui-filebox" />
 				</td>
 			</tr>
 		</table>

@@ -246,7 +246,7 @@
 	}
 </script>
 <div class="easyui-layout" data-options="fit:true">
-	<div data-options="region:'north',border:false,title:'查询条件'"style="height: 85px;overflow: hidden;" align="left">
+	<div data-options="region:'north',border:false,title:'查询条件'"style="height: 87px;overflow: hidden;" align="left">
 		<div id="user_toolbar">
 			<form id="user_searchForm">
 				<table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
@@ -288,7 +288,7 @@
 		<table id="user_datagrid"></table>
 	</div>
 </div>
-<div id="user_addDialog" class="easyui-dialog" style="width:600px;height:300px;" align="center"
+<div id="user_addDialog" class="easyui-dialog" style="width:700px;height:400px;" align="center"
 	data-options="closed:true,modal:true,title:'添加用户',resizable :true,
 	buttons:[{
 		text : '保存',
@@ -336,7 +336,7 @@
 				<th>地址</th>
 				<td><input name="address" type="text" /></td>
 				<th>邮箱</th>
-				<td><input name="email" type="email"/></td>
+				<td><input name="email" type="text" class="easyui-validatebox" data-options="required:true" /></td>
 			</tr>
 			<tr>
 				<th>是否锁定</th>

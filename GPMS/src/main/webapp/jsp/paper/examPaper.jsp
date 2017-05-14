@@ -213,7 +213,7 @@ function examPaperReject(){
 			<tr>
 				<th>附件</th>
 				<td>
-					<input type="file" name="examFile" class="easyui-filebox" />
+					<input type="text" buttonText='选择文件' name="examFile" class="easyui-filebox" />
 				</td>
 			</tr>
 		</table>

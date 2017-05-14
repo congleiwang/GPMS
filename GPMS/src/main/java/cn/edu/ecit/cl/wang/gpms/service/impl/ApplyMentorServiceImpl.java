@@ -17,6 +17,7 @@ import cn.edu.ecit.cl.wang.gpms.po.ApplyMentor;
 import cn.edu.ecit.cl.wang.gpms.service.IApplyMentorService;
 import cn.edu.ecit.cl.wang.sys.common.utils.GlobalProperties;
 import cn.edu.ecit.cl.wang.sys.common.utils.SpringSecurityUtils;
+import cn.edu.ecit.cl.wang.sys.common.utils.TimeUtils;
 import cn.edu.ecit.cl.wang.sys.po.User;
 import cn.edu.ecit.cl.wang.sys.service.IMsgService;
 import cn.edu.ecit.cl.wang.sys.service.IUserService;
@@ -47,6 +48,7 @@ public class ApplyMentorServiceImpl extends ServiceImpl<ApplyMentorDao, ApplyMen
 	@Override
 	public Page<User> selectMentor(User user, Integer page, Integer pageSize) {
 		Long roleId = Long.valueOf(globalProperties.getTeacherRoleId());// 配置文件中设置的教师角色id
+		user.setOrgId(1L);
 		// 所有教师
 		Page<User> p = userService.getUsersByRoleId(user, roleId, page, pageSize);
 		// 拒绝了申请的教师
@@ -110,6 +112,7 @@ public class ApplyMentorServiceImpl extends ServiceImpl<ApplyMentorDao, ApplyMen
 		applyMentor.setSender(sender);
 		applyMentor.setReceiver(SpringSecurityUtils.getCurrentUser().getUserId());
 		applyMentor.setState("3");
+		applyMentor.setUpdateAt(TimeUtils.getNow());
 		msgService.sysSendMsg(sender, "导师申请结果通知！", "您的导师申请已通过，可在“我的导师”菜单查看导师信息！");
 		return applyMentorDao.update(applyMentor);
 	}
@@ -120,6 +123,7 @@ public class ApplyMentorServiceImpl extends ServiceImpl<ApplyMentorDao, ApplyMen
 		applyMentor.setSender(sender);
 		applyMentor.setReceiver(SpringSecurityUtils.getCurrentUser().getUserId());
 		applyMentor.setState("4");
+		applyMentor.setUpdateAt(TimeUtils.getNow());
 		msgService.sysSendMsg(sender, "导师申请结果通知！", "您的导师申请未通过，请及时重新申请！");
 		return applyMentorDao.update(applyMentor);
 	}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,10 +53,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 	@Override
 	public boolean insert(Paper entity) {
 		try {
-			if(FileUtils.saveFile(entity.getPfile(), globalProperties.getUploadPath())){
-				entity.setPfileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
-									TimeUtils.getNowStr() + "_" +
-									entity.getPfile().getOriginalFilename());			
+			if(entity.getPfile()!=null && StringUtils.isNotEmpty(entity.getPfile().getOriginalFilename())){
+				String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
+						+entity.getPfile().getOriginalFilename();
+				if(FileUtils.saveFile(entity.getPfile(), globalProperties.getUploadPath(),fileName)){
+					entity.setPfileUrl(fileName);			
+				}
 			}
 			entity.setCreator(SpringSecurityUtils.getCurrentUser().getUserId());
 			entity.setCreateAt(TimeUtils.getNow());
@@ -70,10 +73,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 	
 	@Override
 	public boolean updateById(Paper entity) {
-		if(FileUtils.saveFile(entity.getPfile(), globalProperties.getUploadPath())){
-			entity.setPfileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
-					TimeUtils.getNowStr() + "_" +
-					entity.getPfile().getOriginalFilename());			
+		if(entity.getPfile()!=null && StringUtils.isNotEmpty(entity.getPfile().getOriginalFilename())){
+			String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
+					+entity.getPfile().getOriginalFilename();
+			if(FileUtils.saveFile(entity.getPfile(), globalProperties.getUploadPath(),fileName)){
+				entity.setPfileUrl(fileName);			
+			}
 		}
 		return super.updateById(entity);
 	}
@@ -115,8 +120,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 	public boolean examPaperAllow(Paper paper) {
 		paper.setExamAt(TimeUtils.getNow());
 		paper.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
-		if(FileUtils.saveFile(paper.getExamFile(), globalProperties.getUploadPath())){
-			paper.setExamFileUrl(paper.getExamFile().getOriginalFilename());
+		if(paper.getExamFile()!=null && StringUtils.isNotEmpty(paper.getExamFile().getOriginalFilename())){
+			String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
+					+paper.getExamFile().getOriginalFilename();
+			if(FileUtils.saveFile(paper.getExamFile(), globalProperties.getUploadPath(),fileName)){
+				paper.setExamFileUrl(fileName);
+			}
 		}
 		paper.setState("3");
 		return paperDao.updateById(paper)>0;
@@ -126,8 +135,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperDao, Paper> implements IP
 	public boolean examPaperReject(Paper paper) {
 		paper.setExamAt(TimeUtils.getNow());
 		paper.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
-		if(FileUtils.saveFile(paper.getExamFile(), globalProperties.getUploadPath())){
-			paper.setExamFileUrl(paper.getExamFile().getOriginalFilename());
+		if(paper.getExamFile()!=null && StringUtils.isNotEmpty(paper.getExamFile().getOriginalFilename())){
+			String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
+					+paper.getExamFile().getOriginalFilename();
+			if(FileUtils.saveFile(paper.getExamFile(), globalProperties.getUploadPath(),fileName)){
+				paper.setExamFileUrl(fileName);
+			}
 		}
 		paper.setState("4");
 		return paperDao.updateById(paper)>0;

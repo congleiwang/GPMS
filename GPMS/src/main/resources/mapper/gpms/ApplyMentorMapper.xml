@@ -68,6 +68,9 @@
     		<if test="applyMentor.createAt!=null">
 		    	create_At=#{applyMentor.createAt,jdbcType=TIMESTAMP},
     		</if>
+    		<if test="applyMentor.updateAt!=null">
+		    	update_At=#{applyMentor.updateAt,jdbcType=TIMESTAMP},
+    		</if>
     		<if test="applyMentor.applySbjt!=null and applyMentor.applySbjt!=''">
     			APPLY_SBJT=#{applyMentor.applySbjt,jdbcType=VARCHAR},
     		</if>

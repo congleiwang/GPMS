@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,10 +50,12 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	@Override
 	public boolean insert(SubRep entity) {
 		try {
-			if(FileUtils.saveFile(entity.getSrFile(), globalProperties.getUploadPath())){
-				entity.setSrFileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
-									TimeUtils.getNowStr() + "_" +
-									entity.getSrFile().getOriginalFilename());			
+			if(entity.getSrFile()!=null && StringUtils.isNotEmpty(entity.getSrFile().getOriginalFilename())){
+				String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
+						+ entity.getSrFile().getOriginalFilename();
+				if(FileUtils.saveFile(entity.getSrFile(), globalProperties.getUploadPath(),fileName)){
+					entity.setSrFileUrl(fileName);			
+				}
 			}
 			entity.setCreator(SpringSecurityUtils.getCurrentUser().getUserId());
 			entity.setCreateAt(TimeUtils.getNow());
@@ -67,10 +70,12 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	
 	@Override
 	public boolean updateById(SubRep entity) {
-		if(FileUtils.saveFile(entity.getSrFile(), globalProperties.getUploadPath())){
-			entity.setSrFileUrl(SpringSecurityUtils.getCurrentUser().getUsername() + "_" + 
-								TimeUtils.getNowStr() + "_" +
-								entity.getSrFile().getOriginalFilename());			
+		if(entity.getSrFile()!=null && StringUtils.isNotEmpty(entity.getSrFile().getOriginalFilename())){
+			String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
+					+ entity.getSrFile().getOriginalFilename();
+			if(FileUtils.saveFile(entity.getSrFile(), globalProperties.getUploadPath(),fileName)){
+				entity.setSrFileUrl(fileName);			
+			}
 		}
 		return super.updateById(entity);
 	}
@@ -112,8 +117,12 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	public boolean examSubRepAllow(SubRep subRep) {
 		subRep.setExamAt(TimeUtils.getNow());
 		subRep.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
-		if(FileUtils.saveFile(subRep.getExamFile(), globalProperties.getUploadPath())){
-			subRep.setExamFileUrl(subRep.getExamFile().getOriginalFilename());
+		if(subRep.getExamFile()!=null && StringUtils.isNotEmpty(subRep.getExamFile().getOriginalFilename())){
+			String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
+					+ subRep.getExamFile().getOriginalFilename();
+			if(FileUtils.saveFile(subRep.getExamFile(), globalProperties.getUploadPath(),fileName)){
+				subRep.setExamFileUrl(fileName);
+			}
 		}
 		subRep.setState("3");
 		return subRepDao.updateById(subRep)>0;
@@ -123,8 +132,12 @@ public class SubRepServiceImpl extends ServiceImpl<SubRepDao, SubRep> implements
 	public boolean examSubRepReject(SubRep subRep) {
 		subRep.setExamAt(TimeUtils.getNow());
 		subRep.setExamor(SpringSecurityUtils.getCurrentUser().getUserId());
-		if(FileUtils.saveFile(subRep.getExamFile(), globalProperties.getUploadPath())){
-			subRep.setExamFileUrl(subRep.getExamFile().getOriginalFilename());
+		if(subRep.getExamFile()!=null && StringUtils.isNotEmpty(subRep.getExamFile().getOriginalFilename())){
+			String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
+					+ subRep.getExamFile().getOriginalFilename();
+			if(FileUtils.saveFile(subRep.getExamFile(), globalProperties.getUploadPath(),fileName)){
+				subRep.setExamFileUrl(fileName);
+			}
 		}
 		subRep.setState("4");
 		return subRepDao.updateById(subRep)>0;

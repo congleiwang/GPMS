@@ -47,7 +47,7 @@ public class MsgServiceImpl extends ServiceImpl<MsgDao, Msg> implements IMsgServ
 			try {
 				MailUtils.sendMail(user.getEmail(), title, content);
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				System.err.println(e);
 			}
 		}
 		return result;

@@ -380,7 +380,7 @@
 		<table id="role_datagrid"></table>
 	</div>
 	<div data-options="region:'east',border:false" style="width:530px;height: 100%">
-		<div class="easyui-tabs" style="height: 543px">
+		<div class="easyui-tabs" style="height: 535px;overflow: hidden;">
 			<div title="角色权限">
 				<div class="datagrid-toolbar">
 					<a href="javascript:void(0);" class="easyui-linkbutton" style="margin-top: 3px" onclick="saveRoleAtuth();">保存权限</a>

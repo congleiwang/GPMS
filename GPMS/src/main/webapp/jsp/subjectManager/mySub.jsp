@@ -49,7 +49,7 @@ $(function() {
 			<td><input type="text" name="moderNm"/></td>
 		</tr>
 		<tr>
-			<th>申请时间：</th>
+			<th>选择时间：</th>
 			<td><input type="text" name="doAt"/></td>
 			<th>完成人：</th>
 			<td><input type="text" name="doerNm"/></td>

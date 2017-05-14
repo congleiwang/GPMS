@@ -68,7 +68,7 @@
 	
 	<select id="getMySub" resultMap="Subject" parameterType="java.lang.Long">
 		select s.SUB_ID,s.TITLE,s.REQUIRE,s.INTRO,s.state,s.CREATE_AT,s.creator,bu1.user_nm create_Nm,
-		s.doer,bu2.user_nm doer_Nm,s.MOD_AT,s.moder,bu3.user_nm moder_Nm,s.FILE_URL
+		s.doer,bu2.user_nm doer_Nm,s.MOD_AT,s.moder,bu3.user_nm moder_Nm,s.FILE_URL,s.do_at
     	from GPMS_SUBJECT s
     	left join base_user bu1 on s.creator=bu1.user_id
     	left join base_user bu2 on s.doer=bu2.user_id

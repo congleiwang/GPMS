@@ -301,7 +301,7 @@ function subRepCleanSearch() {
 			<tr>
 				<th>附件</th>
 				<td>
-					<input type="file" name="srFile" class="easyui-filebox" />
+					<input type="text" name="srFile" buttonText='选择文件' class="easyui-filebox" />
 				</td>
 			</tr>
 		</table>

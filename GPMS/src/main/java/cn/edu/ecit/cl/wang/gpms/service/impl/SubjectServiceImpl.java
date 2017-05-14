@@ -1,8 +1,8 @@
 	package cn.edu.ecit.cl.wang.gpms.service.impl;
 
-import java.io.File;
 import java.sql.Timestamp;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +13,10 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import cn.edu.ecit.cl.wang.gpms.dao.SubjectDao;
 import cn.edu.ecit.cl.wang.gpms.po.Subject;
 import cn.edu.ecit.cl.wang.gpms.service.ISubjectService;
+import cn.edu.ecit.cl.wang.sys.common.utils.FileUtils;
 import cn.edu.ecit.cl.wang.sys.common.utils.GlobalProperties;
 import cn.edu.ecit.cl.wang.sys.common.utils.SpringSecurityUtils;
+import cn.edu.ecit.cl.wang.sys.common.utils.TimeUtils;
 import cn.edu.ecit.cl.wang.sys.dao.UtilsDao;
 import cn.edu.ecit.cl.wang.sys.po.User;
 import cn.edu.ecit.cl.wang.sys.service.IMsgService;
@@ -48,16 +50,12 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectDao, Subject> impleme
 	@Override
 	public boolean insert(Subject entity) {
 		try {
-			if(entity.getFile()!=null && entity.getFile().getSize()!=0){
-				String path = System.getProperty("web.root") + globalProperties.getUploadPath();
-				String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + System.currentTimeMillis() + "_"
-						+ entity.getFile().getOriginalFilename();
-				File file = new File(path, fileName);
-				if (!file.exists()) {
-					file.mkdirs();
+			if(entity.getFile()!=null && StringUtils.isNotEmpty(entity.getFile().getOriginalFilename())){
+				String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
+						+entity.getFile().getOriginalFilename();
+				if(FileUtils.saveFile(entity.getFile(), globalProperties.getUploadPath(),fileName)){
+					entity.setFileUrl(fileName);
 				}
-				entity.setFileUrl(fileName);
-				entity.getFile().transferTo(file);
 			}
 			entity.setCreator(SpringSecurityUtils.getCurrentUser().getUserId());
 			entity.setState("1");
@@ -71,19 +69,11 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectDao, Subject> impleme
 
 	@Override
 	public boolean updateById(Subject entity) {
-		if(entity.getFile().getSize()!=0){
-			String path = System.getProperty("web.root") + globalProperties.getUploadPath();
-			String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + System.currentTimeMillis() + "_"
-					+ entity.getFile().getOriginalFilename();
-			File file = new File(path, fileName);
-			if (!file.exists()) {
-				file.mkdirs();
-			}
-			try {
-				entity.getFile().transferTo(file);
+		if(entity.getFile()!=null && StringUtils.isNotEmpty(entity.getFile().getOriginalFilename())){
+			String fileName = SpringSecurityUtils.getCurrentUser().getUsername() + "_" + TimeUtils.getNowStr() + "_"
+					+entity.getFile().getOriginalFilename();
+			if(FileUtils.saveFile(entity.getFile(), globalProperties.getUploadPath(),fileName)){
 				entity.setFileUrl(fileName);
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		return super.updateById(entity);

@@ -1,7 +1,7 @@
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div>
-	<img alt="" height="55px" width="350px" src="${pageContext.request.contextPath}/images/index_logo.jpg">
+	<img alt="" height="50px" width="350px" src="${pageContext.request.contextPath}/images/index_logo.jpg">
 </div>
 <div id="sessionInfoDiv" style="position: absolute;right: 5px;top:10px;">
 	<c:if test="${sessionScope.user != null}">
