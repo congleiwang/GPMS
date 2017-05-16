@@ -12,7 +12,7 @@
 			<th>新密码</th>
 			<td><input name="newPasswd" type="password"
 				class="easyui-validatebox"
-				data-options="required:true,missingMessage:'新密码必填'" /></td>
+				data-options="required:true,missingMessage:'新密码必填',validType:'minLength[6]'" /></td>
 		</tr>
 		<tr>
 			<th>重复新密码</th>

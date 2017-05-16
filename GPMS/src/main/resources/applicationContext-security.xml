@@ -28,31 +28,44 @@
 	<http auto-config="true">
 	    <intercept-url pattern="/home*" access="IS_AUTHENTICATED_FULLY" />
 	    <intercept-url pattern="/logintwice*" access="IS_AUTHENTICATED_FULLY" />
-		<form-login login-page='/jsp/login.jsp' default-target-url='/home'
-			always-use-default-target='true' authentication-failure-url="/login?error=true" />
+		<form-login login-page='/jsp/login.jsp' default-target-url='/home' always-use-default-target='true'
+		 authentication-failure-handler-ref="authenticationFailureHandler"/>
 		<logout invalidate-session="true" logout-success-url="/jsp/login.jsp" delete-cookies="JSESSIONID" />
 		<access-denied-handler error-page="/error/err403" />
 		 <!-- 会话管理，设置最多登录异常，error-if-maximum-exceeded = false为第二次登录就会使前一个登录失效 -->
 		<session-management>
 			<concurrency-control max-sessions="1" expired-url="/logintwice" error-if-maximum-exceeded="false" />
 		</session-management>
-		<!--增加一个filter，这点与Acegi是不一样的，不能修改默认的filter了， 这个filter位于FILTER_SECURITY_INTERCEPTOR之前 -->
-		<custom-filter  ref="myFilterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
+		<!--增加一个filter，这点与Acegi是不一样的，不能修改默认的filter了， 这个filter位于最后 -->
+		<custom-filter  ref="permissionFilterSecurityInterceptor" after="LAST" />
 	</http>
+	
+	<!-- 认证失败处理 -->
+	<beans:bean id="authenticationFailureHandler" class="cn.edu.ecit.cl.wang.sys.security.MyAuthenticationFailureHandler">
+  		<beans:property name="defaultFailureUrl" value="/login?error=true"/>  
+  	</beans:bean>
 
 	<authentication-manager alias="authenticationManager">
-		<authentication-provider user-service-ref="myUserDetailService">
-			 <password-encoder hash="md5" />
-		</authentication-provider>
+		<authentication-provider ref="authenticationProvider"/>
 	</authentication-manager>
-
+	
+	<beans:bean id="authenticationProvider"  class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">  
+	    <beans:property name="userDetailsService" ref="myUserDetailService" />
+	    <!-- 显示错误的详细信息 -->
+	    <beans:property name="hideUserNotFoundExceptions" value="false" />  
+	    <beans:property name="passwordEncoder" ref="passwordEncode"/>
+	</beans:bean> 
+	
 	<!--在这个类中，你就可以从数据库中读入用户的密码，角色信息，是否锁定，账号是否过期等 -->
 	<beans:bean id="myUserDetailService" class="cn.edu.ecit.cl.wang.sys.security.MyUserDetailService" />
-
-	<!--一个自定义的filter，必须包含authenticationManager,accessDecisionManager,securityMetadataSource三个属性 -->
-	<beans:bean id="myFilterSecurityInterceptor" class="cn.edu.ecit.cl.wang.sys.security.MyFilterSecurityInterceptor">
+	<!-- 配置密码加密类 -->
+    <beans:bean id="passwordEncode" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+	
+	<!--一个是否允许通过的filter，必须包含authenticationManager,accessDecisionManager,securityMetadataSource三个属性 -->
+	<beans:bean id="permissionFilterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
 		<!-- 拒绝公共的没有指定角色资源的调用 -->
 		<beans:property name="rejectPublicInvocations" value="false"/>
+		<beans:property name="observeOncePerRequest" value="false" />
 		<beans:property name="authenticationManager" ref="authenticationManager" />
 		<beans:property name="accessDecisionManager" ref="myAccessDecisionManagerBean" />
 		<beans:property name="securityMetadataSource" ref="securityMetadataSource" />

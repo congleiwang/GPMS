@@ -14,13 +14,13 @@
 				<th>用户名</th>
 				<td><input name="userNm" type="text" value="${sessionScope.user.userNm}" readonly="readonly" /></td>
 				<th>电话</th>
-				<td><input name="phoneNum" type="text" value="${sessionScope.user.phoneNum}" data-options="required:true,missingMessage:'电话必填'" /></td>
+				<td><input name="phoneNum" type="text" class="easyui-validatebox" value="${sessionScope.user.phoneNum}" data-options="required:true,missingMessage:'电话必填',validType:'mobile'" /></td>
 			</tr>
 			<tr>
 				<th>地址</th>
 				<td><input name="address" type="text" value="${sessionScope.user.address}" readonly="readonly" /></td>
 				<th>邮箱</th>
-				<td><input name="email" type="email" value="${sessionScope.user.email}" data-options="required:true,missingMessage:'邮箱必填'"  /></td>
+				<td><input name="email" type="email" class="easyui-validatebox" value="${sessionScope.user.email}" data-options="required:true,missingMessage:'邮箱必填',validType:'email'"  /></td>
 			</tr>
 			<tr>
 				<th>注册时间</th>

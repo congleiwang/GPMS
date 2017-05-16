@@ -14,14 +14,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.CollectionUtils;
 
 public class MyAccessDecisionManager implements AccessDecisionManager {
-
-	// In this method, need to compare authentication with configAttributes.
-	// 1, A object is a URL, a filter was find permission configuration by this
-	// URL, and pass to here.
-	// 2, Check authentication has attribute in permission configuration
-	// (configAttributes)
-	// 3, If not match corresponding authentication, throw
-	// aAccessDeniedException.
 	
 	Logger log=LogManager.getLogger(MyAccessDecisionManager.class);
 	

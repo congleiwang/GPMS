@@ -226,6 +226,7 @@
 					$(this).dialog('destroy');
 				},
 				onLoad : function() {
+					$('#userEditIsLock').combobox('select', rows[0].isLock);
 	                $('#user_editForm').form('load',{
 	                	userId:rows[0].userId,
 	    				orgId:rows[0].orgId,
@@ -235,7 +236,6 @@
 	    				phoneNum:rows[0].phoneNum,
 	    				address:rows[0].address,
 	    				email:rows[0].email,
-	    				isLock:rows[0].isLock,
 	    				remark:rows[0].remark,
 	                });
 				}
@@ -288,7 +288,7 @@
 		<table id="user_datagrid"></table>
 	</div>
 </div>
-<div id="user_addDialog" class="easyui-dialog" style="width:700px;height:400px;" align="center"
+<div id="user_addDialog" class="easyui-dialog" style="width:700px;height:350px;" align="center"
 	data-options="closed:true,modal:true,title:'添加用户',resizable :true,
 	buttons:[{
 		text : '保存',
@@ -318,31 +318,31 @@
 					<select class="easyui-combotree easyui-validatebox" style="width:200px;" data-options="required:true" url="${pageContext.request.contextPath}/org/getPermOrgTree" name="orgId"></select>
 				</td>
 				<th>登录名</th>
-				<td><input name="loginNm" class="easyui-validatebox" data-options="required:true" /></td>
+				<td><input name="loginNm" class="easyui-validatebox" data-options="required:true,validType:'username'" /></td>
 			</tr>
 			<tr>
 				<th>用户名</th>
-				<td><input name="userNm" type="text" class="easyui-validatebox" data-options="required:true" /></td>
+				<td><input name="userNm" type="text" class="easyui-validatebox" data-options="required:true,validType:'minLength[2]'" /></td>
 				<th>密码</th>
-				<td><input name="passwd" type="password" class="easyui-validatebox" data-options="required:true" /></td>
+				<td><input name="passwd" type="password" class="easyui-validatebox" data-options="required:true,validType:'minLength[6]'" /></td>
 			</tr>
 			<tr>
 				<th>确认密码</th>
-				<td><input type="password" class="easyui-validatebox" data-options="required:true" /></td>
+				<td><input type="password" class="easyui-validatebox" data-options="required:true,validType:'eqPwd[\'#user_addForm input[name=passwd]\']'" /></td>
 				<th>电话</th>
-				<td><input name="phoneNum" type="text"/></td>
+				<td><input name="phoneNum" type="text" data-options="required:true,validType:'mobile'"/></td>
 			</tr>
 			<tr>
 				<th>地址</th>
 				<td><input name="address" type="text" /></td>
 				<th>邮箱</th>
-				<td><input name="email" type="text" class="easyui-validatebox" data-options="required:true" /></td>
+				<td><input name="email" type="text" class="easyui-validatebox" data-options="required:true,validType:'email'" /></td>
 			</tr>
 			<tr>
 				<th>是否锁定</th>
 				<td>
-					<select name="isLock">
-						<option value="1" selected="selected">是</option>
+					<select name="isLock" class="easyui-combobox" style="width:100px;">
+						<option value="1">是</option>
 						<option value="0">否</option>
 					</select>
 				</td>

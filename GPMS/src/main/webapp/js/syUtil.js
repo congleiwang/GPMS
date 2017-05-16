@@ -22,7 +22,7 @@ $.extend($.fn.validatebox.defaults.rules,{
 	},
 	mobile : {// 验证手机号码 
 		validator : function(value) {
-			return /^(13|15|18)\d{9}$/i.test(value);
+			return /^(1)\d{10}$/i.test(value);
 		},
 		message : '手机号码格式不正确'
 	},
@@ -76,9 +76,9 @@ $.extend($.fn.validatebox.defaults.rules,{
 	},
 	username : {// 验证用户名 
 		validator : function(value) {
-			return /^[a-zA-Z][a-zA-Z0-9_]{5,15}$/i.test(value);
+			return /^[a-zA-Z][a-zA-Z0-9_]{2,19}$/i.test(value);
 		},
-		message : '用户名不合法（字母开头，允许6-16字节，允许字母数字下划线）'
+		message : '输入不合法（字母开头，允许3-20字节，允许字母数字下划线）'
 	},
 	faxno : {// 验证传真 
 		validator : function(value) {

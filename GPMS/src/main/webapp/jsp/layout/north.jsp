@@ -76,11 +76,9 @@
 				text : '修改信息',
 				handler : function() {
 					if($("#userInfo").form('validate')){
-						var phoneNum=$("#userInfo input[name=phoneNum]").val();
-						var email=$("#userInfo input[name=email]").val();
 						$.ajax({
 							url : '${pageContext.request.contextPath}/user/upMyInfo',
-							data :"phoneNum="+phoneNum+"&email="+email,
+							data :"phoneNum="+$("#userInfo input[name=phoneNum]").val()+"&email="+$("#userInfo input[name=email]").val(),
 							type:'post',
 							dataType : 'json',
 							success : function(d) {
@@ -109,11 +107,9 @@
 				text : '修改密码',
 				handler : function() {
 					if($("#changePasswordForm").form('validate')){
-						var oldPasswd=$("#changePasswordForm input[name=oldPasswd]").val();
-						var newPasswd=$("#changePasswordForm input[name=newPasswd]").val();
 						$.ajax({
 							url : '${pageContext.request.contextPath}/user/changePasswd',
-							data :"oldPasswd="+oldPasswd+"&newPasswd="+newPasswd,
+							data :"oldPasswd="+$("#changePasswordForm input[name=oldPasswd]").val()+"&newPasswd="+$("#changePasswordForm input[name=newPasswd]").val(),
 							type:'post',
 							dataType : 'json',
 							success : function(d) {
