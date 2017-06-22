@@ -4,10 +4,11 @@
 
 <mapper namespace="cn.edu.ecit.cl.wang.sys.dao.UserDao">
 
-	<!-- 返回类型  -->
+	<!-- 返回类型 -->
 	<resultMap type="cn.edu.ecit.cl.wang.sys.po.User" id="User">
 		<id property="userId" column="USER_ID" />
 		<result property="orgId" column="ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
 		<result property="userNm" column="USER_NM" />
 		<result property="loginNm" column="LOGIN_NM" />
 		<result property="passwd" column="PASSWD" />
@@ -26,68 +27,180 @@
 		<result property="modAt" column="MOD_AT" />
 		<result property="modCount" column="MOD_COUNT" />
 		<result property="isDel" column="IS_DEL" />
-		<association property="org" javaType="cn.edu.ecit.cl.wang.sys.po.Org">
-			<id property="orgId" column="ORG_ID" />
-			<result property="porgId" column="PORG_ID" />
-			<result property="orgType" column="ORG_TYPE" />
-			<result property="orgNm" column="ORG_NM" />
-			<result property="orgDesc" column="ORG_DESC" />
-			<result property="address" column="org_ADDRESS" />
-			<result property="isUse" column="org_IS_USE" />
-			<result property="creator" column="org_CREATOR" />
-			<result property="createAt" column="org_CREATE_AT" />
-			<result property="moder" column="org_MODER" />
-			<result property="modAt" column="org_MOD_AT" />
-			<result property="modCount" column="org_MOD_COUNT" />
-			<result property="isDel" column="org_IS_DEL" />
-		</association>
-		<collection  property="roles" ofType="cn.edu.ecit.cl.wang.sys.po.Role">
-			<id property="roleId" column="ROLE_ID" />
-			<result property="roleNm" column="ROLE_NM" />
-			<result property="roleType" column="ROLE_TYPE" />
-			<result property="remark" column="role_REMARK" />
-			<result property="isUse" column="role_IS_USE" />
-			<collection  property="menuCds" ofType="string" column="MENU_CD"/>
-			<collection  property="userIds" ofType="long" column="user_ids"/>
-		</collection>
+		<result property="canApply" column="CAN_APPLY" />
 	</resultMap>
 	
 	<!-- 根据用户LongNm得到id -->
-	<select id="getIdByLoginNm" parameterType="java.lang.String" resultType="java.lang.Long">
-		select USER_ID from base_user where login_nm=#{loginNm,jdbcType=VARCHAR}
+	<select id="getIdByLoginNm" parameterType="java.lang.String"
+		resultType="java.lang.Long">
+		select USER_ID from base_user where
+		login_nm=#{loginNm,jdbcType=VARCHAR}
 	</select>
-	
-	<!-- 根据用户登陆名，找到用户 -->
-	<select id="getCurrentUserById" resultMap="User" parameterType="java.lang.Long">
+
+	<!-- 根据用户id，找到用户 -->
+	<select id="getUnLockUserById" resultMap="User" parameterType="java.lang.Long">
 		SELECT
-			u.USER_ID,u.ORG_ID,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
-			u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL,
-			o.ORG_ID,o.PORG_ID,o.ORG_TYPE,o.ORG_NM,o.ORG_DESC,
-			o.ADDRESS org_ADDRESS,o.IS_USE org_IS_USE,o.CREATOR org_CREATOR,o.CREATE_AT org_CREATE_AT,
-			o.MODER org_MODER,o.MOD_AT org_MOD_AT,o.MOD_COUNT org_MOD_COUNT,o.IS_DEL org_IS_DEL,
-			r.ROLE_ID,r.ROLE_NM,r.ROLE_TYPE,r.REMARK role_REMARK,r.IS_USE role_IS_USE,m.MENU_CD,ur.USER_ID user_ids
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
 		FROM BASE_USER u
-		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID AND o.IS_USE='1'
-		LEFT JOIN BASE_USER_ROLE ur on u.USER_ID=ur.USER_ID
-		LEFT JOIN BASE_ROLE r on r.ROLE_ID = ur.ROLE_ID AND r.IS_USE='1'
-		LEFT JOIN BASE_ROLE_ATUTH ra on r.ROLE_ID = ra.ROLE_ID 
-		LEFT JOIN BASE_MENU m on m.MENU_CD=ra.MENU_CD AND m.IS_USE='1'
-		WHERE u.USER_ID=#{userId,jdbcType=NUMERIC} AND u.is_LOCK='0' AND u.IS_DEL='0'
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		WHERE
+		u.USER_ID=#{userId,jdbcType=NUMERIC} AND u.is_LOCK='0'
 	</select>
 	
+	<!-- 根据角色id，找到用户 -->
+	<select id="getUsersByRoleId" resultMap="User">
+		SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		left join BASE_USER_ROLE ur on u.USER_ID=ur.USER_ID
+		WHERE
+		ur.ROLE_ID=#{roleId,jdbcType=NUMERIC} AND u.is_LOCK='0'
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<if test="ew.entity.userNm!=null and ew.entity.userNm!=''">
+					and u.USER_NM like '%' || #{ew.entity.userNm,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.loginNm!=null and ew.entity.loginNm!=''">
+					and u.LOGIN_NM like '%' || #{ew.entity.loginNm,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.orgId!=null and ew.entity.orgId!=0">
+					and u.ORG_ID in(
+					SELECT t.ORG_ID FROM BASE_ORG t where t.IS_USE='1'
+					START WITH t.ORG_ID= #{ew.entity.orgId,jdbcType=NUMERIC}
+					CONNECT BY PRIOR t.ORG_ID = t.PORG_ID)
+				</if>
+			</if>
+		</if>
+	</select>
+	<!-- 根据角色id及查询条件，找到之外的用户 -->
+	<select id="getUsersExRoleId" resultMap="User">
+		SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		WHERE u.is_LOCK='0'
+		<if test="roleId!=null and roleId!=0">
+			and u.USER_ID not in (select ur.USER_ID from BASE_USER_ROLE ur where ur.role_id= #{roleId,jdbcType=NUMERIC})
+		</if>
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<if test="ew.entity.userNm!=null and ew.entity.userNm!=''">
+					and u.USER_NM like '%' || #{ew.entity.userNm,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.loginNm!=null and ew.entity.loginNm!=''">
+					and u.LOGIN_NM like '%' || #{ew.entity.loginNm,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.orgId!=null and ew.entity.orgId!=0">
+					and u.ORG_ID in(
+					SELECT t.ORG_ID FROM BASE_ORG t where t.IS_USE='1'
+					START WITH t.ORG_ID= #{ew.entity.orgId,jdbcType=NUMERIC}
+					CONNECT BY PRIOR t.ORG_ID = t.PORG_ID)
+				</if>
+			</if>
+		</if>
+	</select>
+	
+	<!-- 根据用户id，找到用户 -->
+	<select id="selectById" resultMap="User">
+		SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		WHERE
+		u.USER_ID=#{userId,jdbcType=NUMERIC}
+	</select>
+
 	<!-- 查询用户是否被锁定 -->
-	<select id="isUserLocked" parameterType="java.lang.Long" resultType="java.lang.String">
-		select is_LOCK from BASE_USER where USER_ID=#{userId,jdbcType=NUMERIC}
+	<select id="isUserLocked" parameterType="java.lang.Long"
+		resultType="java.lang.String">
+		select is_LOCK from BASE_USER where
+		USER_ID=#{userId,jdbcType=NUMERIC}
 	</select>
-	
+
 	<!-- 增加密码错误次数 -->
 	<update id="updatePassErr" parameterType="java.lang.Long">
-		update BASE_USER set PASSWD_ERR=PASSWD_ERR+1 where USER_ID=#{userId,jdbcType=NUMERIC}
+		update BASE_USER set
+		PASSWD_ERR=PASSWD_ERR+1 where USER_ID=#{userId,jdbcType=NUMERIC}
 	</update>
 	
+	<!-- 增加修改次数 -->
+	<update id="updateModCount" parameterType="java.lang.Long">
+		update BASE_USER set
+		MOD_COUNT=MOD_COUNT+1 where USER_ID=#{userId,jdbcType=NUMERIC}
+	</update>
+
 	<!-- 锁定用户 -->
 	<update id="updateLockUser" parameterType="java.lang.Long">
-		update BASE_USER set is_LOCK='1' where USER_ID=#{userId,jdbcType=NUMERIC}
+		update BASE_USER set
+		is_LOCK='1' where USER_ID=#{userId,jdbcType=NUMERIC}
 	</update>
-	
+	<!-- 解锁用户 -->
+	<update id="updateUnLockUser" parameterType="java.lang.Long">
+		update BASE_USER set
+		is_LOCK='0' where USER_ID=#{userId,jdbcType=NUMERIC}
+	</update>
+
+	<select id="selectPage" resultMap="User">
+		SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		WHERE u.IS_DEL='0'
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<if test="ew.entity.userNm!=null and ew.entity.userNm!=''">
+					and u.USER_NM like '%' || #{ew.entity.userNm,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.loginNm!=null and ew.entity.loginNm!=''">
+					and u.LOGIN_NM like '%' || #{ew.entity.loginNm,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.address!=null and ew.entity.address!=''">
+					and u.ADDRESS like '%' || #{ew.entity.address,jdbcType=VARCHAR} || '%'
+				</if>
+				<if test="ew.entity.isLock!=null and ew.entity.isLock!=''">
+					and u.is_LOCK = #{ew.entity.isLock,jdbcType=VARCHAR}
+				</if>
+				<if test="ew.entity.signAtStart!=null and ew.entity.signAtStart!=''">
+					and to_char(u.sign_at,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.signAtStart,jdbcType=VARCHAR}
+				</if>
+				<if test="ew.entity.signAtEnd!=null and ew.entity.signAtEnd!=''">
+					and to_char(u.sign_at,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.signAtEnd,jdbcType=VARCHAR}
+				</if>
+				<if test="ew.entity.orgId!=null and ew.entity.orgId!=0">
+					and u.ORG_ID in(
+					SELECT t.ORG_ID FROM BASE_ORG t where t.IS_USE='1'
+					START WITH t.ORG_ID= #{ew.entity.orgId,jdbcType=NUMERIC}
+					CONNECT BY PRIOR t.ORG_ID = t.PORG_ID)
+				</if>
+			</if>
+		</if>
+	</select>
+	 
+	<select id="getMyStuList" resultMap="cn.edu.ecit.cl.wang.sys.dao.UserDao.User" parameterType="java.lang.Long">
+    	SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		LEFT JOIN GPMS_APPLY_MENTOR am on u.USER_ID =am.SENDER
+		WHERE
+		am.RECEIVER=#{receiver,jdbcType=NUMERIC} AND u.is_LOCK='0' and am.state='3'
+    </select>
+    
+	<select id="getMyMentor" resultMap="cn.edu.ecit.cl.wang.sys.dao.UserDao.User" parameterType="java.lang.Long">
+    	SELECT
+		u.USER_ID,u.ORG_ID,o.ORG_NM,u.USER_NM,u.LOGIN_NM,u.PASSWD,u.passwd_err,u.PHONE_NUM,u.ADDRESS,u.ip_addr,u.EMAIL,
+		u.is_LOCK,u.sign_at,u.last_login_at,u.REMARK,u.CREATOR,u.CREATE_AT,u.MODER,u.MOD_COUNT,u.MOD_AT,u.IS_DEL
+		FROM BASE_USER u
+		LEFT JOIN BASE_ORG o on u.ORG_ID = o.ORG_ID
+		LEFT JOIN GPMS_APPLY_MENTOR am on u.USER_ID =am.RECEIVER
+		WHERE
+		am.SENDER=#{sender,jdbcType=NUMERIC} AND u.is_LOCK='0' and am.state='3'
+    </select>
 </mapper>

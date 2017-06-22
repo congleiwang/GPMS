@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.gpms.dao.PaperDao">
+
+	<!-- 返回类型  -->
+	<resultMap type="cn.edu.ecit.cl.wang.gpms.po.Paper" id="Paper">
+		<id property="paperId" column="PAPER_ID"/>
+		<result property="title" column="TITLE" />
+		<result property="abs" column="ABSTRACT" />
+		<result property="pfileUrl" column="PFILE_URL" />
+		<result property="state" column="state" />
+		<result property="createAt" column="CREATE_AT" />
+		<result property="creator" column="creator" />
+		<result property="createNm" column="create_Nm" />
+		<result property="orgId" column="org_id" />
+		<result property="orgNm" column="org_nm" />
+		<result property="sendAt" column="send_At" />
+		<result property="examor" column="EXAMOR" />
+		<result property="examorNm" column="examor_Nm" />
+		<result property="examAt" column="EXAM_AT" />
+		<result property="examRemark" column="EXAM_REMARK" />
+		<result property="examFileUrl" column="EXAM_FILE_URL" />
+		<result property="score" column="score" />
+	</resultMap>
+	
+	<select id="selectPage" resultMap="Paper" >
+		SELECT 
+		p.PAPER_ID,p.TITLE,p.ABSTRACT,p.PFILE_URL,p.state,p.CREATE_AT,p.creator,bu1.user_nm create_Nm,
+		o.org_id,o.org_nm,p.send_At,p.examor,bu2.user_nm examor_Nm,p.EXAM_AT,p.EXAM_REMARK,p.EXAM_FILE_URL,p.score
+    	from GPMS_PAPER p
+    	left join base_user bu1 on p.creator=bu1.user_id
+    	left join base_user bu2 on p.EXAMOR=bu2.user_id
+    	left join base_org o on bu1.org_id=o.org_id
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<where>
+					<if test="ew.entity.creator!=null and ew.entity.creator!=0">
+						and p.creator=#{ew.entity.creator,jdbcType=NUMERIC}
+					</if>
+					<if test="ew.entity.title!=null and ew.entity.title!=''">
+						and p.TITLE like '%' || #{ew.entity.title,jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="ew.entity.createNm!=null and ew.entity.createNm!=''">
+						and bu1.user_nm like '%' || #{ew.entity.createNm,jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="ew.entity.examorNm!=null and ew.entity.examorNm!=''">
+						and bu2.user_nm like '%' || #{ew.entity.examorNm,jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="ew.entity.state!=null and ew.entity.state!=''">
+						and p.state = #{ew.entity.state,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.createAtStart!=null and ew.entity.createAtStart!=''">
+						and to_char(p.create_At,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.createAtStart,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.createAtEnd!=null and ew.entity.createAtEnd!=''">
+						and to_char(p.create_At,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.createAtEnd,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.sendAtStart!=null and ew.entity.sendAtStart!=''">
+						and to_char(p.send_At,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.sendAtStart,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.sendAtEnd!=null and ew.entity.sendAtEnd!=''">
+						and to_char(p.send_At,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.sendAtEnd,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.examAtStart!=null and ew.entity.examAtStart!=''">
+						and to_char(p.exam_At,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.examAtStart,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.examAtEnd!=null and ew.entity.examAtEnd!=''">
+						and to_char(p.exam_At,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.examAtEnd,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.orgId!=null and ew.entity.orgId!=0">
+					and bu1.ORG_ID in(
+						SELECT t.ORG_ID FROM BASE_ORG t where t.IS_USE='1'
+						START WITH t.ORG_ID= #{ew.entity.orgId,jdbcType=NUMERIC}
+						CONNECT BY PRIOR t.ORG_ID = t.PORG_ID)
+				</if>
+				</where>
+			</if>
+			<if test="ew.sqlSegment!=null">
+				${ew.sqlSegment}
+			</if>
+		</if>
+		order by p.CREATE_AT,p.send_At
+	</select>
+	
+	<select id="getAllowPaper" resultMap="Paper" parameterType="java.lang.Long">
+		select * from GPMS_PAPER where state='3' and creator=#{creator,jdbcType=NUMERIC}
+	</select>
+	
+</mapper>

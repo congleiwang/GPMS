@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.sys.dao.MenuDao">
+
+	<!-- 返回类型  -->
+	<resultMap type="cn.edu.ecit.cl.wang.sys.po.Menu" id="Menu">
+		<id property="menuCd" column="MENU_CD" />
+		<result property="sysNm" column="SYS_NM" />
+		<result property="menuNm" column="MENU_NM" />
+		<result property="menuType" column="MENU_TYPE" />
+		<result property="menuUrl" column="MENU_URL" />
+		<result property="pmenuCd" column="PMENU_CD" />
+		<result property="remark" column="REMARK" />
+		<result property="iconFile" column="ICON_FILE" />
+		<result property="orderBy" column="ORDER_BY" />
+		<result property="isUse" column="IS_USE" />
+		<result property="jspUrl" column="JSP_URL" />
+	</resultMap>
+	
+	<!-- 根据登陆用户的权限查询菜单 -->
+	<select id="getMenuCdsByRoleId" parameterType="java.lang.Long" resultType="java.lang.String">
+		SELECT  t1.MENU_CD
+		FROM BASE_MENU t1
+		left join BASE_ROLE_ATUTH t2 on T1.MENU_CD = T2.MENU_CD
+		where t1.IS_USE='1' AND T2.ROLE_ID =#{roleId,jdbcType=NUMERIC}
+		order by t1.order_by
+	</select>
+	
+	<!-- 根据登陆用户的权限查询可见的菜单(3为按钮权限) -->
+	<select id="getPermTree" parameterType="java.util.List" resultMap="Menu">
+		SELECT distinct
+			t1.SYS_NM,t1.MENU_CD,t1.MENU_NM,t1.MENU_TYPE,t1.MENU_URL,t1.PMENU_CD,t1.REMARK,
+			t1.ICON_FILE,t1.ORDER_BY,t1.IS_USE,t1.JSP_URL
+		FROM BASE_MENU t1
+		left join BASE_ROLE_ATUTH t2 on T1.MENU_CD = T2.MENU_CD
+		where t1.IS_USE='1' and MENU_TYPE!='3' AND T2.ROLE_ID IN
+		<if test="roles!=null and roles.size!=0">
+			<foreach collection="roles" item="role" index="index" open="(" separator="," close=")">
+				#{role.roleId,jdbcType=NUMERIC}
+			</foreach>
+		</if>
+		order by t1.order_by
+	</select>
+	
+	<select id="getFirstMenu" resultMap="Menu">
+		SELECT 
+			t1.SYS_NM,t1.MENU_CD,t1.MENU_NM,t1.MENU_TYPE,t1.MENU_URL,t1.PMENU_CD,t1.REMARK,
+			t1.ICON_FILE,t1.ORDER_BY,t1.IS_USE,t1.JSP_URL
+		FROM BASE_MENU t1
+		where t1.IS_USE='1' and MENU_TYPE!='3' and t1.PMENU_CD is null order by t1.order_by
+	</select>
+	
+	<select id="getMenuWithSubById" resultMap="Menu" parameterType="java.lang.String">
+		SELECT 
+			t1.SYS_NM,t1.MENU_CD,t1.MENU_NM,t1.MENU_TYPE,t1.MENU_URL,t1.PMENU_CD,t1.REMARK,
+			t1.ICON_FILE,t1.ORDER_BY,t1.IS_USE,t1.JSP_URL
+		FROM BASE_MENU t1
+		where t1.IS_USE='1' and MENU_TYPE!='3'
+		START WITH t1.MENU_CD=#{id,jdbcType=VARCHAR}
+		CONNECT BY PRIOR t1.MENU_CD = t1.PMENU_CD order by t1.order_by
+	</select>
+	
+	<select id="getAllMenuTree" resultMap="Menu">
+		SELECT 
+			t1.SYS_NM,t1.MENU_CD,t1.MENU_NM,t1.MENU_TYPE,t1.MENU_URL,t1.PMENU_CD,t1.REMARK,
+			t1.ICON_FILE,t1.ORDER_BY,t1.IS_USE,t1.JSP_URL
+		FROM BASE_MENU t1
+		START WITH t1.PMENU_CD is null
+		CONNECT BY PRIOR t1.MENU_CD = t1.PMENU_CD order by t1.order_by
+	</select>
+</mapper>

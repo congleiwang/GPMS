@@ -3,6 +3,7 @@ package cn.edu.ecit.cl.wang.sys.po;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 @TableName("BASE_SYS_PARAM")
@@ -15,7 +16,7 @@ public class SysParam implements Serializable{
 	private String sysNm;
 	
 	/** 键值码 */
-	@TableField("PARAM_KEY")
+	@TableId("PARAM_KEY")
 	private String paramKey;
 	
 	/** 键值 */

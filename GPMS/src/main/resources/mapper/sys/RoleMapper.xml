@@ -11,24 +11,80 @@
 		<result property="roleType" column="ROLE_TYPE" />
 		<result property="remark" column="REMARK" />
 		<result property="isUse" column="IS_USE" />
-		<collection  property="menuCds" ofType="string"/>
-		<collection  property="userIds" ofType="long"/>
+		<result property="creator" column="CREATOR" />
+		<result property="createAt" column="CREATE_AT" />
+		<result property="moder" column="MODER" />
+		<result property="modAt" column="MOD_AT" />
+		<result property="modCount" column="MOD_COUNT" />
+		<result property="isDel" column="IS_DEL" />
 	</resultMap>
 	
-	<select id="getMenuCodesByRoleIds">
-		SELECT distinct T1.MENU_CD
+	<resultMap type="cn.edu.ecit.cl.wang.sys.pojo.UrlAndRoleId" id="urlAndRoleId">
+		<result property="menuUrl" column="Menu_url" />
+		<result property="roleId" column="ROLE_ID" />
+	</resultMap>
+	<resultMap type="cn.edu.ecit.cl.wang.sys.pojo.UserRole" id="UserRole">
+		<result property="roleId" column="ROLE_ID" />
+		<result property="userId" column="USER_ID" />
+	</resultMap>
+	<resultMap type="cn.edu.ecit.cl.wang.sys.pojo.RoleAtuth" id="RoleAtuth">
+		<result property="roleId" column="ROLE_ID" />
+		<result property="menuCd" column="MENU_CD" />
+	</resultMap>
+	
+	<select id="getMenuUrlsByRoleId" parameterType="java.lang.Long" resultType="java.lang.String">
+		SELECT distinct T2.MENU_URL
 		FROM BASE_ROLE_ATUTH  T1
 		LEFT JOIN BASE_MENU T2 ON T1.MENU_CD = T2.MENU_CD
-		WHERE T2.IS_USE='1' AND T1.ROLE_ID IN
-		<foreach collection="array" item="roleId" index="index" open="(" separator="," close=")">
-			#{roleId,jdbcType=INTEGER}
-		</foreach>
+		WHERE T2.IS_USE='1' AND T1.ROLE_ID=#{roleId,jdbcType=NUMERIC}
 	</select>
 	
-	<select id="getMenuAndRoleCodeList">
-		SELECT t2.MENU_CD,t1.ROLE_ID
+	<select id="getUrlAndRoleIdList" resultMap="urlAndRoleId">
+		SELECT t2.MENU_URL,t1.ROLE_ID
 			FROM BASE_ROLE_ATUTH t1
 				INNER JOIN BASE_MENU t2 ON t1.menu_cd=t2.menu_cd AND t2.IS_USE='1'
 				INNER JOIN BASE_ROLE t3 ON t1.role_id=t3.role_id AND t3.IS_USE='1'
 	</select>
+	
+	<select id="getRolesByUserId" resultMap="Role" parameterType="java.lang.Long">
+		SELECT 
+			r.ROLE_ID,r.ROLE_NM,r.ROLE_TYPE,r.REMARK,r.IS_USE,
+			r.CREATOR,r.CREATE_AT,r.MODER,r.MOD_COUNT,r.MOD_AT,r.IS_DEL
+		FROM BASE_ROLE r
+		INNER JOIN base_user_role ur ON r.ROLE_ID=ur.ROLE_ID
+		where r.IS_USE='1' and ur.USER_ID=#{userId,jdbcType=NUMERIC}
+	</select>
+	
+	<select id="selectById" resultMap="Role" parameterType="java.lang.Long">
+		SELECT 
+			r.ROLE_ID,r.ROLE_NM,r.ROLE_TYPE,r.REMARK,r.IS_USE,
+			r.CREATOR,r.CREATE_AT,r.MODER,r.MOD_COUNT,r.MOD_AT,r.IS_DEL
+		FROM BASE_ROLE r
+		where r.IS_USE='1' and r.ROLE_ID=#{roleId,jdbcType=NUMERIC}
+	</select>
+	
+	<insert id="putUsers" parameterType="java.util.List">
+		insert into BASE_USER_ROLE (role_id,user_id)
+		<foreach collection="userRoles" item="userRole" separator="union">
+			select #{userRole.roleId,jdbcType=NUMERIC},#{userRole.userId,jdbcType=NUMERIC} from dual
+		</foreach>
+	</insert>
+	
+	<delete id="removeUsers" parameterType="java.util.List">
+		delete from BASE_USER_ROLE where
+		<foreach collection="userRoles" item="userRole" separator="or">
+			(role_id=#{userRole.roleId,jdbcType=NUMERIC} and user_id=#{userRole.userId,jdbcType=NUMERIC})
+		</foreach>
+	</delete>
+	
+	<insert id="putAtuth" parameterType="java.util.List">
+		insert into BASE_ROLE_ATUTH (role_id,menu_cd)
+		<foreach collection="roleAtuths" item="roleAtuth" separator="union">
+			select #{roleAtuth.roleId,jdbcType=NUMERIC},#{roleAtuth.menuCd,jdbcType=VARCHAR} from dual
+		</foreach>
+	</insert>
+	
+	<delete id="delAtuthByRoleId" parameterType="java.lang.Long">
+		delete from BASE_ROLE_ATUTH where role_id=#{roleId,jdbcType=NUMERIC}
+	</delete>
 </mapper>

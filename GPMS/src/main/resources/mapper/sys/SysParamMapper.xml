@@ -6,8 +6,8 @@
 
 	<!-- 返回类型  -->
 	<resultMap type="cn.edu.ecit.cl.wang.sys.po.SysParam" id="SysParam">
+		<id property="paramKey" column="PARAM_KEY" />
 		<result property="sysNm" column="SYS_NM" />
-		<result property="paramKey" column="PARAM_KEY" />
 		<result property="paramValue" column="PARAM_VALUE" />
 		<result property="type" column="TYPE" />
 		<result property="valueBound" column="VALUE_BOUND" />
@@ -26,4 +26,15 @@
 		</if>
     </select>
     
+    <select id="selectPage" resultMap="SysParam">
+    	select * from BASE_SYS_PARAM
+    	<where>
+    		<if test="ew.entity.sysNm!=null and ew.entity.sysNm!=''">
+    			SYS_NM=#{ew.entity.sysNm,jdbcType=VARCHAR}
+    		</if>
+    		<if test="ew.entity.paramKey!=null and ew.entity.paramKey!=''">
+    			and PARAM_KEY like '%' || #{ew.entity.paramKey,jdbcType=VARCHAR} || '%'
+    		</if>
+    	</where>
+    </select>
 </mapper>

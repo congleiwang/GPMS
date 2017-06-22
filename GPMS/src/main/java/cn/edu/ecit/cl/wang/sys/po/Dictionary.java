@@ -3,52 +3,54 @@ package cn.edu.ecit.cl.wang.sys.po;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 
 @TableName("BASE_DICTIONARY")
-public class Dictionary  implements Serializable{
-	
-	private static final long serialVersionUID = 2797135080407020956L;
+public class Dictionary implements Serializable {
 
-	/** 系统名称  */
-	@TableField("SYS_NM")
-	private String sysNm;
+	private static final long serialVersionUID = 2797135080407020956L;
 	
 	/** 键值码 */
-	@TableField("KEY_CD")
+	@TableId(value = "KEY_CD" , type = IdType.INPUT)
 	private String keyCd;
-	
+
+	/** 系统名称 */
+	@TableField("SYS_NM")
+	private String sysNm;
+
 	/** 键值 */
 	@TableField("KEY_VALUE")
 	private String keyValue;
-	
+
 	/** 中文名称 */
 	@TableField("CAPTION")
 	private String caption;
-	
+
 	/** 是否可更改 */
 	@TableField("IS_MOD")
 	private String isMod;
-	
+
 	/** 备注 */
 	@TableField("REMARK")
 	private String remark;
-	
+
 	/** 是否启用 */
 	@TableField("IS_USE")
 	private String isUse;
-	
+
 	/** 英文 */
 	@TableField("ENGLISH")
 	private String english;
-	
+
 	/** 排序 */
 	@TableField("ORDER_BY")
 	private Integer orderBy;
 
-	public Dictionary(){
+	public Dictionary() {
 	}
-	
+
 	public Dictionary(String sysNm, String keyCd) {
 		super();
 		this.sysNm = sysNm;

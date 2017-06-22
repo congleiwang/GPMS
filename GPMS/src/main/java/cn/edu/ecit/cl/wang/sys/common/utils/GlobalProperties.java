@@ -11,29 +11,21 @@ public class GlobalProperties {
 	/** 项目名 */
 	private String projectName;
 
+	/** 项目主页 */
 	private String homeUrl;
 
-	private String webappPath;
-
-	private Long defaultRoleId;
-
-	private String extJsHomePath;
-
-	private String storageType;
-
-	private String storagePath;
-
-	private String ftpPath;
+	/** 默认角色 */
+	private String defaultRoleId;
 	
-	private String ftpIp;
+	/** 教师角色 */
+	private String teacherRoleId;
 	
-	private String ftpPort;
-	
-	private String ftpUser;
-	
-	private String ftpPassword;
+	/** 审核人员的roldId */
+	private String  verifyRoleId;
 
-	private String runautotask;
+	/** 上传文件所存的路径 */
+	private String uploadPath;
+	
 
 	public String getProjectName() {
 		return projectName;
@@ -51,102 +43,36 @@ public class GlobalProperties {
 		this.homeUrl = homeUrl;
 	}
 
-	public String getWebappPath() {
-		return webappPath;
+	public String getTeacherRoleId() {
+		return teacherRoleId;
 	}
 
-	public void setWebappPath(String webappPath) {
-		this.webappPath = webappPath;
+	public void setTeacherRoleId(String teacherRoleId) {
+		this.teacherRoleId = teacherRoleId;
 	}
 
-	public Long getDefaultRoleId() {
+	public String getDefaultRoleId() {
 		return defaultRoleId;
 	}
 
-	public void setDefaultRoleId(Long defaultRoleId) {
+	public void setDefaultRoleId(String defaultRoleId) {
 		this.defaultRoleId = defaultRoleId;
 	}
 
-	public String getExtJsHomePath() {
-		return extJsHomePath;
+	public String getUploadPath() {
+		return uploadPath;
 	}
 
-	public void setExtJsHomePath(String extJsHomePath) {
-		this.extJsHomePath = extJsHomePath;
+	public void setUploadPath(String uploadPath) {
+		this.uploadPath = uploadPath;
 	}
 
-	public String getStorageType() {
-		return storageType;
+	public String getVerifyRoleId() {
+		return verifyRoleId;
 	}
 
-	public void setStorageType(String storageType) {
-		this.storageType = storageType;
-	}
-
-	public String getStoragePath() {
-		return storagePath;
-	}
-
-	public void setStoragePath(String storagePath) {
-		this.storagePath = storagePath;
-	}
-
-	public String getStorageMode() {
-		return storageMode;
-	}
-
-	public void setStorageMode(String storageMode) {
-		this.storageMode = storageMode;
-	}
-
-	private String storageMode;
-
-	public String getFtpPath() {
-		return ftpPath;
-	}
-
-	public void setFtpPath(String ftpPath) {
-		this.ftpPath = ftpPath;
-	}
-
-	public String getFtpIp() {
-		return ftpIp;
-	}
-
-	public void setFtpIp(String ftpIp) {
-		this.ftpIp = ftpIp;
-	}
-
-	public String getFtpPort() {
-		return ftpPort;
-	}
-
-	public void setFtpPort(String ftpPort) {
-		this.ftpPort = ftpPort;
-	}
-
-	public String getFtpUser() {
-		return ftpUser;
-	}
-
-	public void setFtpUser(String ftpUser) {
-		this.ftpUser = ftpUser;
-	}
-
-	public String getFtpPassword() {
-		return ftpPassword;
-	}
-
-	public void setFtpPassword(String ftpPassword) {
-		this.ftpPassword = ftpPassword;
-	}
-
-	public String getRunautotask() {
-		return runautotask;
-	}
-
-	public void setRunautotask(String runautotask) {
-		this.runautotask = runautotask;
+	public void setVerifyRoleId(String verifyRoleId) {
+		this.verifyRoleId = verifyRoleId;
 	}
 
 }

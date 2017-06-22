@@ -5,8 +5,7 @@
 		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/security 
         http://www.springframework.org/schema/security/spring-security.xsd">
-
-	<!-- 对登陆页面不拦截，加 * 是为了防止带参数。 -->
+ 	<!-- 不要过滤图片等静态资源，其中**代表可以跨越目录，*不可以跨越目录。 -->
 	<http pattern="/js/**" security="none" />
 	<http pattern="/css/**" security="none" />
 	<http pattern="/images/**" security="none" />
@@ -19,64 +18,63 @@
 	<http pattern="/**/*.html" security="none" />
 	<http pattern="/**/*.htm" security="none" />
 	<http pattern="/**/*.mp3" security="none" />
-	<http pattern="/login" security="none" />
+	<http pattern="/login*" security="none" />
 	<http pattern="/**/login" security="none" />
-	<http pattern="/login.jsp*" security="none" />
 	<http pattern="/**/login.jsp*" security="none" />
 	<http pattern="/sessionout" security="none" />
 	<http pattern="/index" security="none" />
 	<http pattern="/" security="none" />
-
-	<!-- Spring Security No CAS Start -->
-
+	
 	<http auto-config="true">
-		<form-login login-page='/login' default-target-url='/home'
-			always-use-default-target='true' authentication-failure-handler-ref="authenticationFailureHandler" />
-		<!-- authentication-failure-url="/login?error=true" -->
-		<logout invalidate-session="true" logout-success-url="/logout" delete-cookies="JSESSIONID" />
+	    <intercept-url pattern="/home*" access="IS_AUTHENTICATED_FULLY" />
+	    <intercept-url pattern="/logintwice*" access="IS_AUTHENTICATED_FULLY" />
+		<form-login login-page='/jsp/login.jsp' default-target-url='/home' always-use-default-target='true'
+		 authentication-failure-handler-ref="authenticationFailureHandler"/>
+		<logout invalidate-session="true" logout-success-url="/jsp/login.jsp" delete-cookies="JSESSIONID" />
 		<access-denied-handler error-page="/error/err403" />
-		<session-management invalid-session-url="/sessionout">
+		 <!-- 会话管理，设置最多登录异常，error-if-maximum-exceeded = false为第二次登录就会使前一个登录失效 -->
+		<session-management>
 			<concurrency-control max-sessions="1" expired-url="/logintwice" error-if-maximum-exceeded="false" />
 		</session-management>
-		<custom-filter after="LAST" ref="permissionFilterSecurityInterceptor" />
+		<!--增加一个filter，这点与Acegi是不一样的，不能修改默认的filter了， 这个filter位于最后 -->
+		<custom-filter  ref="permissionFilterSecurityInterceptor" after="LAST" />
 	</http>
+	
+	<!-- 认证失败处理 -->
+	<beans:bean id="authenticationFailureHandler" class="cn.edu.ecit.cl.wang.sys.security.MyAuthenticationFailureHandler">
+  		<beans:property name="defaultFailureUrl" value="/login?error=true"/>  
+  	</beans:bean>
 
 	<authentication-manager alias="authenticationManager">
-		<authentication-provider user-service-ref="myUserDetailsService">
-			<password-encoder hash="md5" />
-		</authentication-provider>
+		<authentication-provider ref="authenticationProvider"/>
 	</authentication-manager>
-
-	<beans:bean id="authenticationFailureHandler" class="cn.edu.ecit.cl.wang.sys.security.MyAuthenticationFailureHandler">
-		<beans:property name="defaultFailureUrl" value="/login?error=true"></beans:property>
-	</beans:bean>
-
-	<!-- 配置 验证过滤器, 此过滤器取代系统的XML权限过滤 , 此过滤器配置完毕之后存放到 系统缺省的过滤链中-->
-	<beans:bean id="permissionFilterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
-		<!-- 需要认证管理器, 通过它可以获取 管理员已经拥有的角色信息  ，  由于id已经被org.springframework.security.authenticationManager默认了。不能更改，所以用别名-->
-		<beans:property name="authenticationManager" ref="authenticationManager"/> 
-		<!-- 决策器 -->
-		<beans:property name="accessDecisionManager" ref="accessDecisionManager"/>
-		<!-- 配置urlService ，security可以通过url得到角色名称 -->
-		<beans:property name="securityMetadataSource" ref="permissionFilterInvocationDefinitionSource" />
-		<beans:property name="observeOncePerRequest" value="false" />
-	</beans:bean>
-
-	<beans:bean id="myUserDetailsService" class="cn.edu.ecit.cl.wang.sys.security.MyUserDetailServiceImpl" />
 	
-	<beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
-		<!-- false意味着当配置的投票器只投了弃权票时，不允许继续执行 -->
-        <beans:property name="allowIfAllAbstainDecisions" value="false"/> 
-        <!-- 配置该决策器所需要的投票器 --> 
-        <beans:property name="decisionVoters">  
-            <beans:list>  
-                <beans:bean class="org.springframework.security.access.vote.RoleVoter"/>  
-                <beans:bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>  
-            </beans:list>  
-        </beans:property>  
-    </beans:bean>  
+	<beans:bean id="authenticationProvider"  class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">  
+	    <beans:property name="userDetailsService" ref="myUserDetailService" />
+	    <!-- 显示错误的详细信息 -->
+	    <beans:property name="hideUserNotFoundExceptions" value="false" />  
+	    <beans:property name="passwordEncoder" ref="passwordEncode"/>
+	</beans:bean> 
+	
+	<!--在这个类中，你就可以从数据库中读入用户的密码，角色信息，是否锁定，账号是否过期等 -->
+	<beans:bean id="myUserDetailService" class="cn.edu.ecit.cl.wang.sys.security.MyUserDetailService" />
+	<!-- 配置密码加密类 -->
+    <beans:bean id="passwordEncode" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+	
+	<!--一个是否允许通过的filter，必须包含authenticationManager,accessDecisionManager,securityMetadataSource三个属性 -->
+	<beans:bean id="permissionFilterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<!-- 拒绝公共的没有指定角色资源的调用 -->
+		<beans:property name="rejectPublicInvocations" value="false"/>
+		<beans:property name="observeOncePerRequest" value="false" />
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="accessDecisionManager" ref="myAccessDecisionManagerBean" />
+		<beans:property name="securityMetadataSource" ref="securityMetadataSource" />
+	</beans:bean>
 
-	<beans:bean id="permissionFilterInvocationDefinitionSource" class="cn.edu.ecit.cl.wang.sys.security.PermissionFilterInvocationDefinitionSource" />
+	<!--访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
+	<beans:bean id="myAccessDecisionManagerBean" class="cn.edu.ecit.cl.wang.sys.security.MyAccessDecisionManager" />
+	<!--资源源数据定义，将所有的资源和权限对应关系建立起来，即定义某一资源可以被哪些角色访问 -->
+	<beans:bean id="securityMetadataSource" class="cn.edu.ecit.cl.wang.sys.security.MyInvocationSecurityMetadataSource" />
 
 	<beans:bean id="loggerListener" class="org.springframework.security.authentication.event.LoggerListener" />
 

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.gpms.dao.ApplyMentorDao">
+
+	<!-- 返回类型  -->
+	<resultMap type="cn.edu.ecit.cl.wang.gpms.po.ApplyMentor" id="ApplyMentor">
+		<result property="sender" column="SENDER" />
+		<result property="senderNm" column="sender_Nm" />
+		<result property="receiver" column="RECEIVER" />
+		<result property="receiverNm" column="receiver_Nm" />
+		<result property="createAt" column="create_At" />
+		<result property="state" column="state" />
+		<result property="applySbjt" column="APPLY_SBJT" />
+		<result property="applyCont" column="apply_cont" />
+		<result property="updateAt" column="update_At" />
+	</resultMap>
+	
+	<select id="selectPage" resultMap="ApplyMentor" >
+		SELECT 
+			am.SENDER,bu2.user_nm sender_Nm,am.RECEIVER,bu1.user_nm receiver_Nm,
+			am.create_At,am.state,am.APPLY_SBJT,am.apply_cont,am.update_At
+    	from GPMS_APPLY_MENTOR am
+    	left join base_user bu1 on am.RECEIVER=bu1.user_id
+    	left join base_user bu2 on am.SENDER=bu2.user_id
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+		    	<where>
+					<if test="ew.entity.receiverNm!=null and ew.entity.receiverNm!=''">
+						and bu1.USER_NM like '%' || #{ew.entity.receiverNm,jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="ew.entity.senderNm!=null and ew.entity.senderNm!=''">
+						and bu2.USER_NM like '%' || #{ew.entity.senderNm,jdbcType=VARCHAR} || '%'
+					</if>
+					<if test="ew.entity.receiver!=null and ew.entity.receiver!=''">
+						and am.receiver = #{ew.entity.receiver,jdbcType=NUMERIC}
+					</if>
+					<if test="ew.entity.state!=null and ew.entity.state!=''">
+						and am.state = #{ew.entity.state,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.createAtStart!=null and ew.entity.createAtStart!=''">
+						and to_char(am.create_At,'yyyy-mm-dd hh24:mi:ss') &gt;= #{ew.entity.createAtStart,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.createAtEnd!=null and ew.entity.createAtEnd!=''">
+						and to_char(am.create_At,'yyyy-mm-dd hh24:mi:ss') &lt;= #{ew.entity.createAtEnd,jdbcType=VARCHAR}
+					</if>
+				</where>
+			</if>
+		</if>
+		order by am.RECEIVER,am.create_At
+	</select>
+    
+    <select id="getRejectApply" resultMap="ApplyMentor" parameterType="java.lang.Long">
+    	select * from GPMS_APPLY_MENTOR am
+    	left join base_user bu on am.RECEIVER=bu.user_id
+    	where am.state=4 and bu.can_apply='0' and sender=#{sender,jdbcType=NUMERIC}
+    </select>
+    
+    <select id="getApplyBySender" resultMap="ApplyMentor" parameterType="java.lang.Long">
+    	select am.SENDER,am.RECEIVER,bu.user_nm receiver_Nm,am.create_At,am.state,am.APPLY_SBJT,am.apply_cont
+    	from GPMS_APPLY_MENTOR am left join base_user bu on am.RECEIVER=bu.user_id
+    	where state!='4' and sender=#{sender,jdbcType=NUMERIC}
+    </select>
+    
+    <update id="update" parameterType="cn.edu.ecit.cl.wang.gpms.po.ApplyMentor">
+    	update GPMS_APPLY_MENTOR set
+    		<if test="applyMentor.createAt!=null">
+		    	create_At=#{applyMentor.createAt,jdbcType=TIMESTAMP},
+    		</if>
+    		<if test="applyMentor.updateAt!=null">
+		    	update_At=#{applyMentor.updateAt,jdbcType=TIMESTAMP},
+    		</if>
+    		<if test="applyMentor.applySbjt!=null and applyMentor.applySbjt!=''">
+    			APPLY_SBJT=#{applyMentor.applySbjt,jdbcType=VARCHAR},
+    		</if>
+    		<if test="applyMentor.applyCont!=null and applyMentor.applyCont!=''">
+	    		apply_cont=#{applyMentor.applyCont,jdbcType=VARCHAR},
+    		</if>
+    		state=#{applyMentor.state,jdbcType=VARCHAR}
+    	where SENDER=#{applyMentor.sender,jdbcType=NUMERIC} and RECEIVER=#{applyMentor.receiver,jdbcType=NUMERIC} 
+    </update>
+</mapper>

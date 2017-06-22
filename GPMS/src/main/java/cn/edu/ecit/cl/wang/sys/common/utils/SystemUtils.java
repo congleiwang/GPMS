@@ -2,12 +2,17 @@ package cn.edu.ecit.cl.wang.sys.common.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * 自定义访问对象工具类 获取对象的IP地址等信息
  * 
  * @author i
  */
 public class SystemUtils {
+	
+	@Autowired
+	GlobalProperties gp;
 
 	/**
 	 * 获取用户真实IP地址，不使用request.getRemoteAddr();的原因是有可能用户使用了代理软件方式避免真实IP地址,
@@ -42,5 +47,5 @@ public class SystemUtils {
 		}
 		return ip;
 	}
-
+	
 }

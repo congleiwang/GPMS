@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.ecit.cl.wang.gpms.dao.ReplyDao">
+
+	<!-- 返回类型 -->
+	<resultMap type="cn.edu.ecit.cl.wang.gpms.po.Reply" id="Reply">
+		<id property="rid" column="rid" />
+		<result property="addr" column="addr" />
+		<result property="timeStart" column="time_start" />
+		<result property="timeEnd" column="time_end" />
+		<result property="orgId" column="org_id" />
+		<result property="_parentId" column="porg_id" />
+		<result property="orgNm" column="org_Nm" />
+		<result property="contacts" column="contacts" />
+		<result property="phone" column="phone" />
+	</resultMap>
+
+	<select id="selectPage" resultMap="Reply">
+		SELECT
+		r.rid,r.addr,r.time_start,r.time_end,o.org_id,
+		o.porg_id,o.org_Nm,r.contacts,r.phone
+		from gpms_reply r
+		right join base_org o on r.org_id=o.org_id
+		where o.is_use='1'
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<if test="ew.entity.orgId!=null and ew.entity.orgId!=0">
+					and o.ORG_ID in(
+						SELECT t.ORG_ID FROM BASE_ORG t where t.IS_USE='1'
+						START WITH t.ORG_ID= #{ew.entity.orgId,jdbcType=NUMERIC}
+						CONNECT BY PRIOR t.ORG_ID = t.PORG_ID)
+				</if>
+			</if>
+			<if test="ew.sqlSegment!=null">
+				${ew.sqlSegment}
+			</if>
+		</if>
+	</select>
+</mapper>

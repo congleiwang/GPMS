@@ -13,6 +13,7 @@
 		<junit.version>4.12</junit.version>
 		<druid.version>1.0.18</druid.version>
 		<fastjson.version>1.2.8</fastjson.version>
+		<fasterxml.version>2.5.2</fasterxml.version>
 		<javax.api.version>3.1.0</javax.api.version>
 		<mybaitsplus.version>2.0.1</mybaitsplus.version>
 		<oracle.version>10.2.0.2.0</oracle.version>
@@ -130,6 +131,7 @@
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
 		</dependency>
+
 		<!-- 工作流 -->
 		<dependency>
 			<groupId>org.activiti</groupId>
@@ -170,27 +172,14 @@
 			<classifier>jdk15</classifier>
 		</dependency>
 		<dependency>
-		    <groupId>net.sf.ehcache</groupId>
-		    <artifactId>ehcache</artifactId>
-		    <version>2.10.1</version>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.10.1</version>
 		</dependency>
 	</dependencies>
 
-
 	<build>
 		<finalName>GPMS</finalName>
-		<resources>
-			<resource>
-				<!-- 设定资源主目录 -->
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**/*.xml</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -198,27 +187,8 @@
 				<version>3.1</version>
 				<configuration>
 					<!-- 将maven发布的代码编译成和IDE一样的版本 -->
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<!--jetty 插件，mvn jetty:run -->
-			<plugin>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.3.7.v20160115</version>
-				<configuration>
-					<webApp>
-						<contextPath>/</contextPath>
-						<descriptor>${basedir}/src/main/webapp/WEB-INF/web.xml</descriptor>
-					</webApp>
-					<stopKey>exit</stopKey>
-					<stopPort>9091</stopPort>
-					<webAppSourceDirectory>${project.basedir}/src/main/webapp</webAppSourceDirectory>
-					<scanIntervalSeconds>0</scanIntervalSeconds>
-					<httpConnector>
-						<port>8080</port>
-					</httpConnector>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -10,4 +10,10 @@ import cn.edu.ecit.cl.wang.sys.po.Org;
 
 public interface OrgDao extends BaseMapper<Org>{
 	public List<Long> getSubOrgIdList(@Param("orgId")Long orgId);
+
+	public List<Org> getFirstOrg();
+
+	public List<Org> getPermOrgTree(@Param("orgId") Long orgId);
+
+	public List<Org> getAllOrgTree();
 }

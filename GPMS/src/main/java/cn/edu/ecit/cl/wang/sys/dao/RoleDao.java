@@ -7,10 +7,25 @@ import org.apache.ibatis.annotations.Param;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 import cn.edu.ecit.cl.wang.sys.po.Role;
+import cn.edu.ecit.cl.wang.sys.pojo.RoleAtuth;
+import cn.edu.ecit.cl.wang.sys.pojo.UrlAndRoleId;
+import cn.edu.ecit.cl.wang.sys.pojo.UserRole;
 
 public interface RoleDao extends BaseMapper<Role>{
 	
-	public List<String> getMenuCodesByRoleIds(@Param("roleIds")List<Long> roleIds);
+	public List<String> getMenuUrlsByRoleId(@Param("roleId")Long roleId);
+
+	public List<UrlAndRoleId> getUrlAndRoleIdList();
+
+	public List<Role> getRolesByUserId(@Param("userId")Long userId);
 	
-	public List<Object[]> getMenuAndRoleCodeList();
+	public Role selectById(@Param("roleId")Long roleId);
+
+	public void delAtuthByRoleId(@Param("roleId")Long roleId);
+
+	public int putUsers(@Param("userRoles") List<UserRole> userRoles);
+
+	public int removeUsers(@Param("userRoles") List<UserRole> userRoles);
+
+	public int putAtuth(@Param("roleAtuths") List<RoleAtuth> roleAtuths);
 }

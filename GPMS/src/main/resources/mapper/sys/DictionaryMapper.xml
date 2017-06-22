@@ -6,8 +6,8 @@
 
 	<!-- 返回类型  -->
 	<resultMap type="cn.edu.ecit.cl.wang.sys.po.Dictionary" id="Dictionary">
+		<id property="keyCd" column="KEY_CD" />
 		<result property="sysNm" column="SYS_NM" />
-		<result property="keyCd" column="KEY_CD" />
 		<result property="keyValue" column="KEY_VALUE" />
 		<result property="caption" column="CAPTION" />
 		<result property="isMod" column="IS_MOD" />
@@ -17,6 +17,26 @@
 		<result property="orderBy" column="ORDER_BY" />
 	</resultMap>
 	
+	<!-- 分页 -->
+	
+	<select id="selectPage" resultMap="Dictionary">
+		select * from BASE_DICTIONARY
+		<if test="ew!=null">
+			<if test="ew.entity!=null">
+				<where>
+					<if test="ew.entity.sysNm!=null and ew.entity.sysNm!=''">
+						and SYS_NM=#{ew.entity.sysNm,jdbcType=VARCHAR}
+					</if>
+					<if test="ew.entity.keyCd!=null and ew.entity.keyCd!=''">
+						and KEY_CD like '%' || #{ew.entity.keyCd,jdbcType=VARCHAR} || '%'
+					</if>
+				</where>
+			</if>
+		</if>
+		order by sys_nm ,key_cd ,order_by
+	</select>
+	
+	
 	<!-- 根据实体信息查询dicValue -->
 	<select id = "getDicValueByEntiry" parameterType = "cn.edu.ecit.cl.wang.sys.po.Dictionary" resultType="java.lang.String">
     	SELECT KEY_VALUE FROM BASE_DICTIONARY T1
@@ -24,7 +44,18 @@
 			<where>
 				<if test="dictionary.sysNm!=null">and t1.SYS_NM=#{dictionary.sysNm,jdbcType=VARCHAR}</if>
 				<if test="dictionary.keyCd!=null">and t1.KEY_CD=#{dictionary.keyCd,jdbcType=VARCHAR}</if>
+				<if test="dictionary.keyValue!=null">and t1.KEY_VALUE=#{dictionary.keyValue,jdbcType=VARCHAR}</if>
 			</where>
+		</if>
+    </select>
+    
+    <!-- 根据keyCd查询 -->
+	<select id = "getDictionaryByKey" parameterType = "cn.edu.ecit.cl.wang.sys.po.Dictionary" resultMap="Dictionary">
+    	SELECT SYS_NM,KEY_CD,KEY_VALUE,CAPTION FROM BASE_DICTIONARY T1
+    	where t1.IS_USE='1'
+    	<if test="dictionary!=null">
+			<if test="dictionary.sysNm!=null">and t1.SYS_NM=#{dictionary.sysNm,jdbcType=VARCHAR}</if>
+			<if test="dictionary.keyCd!=null">and t1.KEY_CD=#{dictionary.keyCd,jdbcType=VARCHAR}</if>
 		</if>
     </select>
     

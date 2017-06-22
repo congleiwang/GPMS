@@ -1,57 +1,90 @@
 package cn.edu.ecit.cl.wang.sys.po;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
-import com.baomidou.mybatisplus.annotations.TableField;
+public abstract class BaseTree implements Serializable {
 
-public abstract class BaseTree {
+	private static final long serialVersionUID = -2329706295668731972L;
 
-	@TableField(exist=false)
-    private List<? extends BaseTree> children;
+	private String id;
 
-	@TableField(exist=false)
-    private Integer parentId;
+	private String text;
 
-	@TableField(exist=false)
-    private Boolean leaf;
+	private String state;
 
-	@TableField(exist=false)
-    private Boolean checked;
-    
-    public boolean hasChildren(){
-        return (children != null) && (!children.isEmpty());
-    }
+	private Boolean checked;
+	
+	private String iconCls;
+	
+	private String parentId;
 
-    public Boolean getLeaf() {
-        return (leaf == null) ? (!hasChildren()) : leaf;
-    }
-    
-    public List<? extends BaseTree> getChildren() {
-        return children;
-    }
+	private List<? extends BaseTree> children;
 
-    public void setChildren(List<? extends BaseTree> children) {
-        this.children = children;
-    }
+	private Map<String, Object> attributes;
 
-    public Integer getParentId() {
-        return parentId;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public void setLeaf(Boolean leaf) {
-        this.leaf = leaf;
-    }
+	public String getText() {
+		return text;
+	}
 
-    public Boolean getChecked() {
-        return checked;
-    }
+	public void setText(String text) {
+		this.text = text;
+	}
 
-    public void setChecked(Boolean checked) {
-        this.checked = checked;
-    }
+	public String getState() {
+		return state;
+	}
 
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public Boolean getChecked() {
+		return checked;
+	}
+
+	public void setChecked(Boolean checked) {
+		this.checked = checked;
+	}
+
+	public List<? extends BaseTree> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<? extends BaseTree> children) {
+		this.children = children;
+	}
+
+	public Map<String, Object> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(Map<String, Object> attributes) {
+		this.attributes = attributes;
+	}
+
+	public String getIconCls() {
+		return iconCls;
+	}
+
+	public void setIconCls(String iconCls) {
+		this.iconCls = iconCls;
+	}
+
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
 }

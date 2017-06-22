@@ -1,29 +1,75 @@
 package cn.edu.ecit.cl.wang.sys.service.impl;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 
+import cn.edu.ecit.cl.wang.sys.common.utils.MD5;
+import cn.edu.ecit.cl.wang.sys.common.utils.SpringSecurityUtils;
 import cn.edu.ecit.cl.wang.sys.dao.SysParamDao;
 import cn.edu.ecit.cl.wang.sys.dao.UserDao;
-import cn.edu.ecit.cl.wang.sys.po.Role;
+import cn.edu.ecit.cl.wang.sys.dao.UtilsDao;
 import cn.edu.ecit.cl.wang.sys.po.SysParam;
 import cn.edu.ecit.cl.wang.sys.po.User;
-import cn.edu.ecit.cl.wang.sys.security.CurrentUser;
 import cn.edu.ecit.cl.wang.sys.service.IUserService;
 
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUserService {
-
+ 
 	@Autowired
 	SysParamDao sysParamDao;
 
 	@Autowired
 	UserDao userDao;
+	
+	@Autowired
+	UtilsDao utilsDao;
+	
+	@Override
+	public Page<User> selectPage(User user, int pageNum, int pageSize) {
+		if(user==null){
+			user=new User();
+		}
+		if(user.getOrgId()==null){
+			user.setOrgId(SpringSecurityUtils.getCurrentUser().getOrgId());
+		}
+		EntityWrapper<User> ew=new EntityWrapper<User>(user);
+		Page<User> page=new Page<User>(pageNum,pageSize);
+		page.setRecords(userDao.selectPage(page, ew));
+		return page;
+	}
+	
+	@Override
+	public boolean insert(User user) {
+		user.setUserId(utilsDao.selectKey("seq_base_user"));
+		user.setCreateAt(new Timestamp(System.currentTimeMillis()));
+		user.setSignAt(user.getCreateAt());
+		user.setCreator(SpringSecurityUtils.getCurrentUser().getUserId());
+		user.setIsDel("0");
+		user.setPasswd(MD5.encode(user.getPasswd()));
+		user.setCanApply("1");
+		return super.insert(user);
+	}
+	
+	@Override
+	public boolean updateById(User entity) {
+		if(StringUtils.isEmpty(entity.getPasswd())){
+			entity.setPasswd(null);
+		}else{
+			entity.setPasswd(MD5.encode(entity.getPasswd()));
+		}
+		entity.setModAt(new Timestamp(System.currentTimeMillis()));
+		entity.setModer(SpringSecurityUtils.getCurrentUser().getUserId());
+		userDao.updateModCount(entity.getUserId());
+		return super.updateById(entity);
+	}
 	
 	/**
 	 * 根据用户登陆名得到id
@@ -51,19 +97,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 	}
 
 	/**
-	 * 根据用户登陆名获取用户所有信息
-	 */
-	@Override
-	public CurrentUser getCurrentUserById(Long userId) {
-		User user = userDao.getCurrentUserById(userId);
-		CurrentUser cuser = null;
-		if (user != null) {
-			cuser = new CurrentUser(user);
-		}
-		return cuser;
-	}
-
-	/**
 	 * 根据用户名查询用户是否被锁定
 	 */
 	@Override
@@ -71,21 +104,92 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
 		String flag=userDao.isUserLocked(userId);
 		return "1".equals(flag);
 	}
-
-	/**
-	 * 根据用户Id 获取角色id列表
-	 */
+	
 	@Override
-	public List<Long> getRolesByUserid(Long userId) {
-		User user=userDao.selectById(userId);
-		List<Long> roleIds=new ArrayList<Long>();
-		if(user.getRoles()!=null){
-			for (Role role:user.getRoles()) {
-				roleIds.add(role.getRoleId());
-			}
-		}
-		return roleIds;
+	public User getUnLockUserById(Long id) {
+		return userDao.getUnLockUserById(id);
 	}
 
+	@Override
+	public boolean lockUserBatchIds(List<Long> ids) {
+		boolean result=true;
+		for(Long id:ids){
+			if(userDao.updateLockUser(id)<1){
+				result=false;
+			}
+		}
+		return result;
+	}
+	@Override
+	public boolean unLockUserBatchIds(List<Long> ids) {
+		boolean result=true;
+		for(Long id:ids){
+			if(userDao.updateUnLockUser(id)<1){
+				result=false;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public Page<User> getUsersByRoleId(User user,Long roleId, int pageNum, int pageSize) {
+		if(user==null){
+			user=new User();
+		}
+		if(user.getOrgId()==null || user.getOrgId()==0){
+			user.setOrgId(SpringSecurityUtils.getCurrentUser().getOrgId());
+		}
+		EntityWrapper<User> ew=new EntityWrapper<User>(user);
+		Page<User> page=new Page<User>(pageNum,pageSize);
+		page.setRecords(userDao.getUsersByRoleId(page,ew ,roleId));
+		return page;
+	}
+
+	@Override
+	public Page<User> getUsersExRoleId(User user, Long roleId, int pageNum, int pageSize) {
+		if(user==null){
+			user=new User();
+		}
+		if(user.getOrgId()==null || user.getOrgId()==0){
+			user.setOrgId(SpringSecurityUtils.getCurrentUser().getOrgId());
+		}
+		EntityWrapper<User> ew=new EntityWrapper<User>(user);
+		Page<User> page=new Page<User>(pageNum,pageSize);
+		page.setRecords(userDao.getUsersExRoleId(page, ew, roleId));
+		return page;
+	}
+
+	@Override
+	public List<User> getMyStuList() {
+		return userDao.getMyStuList(SpringSecurityUtils.getCurrentUser().getUserId());
+	}
+
+	@Override
+	public User getMyMentor() {
+		return userDao.getMyMentor(SpringSecurityUtils.getCurrentUser().getUserId());
+	}
+
+	@Override
+	public int changePasswd(String oldPasswd, String newPasswd) {
+		String passwd=SpringSecurityUtils.getCurrentUser().getPasswd();
+		if(passwd.equals(MD5.encode(oldPasswd.trim()))){
+			User u=new User();
+			u.setUserId(SpringSecurityUtils.getCurrentUser().getUserId());
+			u.setPasswd(MD5.encode(newPasswd.trim()));
+			if(userDao.updateById(u)>0){
+				return 1;
+			}else{
+				return 2;
+			}
+		}else{
+			return 3;
+		}
+	}
+
+	@Override
+	public boolean upMyInfo(User user) {
+		user.setUserId(SpringSecurityUtils.getCurrentUser().getUserId());
+		return userDao.updateById(user)>0;
+	}
 
 }

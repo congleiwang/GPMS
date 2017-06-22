@@ -1,22 +1,10 @@
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+<%@ include file="/jsp/base.jsp"%>
 <!DOCTYPE>
-<%@ page language="java" pageEncoding="UTF-8"
-	contentType="text/html; charset=UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page isELIgnored="false"%>
-<%@ page session="false"%>
-<%
-	String path = request.getContextPath();
-%>
 <html>
 <head>
-<base href="">
 <title>GPMS</title>
-<link href="<%=path%>/res/css/style.css" rel="stylesheet"
-	type="text/css">
-<script type="text/javascript" src="<%=path%>/res/js/jquery.js"></script>
-<script type="text/javascript"
-	src="<%=path%>/res/js/jquery.query-2.1.7.js"></script>
-<script type="text/javascript" src="<%=path%>/res/js/rainbows.js"></script>
+<link href="${rootPath }/css/login.css" rel="stylesheet" type="text/css">
 <script type="text/javascript">
 	function checkForm(thisForm) {
 		if (document.getElementById('j_username').value.length < 1) {
@@ -34,11 +22,11 @@
 	}
 </script>
 </head>
-<body>
+<body id="body">
 	<div id="head"></div>
 	<div id="wrapper">
 		<div id="wrappertop"></div>
-		<form action="<%=path%>/j_spring_security_check" method="post"
+		<form action="${rootPath }/j_spring_security_check" method="post"
 			id="LoginForm" name="LoginForm"
 			onSubmit="javascript:return checkForm(this);">
 			<div id="wrappermiddle">
@@ -63,7 +51,7 @@
 					<div id="password_inputmiddle">
 						<input type="password" id="j_password" class="url"
 							name="j_password" placeholder="密码"> <span
-							id="url_password" src="<%=path%>/res/images/icon_lock.png"
+							id="url_password" src="res/images/icon_lock.png"
 							alt="请输入密码" />
 					</div>
 
